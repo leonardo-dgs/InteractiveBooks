@@ -6,7 +6,7 @@ Do you want to create cool JSON books, but use it is too uncomfortable? This plu
 [*] [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) (optional)
 
 ## Documentation
-[Read plugin's guide here](https://github.com/Leomixer17/InteractiveBooks/wiki)\
+[Read plugin's guide here](https://github.com/Leomixer17/InteractiveBooks/wiki)
 
 
 View more informations on the SpigotMC page: https://www.spigotmc.org/resources/interactivebooks.45604/
