@@ -14,6 +14,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     }
 }
