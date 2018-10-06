@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="interactivebooks_main" target="1.8" />
+      <module name="interactivebooks_test" target="1.8" />
+      <module name="Plugin_InteractiveBooks_main" target="1.8" />
+      <module name="Plugin_InteractiveBooks_test" target="1.8" />
+      <module name="spigot-1.10.2_main" target="1.8" />
+      <module name="spigot-1.10.2_test" target="1.8" />
+      <module name="spigot-1.11.2_main" target="1.8" />
+      <module name="spigot-1.11.2_test" target="1.8" />
+      <module name="spigot-1.12.2_main" target="1.8" />
+      <module name="spigot-1.12.2_test" target="1.8" />
+      <module name="spigot-1.13.1_main" target="1.8" />
+      <module name="spigot-1.13.1_test" target="1.8" />
+      <module name="spigot-1.13_main" target="1.8" />
+      <module name="spigot-1.13_test" target="1.8" />
+      <module name="spigot-1.8.3_main" target="1.8" />
+      <module name="spigot-1.8.3_test" target="1.8" />
+      <module name="spigot-1.8.8_main" target="1.8" />
+      <module name="spigot-1.8.8_test" target="1.8" />
+      <module name="spigot-1.9.2_main" target="1.8" />
+      <module name="spigot-1.9.2_test" target="1.8" />
+      <module name="spigot-1.9.4_main" target="1.8" />
+      <module name="spigot-1.9.4_test" target="1.8" />
+      <module name="spigot-v1_10_main" target="1.8" />
+      <module name="spigot-v1_10_test" target="1.8" />
+      <module name="spigot-v1_11_main" target="1.8" />
+      <module name="spigot-v1_11_test" target="1.8" />
+      <module name="spigot-v1_13_main" target="1.8" />
+      <module name="spigot-v1_13_test" target="1.8" />
+      <module name="spigot-v1_8__main" target="1.8" />
+      <module name="spigot-v1_8__test" target="1.8" />
+      <module name="spigot-v1_9_main" target="1.8" />
+      <module name="spigot-v1_9_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

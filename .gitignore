@@ -1,0 +1,15 @@
+/target
+/.gradle/
+*/build/
+out/
+/bin/
+
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/dictionaries
+.idea/**/inspectionProfiles
+.idea/**/deployment.xml
+
+*.iml
+.idea/**/libraries
+.idea/**/modules
