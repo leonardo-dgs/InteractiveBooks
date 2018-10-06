@@ -1,6 +1,7 @@
 language: java
 before_install:
 - chmod +x gradlew
+- ./gradlew --refresh-dependencies
 cache:
   directories:
   - $HOME/.gradle
