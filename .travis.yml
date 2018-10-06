@@ -1,0 +1,12 @@
+language: java
+before_install:
+- chmod +x gradlew
+cache:
+  directories:
+  - $HOME/.gradle
+jdk:
+- oraclejdk8
+notifications:
+  slack:
+    on_success: never
+    on_failure: never
