@@ -13,22 +13,22 @@ import java.util.ArrayList;
 public final class CommandIBooks implements CommandExecutor {
 	
 	static final String helpMessage =
-		"§6InteractiveBooks §7- §6Commands\n"
-		+ "§e/ibooks list\n"
-		+ "§e/ibooks open <book-id> [player]\n"
-		+ "§e/ibooks get <book-id>\n"
-		+ "§e/ibooks give <book-id> <player>\n"
-		+ "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
+		"Â§6InteractiveBooks Â§7- Â§6Commands\n"
+		+ "Â§e/ibooks list\n"
+		+ "Â§e/ibooks open <book-id> [player]\n"
+		+ "Â§e/ibooks get <book-id>\n"
+		+ "Â§e/ibooks give <book-id> <player>\n"
+		+ "Â§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
 		// WIP: Book importing
-		// + "§e/ibooks import <book-id>\n"
-		+ "§e/ibooks reload"
+		// + "Â§e/ibooks import <book-id>\n"
+		+ "Â§e/ibooks reload"
 		;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
 	{
 		if(!sender.hasPermission("interactivebooks.command")) {
-			sender.sendMessage("§4You don't have permission to access to this command.");
+			sender.sendMessage("Â§4You don't have permission to access to this command.");
 			return false;
 		}
 		if(args.length == 0) {
@@ -39,28 +39,28 @@ public final class CommandIBooks implements CommandExecutor {
 		switch(args[0]) {
 		case "list":
 			if(!sender.hasPermission("interactivebooks.command.list")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			final StringBuilder sb = new StringBuilder();
 			for(final IBook book : InteractiveBooks.getBooks().values())
-				sb.append("§6%book_id%§7, ".replace("%book_id%", book.getId()));
-			sender.sendMessage("§eBooks:\n" + (sb.toString().equals("") ? "" : sb.toString().substring(0, sb.toString().length() - 2)));
+				sb.append("Â§6%book_id%Â§7, ".replace("%book_id%", book.getId()));
+			sender.sendMessage("Â§eBooks:\n" + (sb.toString().equals("") ? "" : sb.toString().substring(0, sb.toString().length() - 2)));
 			break;
 			
 		case "open":
 			if(!sender.hasPermission("interactivebooks.command.open")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			if(args.length == 1) {
-				sender.sendMessage("§cUsage: §7/ibooks open <book-id> [player]");
+				sender.sendMessage("Â§cUsage: Â§7/ibooks open <book-id> [player]");
 				return false;
 			}
 			final Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
 			final String bookIdToOpen = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
 			if(InteractiveBooks.getBook(bookIdToOpen) == null) {
-				sender.sendMessage("§cThat book doesn't exists.");
+				sender.sendMessage("Â§cThat book doesn't exists.");
 				return false;
 			}
 			if(args.length == 2) {
@@ -69,76 +69,76 @@ public final class CommandIBooks implements CommandExecutor {
 					return false;
 				}
 				else {
-					sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
+					sender.sendMessage("Â§cIf you execute this command by the console, you need to specify the player's name.");
 					return false;
 				}
 			}
 			if(playerToOpen == null) {
-				sender.sendMessage("§cThat player isn't connected.");
+				sender.sendMessage("Â§cThat player isn't connected.");
 				return false;
 			}
 			InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
-			sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
+			sender.sendMessage("Â§aBook Â§6%book_id% Â§aopened to Â§6%player%Â§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
 			break;
 			
 		case "get":
 			if(!sender.hasPermission("interactivebooks.command.get")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			if(!(sender instanceof Player)) {
-				sender.sendMessage("§cThat command can only be executed by players.");
+				sender.sendMessage("Â§cThat command can only be executed by players.");
 				return false;
 			}
 			if(args.length == 1) {
-				sender.sendMessage("§cUsage: §7/ibooks get <book-id>");
+				sender.sendMessage("Â§cUsage: Â§7/ibooks get <book-id>");
 				return false;
 			}
 			final Player playerToGet = (Player) sender;
 			final String bookIdToGet = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGet, args[1]) : args[1];
 			if(InteractiveBooks.getBook(bookIdToGet) == null) {
-				sender.sendMessage("§cThat book doesn't exists.");
+				sender.sendMessage("Â§cThat book doesn't exists.");
 				return false;
 			}
 			playerToGet.getInventory().addItem(InteractiveBooks.getBook(bookIdToGet).getItem(playerToGet));
-			sender.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGet));
+			sender.sendMessage("Â§aYou have received the book Â§6%book_id%Â§a.".replace("%book_id%", bookIdToGet));
 			break;
 			
 		case "give":
 			if(!sender.hasPermission("interactivebooks.command.give")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			if(args.length < 3) {
-				sender.sendMessage("§cUsage: §7/ibooks give <book-id> <player>");
+				sender.sendMessage("Â§cUsage: Â§7/ibooks give <book-id> <player>");
 				return false;
 			}
 			final Player playerToGive = Bukkit.getPlayer(args[2]);
 			final String bookIdToGive = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGive, args[1]) : args[1];
 			if(InteractiveBooks.getBook(bookIdToGive) == null) {
-				sender.sendMessage("§cThat book doesn't exists.");
+				sender.sendMessage("Â§cThat book doesn't exists.");
 				return false;
 			}
 			if(playerToGive == null) {
-				sender.sendMessage("§cThat player isn't connected.");
+				sender.sendMessage("Â§cThat player isn't connected.");
 				return false;
 			}
 			playerToGive.getInventory().addItem(InteractiveBooks.getBook(bookIdToGive).getItem(playerToGive));
-			sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", bookIdToGive).replace("%player%", args[2]));
-			playerToGive.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGive));
+			sender.sendMessage("Â§aBook Â§6%book_id% Â§agiven to Â§6%player%Â§a.".replace("%book_id%", bookIdToGive).replace("%player%", args[2]));
+			playerToGive.sendMessage("Â§aYou have received the book Â§6%book_id%Â§a.".replace("%book_id%", bookIdToGive));
 			break;
 			
 		case "create":
 			if(!sender.hasPermission("interactivebooks.command.create")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			if(args.length < 5) {
-				sender.sendMessage("§cUsage: §7/ibooks create <book-id> <name> <title> <author> [generation]");
+				sender.sendMessage("Â§cUsage: Â§7/ibooks create <book-id> <name> <title> <author> [generation]");
 				return false;
 			}
 			if(InteractiveBooks.getBook(args[1]) != null) {
-				sender.sendMessage("§cA book with that id already exists");
+				sender.sendMessage("Â§cA book with that id already exists");
 				return false;
 			}
 			
@@ -150,32 +150,32 @@ public final class CommandIBooks implements CommandExecutor {
 			if(args.length > 5)
 				bookGeneration = args[5].toUpperCase();
 			if(IBooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED")) {
-				sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
+				sender.sendMessage("Â§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
 				return false;
 			}
 			
 			final IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
 			createdBook.save();
 			InteractiveBooks.registerBook(createdBook);
-			sender.sendMessage("§aBook successfully created.");
+			sender.sendMessage("Â§aBook successfully created.");
 			break;
 		// WIP: Book importing
 		/*
 		case "import":
 			if(!sender.hasPermission("interactivebooks.command.import")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			if(args.length < 2) {
-				sender.sendMessage("§cUsage: §7/ibooks import <book-id>");
+				sender.sendMessage("Â§cUsage: Â§7/ibooks import <book-id>");
 				return false;
 			}
 			if(InteractiveBooks.getBook(args[1]) != null) {
-				sender.sendMessage("§cA book with that id already exists.");
+				sender.sendMessage("Â§cA book with that id already exists.");
 				return false;
 			}
 			if(!IBooksUtils.getItemInMainHand((Player) sender).getType().equals(Material.WRITTEN_BOOK)) {
-				sender.sendMessage("§cIn order to import a book, you must have it in your hand.");
+				sender.sendMessage("Â§cIn order to import a book, you must have it in your hand.");
 				return false;
 			}
 			
@@ -183,16 +183,16 @@ public final class CommandIBooks implements CommandExecutor {
 			final IBook importedBook = new IBook(args[1], (BookMeta) itemToImport.getItemMeta());
 			importedBook.save();
 			InteractiveBooks.registerBook(importedBook);
-			sender.sendMessage("§aBook successfully imported.");
+			sender.sendMessage("Â§aBook successfully imported.");
 			break;
 		*/
 		case "reload":
 			if(!sender.hasPermission("interactivebooks.command.reload")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
+				sender.sendMessage("Â§4You don't have permission to execute this action.");
 				return false;
 			}
 			Config.loadAll();
-			sender.sendMessage("§aConfig reloaded!");
+			sender.sendMessage("Â§aConfig reloaded!");
 			break;
 			
 		default:
