@@ -30,6 +30,8 @@ dependencies {
     compile project(path: ':spigot-v1_13_R2', configuration: 'shadow')
 }
 
+jar.enabled = false
+
 shadowJar {
     archiveName 'InteractiveBooks.jar'
 }
