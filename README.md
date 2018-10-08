@@ -8,5 +8,7 @@ Do you want to create cool JSON books, but use it is too uncomfortable? This plu
 ## Documentation
 Read plugin's guide [here](https://github.com/Leomixer17/InteractiveBooks/wiki)
 
+## Dev Builds
+You can get latest builds [here](https://ci.codemc.org/job/Leomixer17/job/InteractiveBooks/)
 
 View more informations on the SpigotMC page: https://www.spigotmc.org/resources/interactivebooks.45604/
