@@ -31,8 +31,8 @@ public class IBook {
 	public IBook(final String id, final FileConfiguration bookConfig)
 	{
 		this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"), bookConfig.getString("generation"),
-			bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
-			(bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("") ? null : bookConfig.getString("open_command").split(" ")));
+				bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
+				(bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("") ? null : bookConfig.getString("open_command").split(" ")));
 	}
 	
 	public IBook(final String id, final ItemStack book)
@@ -51,9 +51,9 @@ public class IBook {
 	{
 		this.id = id;
 		final BookMeta bookMeta = (BookMeta) new ItemStack(Material.WRITTEN_BOOK).getItemMeta();
-		if(lore == null)
+		if (lore == null)
 			lore = new ArrayList<>();
-		if(pages == null)
+		if (pages == null)
 			pages = new ArrayList<>();
 		bookMeta.setDisplayName(displayName);
 		bookMeta.setTitle(title);
@@ -61,22 +61,22 @@ public class IBook {
 		bookMeta.setLore(lore);
 		this.bookMeta = bookMeta;
 		this.pages = pages;
-		if(openCommands != null)
-			for(final String command : openCommands)
+		if (openCommands != null)
+			for (final String command : openCommands)
 				this.openCommands.add(command.toLowerCase());
 	}
 	
 	public IBook(final String id, final String displayName, final String title, final String author, final String generation, List<String> lore, List<String> pages, final String... openCommands)
 	{
 		this(id, displayName, title, author, lore, pages, openCommands);
-		if(generation != null && IBooksUtils.hasBookGenerationSupport())
+		if (generation != null && IBooksUtils.hasBookGenerationSupport())
 			this.bookMeta.setGeneration(IBooksUtils.getBookGeneration(generation));
 	}
 	
 	public IBook(final String id, final String displayName, final String title, final String author, final Generation generation, List<String> lore, List<String> pages, final String... openCommands)
 	{
 		this(id, displayName, title, author, lore, pages, openCommands);
-		if(generation != null)
+		if (generation != null)
 			this.bookMeta.setGeneration(generation);
 	}
 	
@@ -138,27 +138,31 @@ public class IBook {
 	{
 		final File file = new File(new File(InteractiveBooks.getPlugin().getDataFolder(), "books"), this.getId() + ".yml");
 		final BookMeta meta = this.bookMeta;
-		try {
-			if(!file.exists())
+		try
+		{
+			if (!file.exists())
 				file.createNewFile();
 			final YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
 			bookConfig.set("name", meta.getDisplayName());
 			bookConfig.set("title", meta.getTitle());
 			bookConfig.set("author", meta.getAuthor());
-			if(IBooksUtils.hasBookGenerationSupport())
+			if (IBooksUtils.hasBookGenerationSupport())
 				bookConfig.set("generation", meta.getGeneration().toString());
 			bookConfig.set("lore", meta.getLore());
 			bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
-			if(this.getPages().isEmpty()) {
+			if (this.getPages().isEmpty())
+			{
 				final List<String> tempPages = new ArrayList<>();
 				tempPages.add("");
 				bookConfig.set("pages.1", tempPages);
 			}
-			for(int i = 0; i < this.getPages().size(); i++)
+			for (int i = 0; i < this.getPages().size(); i++)
 				bookConfig.set("pages." + String.valueOf(i + 1), this.getPages().get(i).split("\n"));
 			
 			bookConfig.save(file);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -166,7 +170,7 @@ public class IBook {
 	@Override
 	public boolean equals(final Object obj)
 	{
-		if(!(obj instanceof IBook))
+		if (!(obj instanceof IBook))
 			return false;
 		return ((IBook) obj).getId().equals(this.getId());
 	}
@@ -174,7 +178,7 @@ public class IBook {
 	private static List<String> mergeLines(final ConfigurationSection section)
 	{
 		final List<String> pages = new ArrayList<>();
-		if(section == null)
+		if (section == null)
 			return pages;
 		section.getKeys(false).forEach(key -> {
 			final StringBuilder sb = new StringBuilder();

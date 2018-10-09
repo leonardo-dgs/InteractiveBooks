@@ -12,11 +12,15 @@ final class Config {
 	{
 		InteractiveBooks.getPlugin().saveDefaultConfig();
 		final File f = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
-		if(!f.exists()) {
+		if (!f.exists())
+		{
 			f.mkdirs();
-			try {
+			try
+			{
 				Files.copy(InteractiveBooks.getPlugin().getResource("examplebook.yml"), new File(f, "examplebook.yml").toPath());
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -27,8 +31,8 @@ final class Config {
 	{
 		InteractiveBooks.getBooks().keySet().forEach(id -> InteractiveBooks.unregisterBook(id));
 		final File booksFolder = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
-		for(final File f : booksFolder.listFiles())
-			if(f.getName().endsWith(".yml"))
+		for (final File f : booksFolder.listFiles())
+			if (f.getName().endsWith(".yml"))
 				InteractiveBooks.registerBook(new IBook(f.getName().substring(0, f.getName().length() - 4), YamlConfiguration.loadConfiguration(f)));
 	}
 }

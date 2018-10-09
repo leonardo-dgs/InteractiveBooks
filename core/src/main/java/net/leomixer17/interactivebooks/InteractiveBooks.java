@@ -19,7 +19,8 @@ public final class InteractiveBooks extends JavaPlugin {
 		plugin = this;
 		Config.loadAll();
 		iBooksUtils = IBooksUtils.setupIBooksUtils();
-		if(iBooksUtils == null) {
+		if (iBooksUtils == null)
+		{
 			this.getLogger().severe("This Bukkit version is not supported. Disabling...");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
