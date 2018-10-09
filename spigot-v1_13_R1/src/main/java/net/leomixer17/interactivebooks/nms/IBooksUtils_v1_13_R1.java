@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class IBooksUtils_v1_13_R1 implements IBooksUtils {
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public BookMeta getBookMeta(final BookMeta meta, final List<String> rawPages, final Player player)
@@ -26,21 +26,24 @@ final class IBooksUtils_v1_13_R1 implements IBooksUtils {
 		bookMeta.setTitle(meta.getTitle());
 		bookMeta.setAuthor(meta.getAuthor());
 		bookMeta.setLore(meta.getLore());
-		if(IBooksUtils.hasPlaceholderAPISupport())
+		if (IBooksUtils.hasPlaceholderAPISupport())
 			IBooksUtils.replacePlaceholders(bookMeta, player);
 		else
 			IBooksUtils.replaceColorCodes(bookMeta);
 		List<IChatBaseComponent> pages = null;
-		try {
+		try
+		{
 			pages = (List<IChatBaseComponent>) CraftMetaBook.class.getDeclaredField("pages").get(bookMeta);
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+		{
 			e.printStackTrace();
 		}
 		pages.addAll(this.getPages(bookMeta, rawPages, player));
-		
+
 		return bookMeta;
 	}
-	
+
 	@Override
 	public List<IChatBaseComponent> getPages(final BookMeta meta, final List<String> rawPages, final Player player)
 	{
@@ -59,5 +62,5 @@ final class IBooksUtils_v1_13_R1 implements IBooksUtils {
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
 		player.getInventory().setItem(slot, old);
 	}
-	
+
 }

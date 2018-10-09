@@ -15,7 +15,7 @@ final class TextComponentBuilder {
 	
 	TextComponentBuilder()
 	{
-		
+	
 	}
 	
 	List<TextComponent> getComponents()
@@ -25,9 +25,9 @@ final class TextComponentBuilder {
 	
 	void add(final TextComponent component)
 	{
-		if(this.getNextClickEvent() != null)
+		if (this.getNextClickEvent() != null)
 			component.setClickEvent(this.getNextClickEvent());
-		if(this.getNextHoverEvent() != null)
+		if (this.getNextHoverEvent() != null)
 			component.setHoverEvent(this.getNextHoverEvent());
 		this.components.add(component);
 	}

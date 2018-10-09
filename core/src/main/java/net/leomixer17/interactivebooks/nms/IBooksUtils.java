@@ -21,9 +21,12 @@ public interface IBooksUtils {
 	
 	static IBooksUtils setupIBooksUtils()
 	{
-		try {
+		try
+		{
 			return (IBooksUtils) Class.forName(InteractiveBooks.getPlugin().getClass().getPackage().getName() + ".nms.IBooksUtils_" + version).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		}
+		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+		{
 			return null;
 		}
 	}
@@ -50,7 +53,7 @@ public interface IBooksUtils {
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
 		meta.setTitle(ChatColor.translateAlternateColorCodes('&', meta.getTitle()));
 		meta.setAuthor(ChatColor.translateAlternateColorCodes('&', meta.getAuthor()));
-		for(int i = 0; i < meta.getLore().size(); i++)
+		for (int i = 0; i < meta.getLore().size(); i++)
 			meta.getLore().set(i, ChatColor.translateAlternateColorCodes('&', meta.getLore().get(i)));
 	}
 	
@@ -67,7 +70,7 @@ public interface IBooksUtils {
 	@SuppressWarnings("deprecation")
 	static ItemStack getItemInMainHand(final Player player)
 	{
-		if(version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+		if (version.equals("v1_8_R2") || version.equals("v1_8_R3"))
 			return player.getInventory().getItemInHand();
 		return player.getInventory().getItemInMainHand();
 	}
@@ -75,7 +78,8 @@ public interface IBooksUtils {
 	@SuppressWarnings("deprecation")
 	static void setItemInMainHand(final Player player, final ItemStack item)
 	{
-		if(version.equals("v1_8_R2") || version.equals("v1_8_R3")) {
+		if (version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+		{
 			player.getInventory().setItemInHand(item);
 			return;
 		}
@@ -93,7 +97,7 @@ public interface IBooksUtils {
 	static String getPage(final BaseComponent[] components)
 	{
 		final StringBuilder sb = new StringBuilder();
-		for(final BaseComponent component : components)
+		for (final BaseComponent component : components)
 			sb.append(BaseComponentSerializer.toString(component));
 		return sb.toString();
 	}
@@ -104,7 +108,7 @@ public interface IBooksUtils {
 	{
 		final String[] plainRows = page.split("\n");
 		final TextComponentBuilder compBuilder = new TextComponentBuilder();
-		for(int i = 0; i < plainRows.length; i++)
+		for (int i = 0; i < plainRows.length; i++)
 			compBuilder.add(parseRow(plainRows[i] + (i < plainRows.length - 1 ? "\n" : ""), player));
 		return convertListToArray(compBuilder.getComponents());
 	}
@@ -117,7 +121,7 @@ public interface IBooksUtils {
 		
 		final TextComponentBuilder compBuilder = new TextComponentBuilder();
 		final char[] chars = plainRow.toCharArray();
-
+		
 		String clickType = null;
 		String hoverType = null;
 		String clickValue = null;
@@ -125,15 +129,20 @@ public interface IBooksUtils {
 		
 		TextComponent current = new TextComponent();
 		StringBuilder curStr = new StringBuilder();
-		for(int i = 0; i < chars.length; i++) {
-			if(chars[i] == '<') {
+		for (int i = 0; i < chars.length; i++)
+		{
+			if (chars[i] == '<')
+			{
 				final StringBuilder sb = new StringBuilder();
 				int j;
-				for(j = i; j < chars.length; j++) {
-					if(chars[j] == '>') {
+				for (j = i; j < chars.length; j++)
+				{
+					if (chars[j] == '>')
+					{
 						final String tag = sb.toString().replaceFirst("<", "");
-						if(!tag.contains(":")) {
-							if(!tag.equalsIgnoreCase("reset"))
+						if (!tag.contains(":"))
+						{
+							if (!tag.equalsIgnoreCase("reset"))
 								break;
 							current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
 							compBuilder.add(current);
@@ -145,18 +154,20 @@ public interface IBooksUtils {
 							i = j;
 							break;
 						}
-						if(!isValidTag(tag))
+						if (!isValidTag(tag))
 							break;
 						current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
 						compBuilder.add(current);
 						curStr = new StringBuilder();
 						final String[] tagArgs = tag.split(":", 2);
-						if(isClickEvent(tagArgs[0])) {
+						if (isClickEvent(tagArgs[0]))
+						{
 							clickType = tagArgs[0];
 							clickValue = tagArgs[1];
 							compBuilder.setNextClickEvent(getClickEvent(clickType, clickValue));
 						}
-						else {
+						else
+						{
 							hoverType = tagArgs[0];
 							hoverValue = tagArgs[1];
 							compBuilder.setNextHoverEvent(getHoverEvent(hoverType, hoverValue));
@@ -164,13 +175,15 @@ public interface IBooksUtils {
 						i = j;
 						break;
 					}
-					else if(chars[j] == '&') {
+					else if (chars[j] == '&')
+					{
 						final StringBuilder specialCharSb = new StringBuilder();
 						int k;
-						for(k = j + 1; k < chars.length && chars[k] != ';'; k++)
+						for (k = j + 1; k < chars.length && chars[k] != ';'; k++)
 							specialCharSb.append(chars[k]);
 						Character specialChar = getEscapedChar(specialCharSb.toString());
-						if(specialChar != null) {
+						if (specialChar != null)
+						{
 							sb.append(specialChar);
 							j = k;
 							continue;
@@ -178,16 +191,18 @@ public interface IBooksUtils {
 					}
 					sb.append(chars[j]);
 				}
-				if(j == chars.length)
+				if (j == chars.length)
 					curStr.append(sb);
 			}
-			else if(chars[i] == '&') {
+			else if (chars[i] == '&')
+			{
 				final StringBuilder specialCharSb = new StringBuilder();
 				int k;
-				for(k = i + 1; k < chars.length && chars[k] != ';'; k++)
+				for (k = i + 1; k < chars.length && chars[k] != ';'; k++)
 					specialCharSb.append(chars[k]);
 				Character specialChar = getEscapedChar(specialCharSb.toString());
-				if(specialChar != null) {
+				if (specialChar != null)
+				{
 					curStr.append(specialChar);
 					i = k;
 					continue;
@@ -198,7 +213,8 @@ public interface IBooksUtils {
 				curStr.append(chars[i]);
 		}
 		
-		if(!curStr.toString().isEmpty()) {
+		if (!curStr.toString().isEmpty())
+		{
 			current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
 			compBuilder.add(current);
 		}
@@ -208,50 +224,52 @@ public interface IBooksUtils {
 	
 	static Character getEscapedChar(final String escapeCode)
 	{
-		switch(escapeCode) {
-		case "amp":
-			return '&';
-		case "lt":
-			return '<';
-		case "gt":
-			return '>';
+		switch (escapeCode)
+		{
+			case "amp":
+				return '&';
+			case "lt":
+				return '<';
+			case "gt":
+				return '>';
 		}
 		return null;
 	}
 	
 	static String setPlaceholders(final Player player, final String text, final boolean papi)
 	{
-		if(papi)
-			return PlaceholderAPI.setPlaceholders(player,  text);
+		if (papi)
+			return PlaceholderAPI.setPlaceholders(player, text);
 		else
 			return ChatColor.translateAlternateColorCodes('&', text);
 	}
 	
 	static ClickEvent getClickEvent(final String type, final String value)
 	{
-		if(type == null)
+		if (type == null)
 			return null;
 		
 		ClickEvent.Action action = null;
-		switch(type.toLowerCase()) {
-		case "link":
-		case "open url":
-		case "url":
-			action = ClickEvent.Action.OPEN_URL;
-			break;
-		case "run command":
-		case "command":
-		case "cmd":
-			action = ClickEvent.Action.RUN_COMMAND;
-			break;
-		case "suggest command":
-		case "suggest cmd":
-		case "suggest":
-			action = ClickEvent.Action.SUGGEST_COMMAND;
-			break;
-		case "change page":
-			action = ClickEvent.Action.CHANGE_PAGE;
-			break;
+		switch (type.toLowerCase())
+		{
+			case "link":
+			case "open url":
+			case "url":
+				action = ClickEvent.Action.OPEN_URL;
+				break;
+			case "run command":
+			case "command":
+			case "cmd":
+				action = ClickEvent.Action.RUN_COMMAND;
+				break;
+			case "suggest command":
+			case "suggest cmd":
+			case "suggest":
+				action = ClickEvent.Action.SUGGEST_COMMAND;
+				break;
+			case "change page":
+				action = ClickEvent.Action.CHANGE_PAGE;
+				break;
 		}
 		
 		return new ClickEvent(action, value);
@@ -259,45 +277,48 @@ public interface IBooksUtils {
 	
 	static HoverEvent getHoverEvent(final String type, final String value)
 	{
-		if(type == null)
+		if (type == null)
 			return null;
 		
 		HoverEvent.Action action = null;
-		switch(type.toLowerCase()) {
-		case "tooltip":
-		case "show text":
-			action = HoverEvent.Action.SHOW_TEXT;
-			break;
+		switch (type.toLowerCase())
+		{
+			case "tooltip":
+			case "show text":
+				action = HoverEvent.Action.SHOW_TEXT;
+				break;
 		}
 		return new HoverEvent(action, new ComponentBuilder(value).create());
 	}
 	
 	static boolean isValidTag(final String tag)
 	{
-		switch(tag.split(":", 2)[0].toLowerCase()) {
-		case "link":
-		case "open url":
-		case "url":
-		case "run command":
-		case "command":
-		case "cmd":
-		case "suggest command":
-		case "suggest cmd":
-		case "suggest":
-		case "change page":
-		case "tooltip":
-		case "show text":
-			return true;
+		switch (tag.split(":", 2)[0].toLowerCase())
+		{
+			case "link":
+			case "open url":
+			case "url":
+			case "run command":
+			case "command":
+			case "cmd":
+			case "suggest command":
+			case "suggest cmd":
+			case "suggest":
+			case "change page":
+			case "tooltip":
+			case "show text":
+				return true;
 		}
 		return false;
 	}
 	
 	static boolean isClickEvent(final String type)
 	{
-		switch(type.toLowerCase()) {
-		case "tooltip":
-		case "show text":
-			return false;
+		switch (type.toLowerCase())
+		{
+			case "tooltip":
+			case "show text":
+				return false;
 		}
 		return true;
 	}
@@ -305,7 +326,7 @@ public interface IBooksUtils {
 	static TextComponent[] convertListToArray(final List<TextComponent> list)
 	{
 		final TextComponent[] objects = new TextComponent[list.size()];
-		for(int i = 0; i < list.size(); i++)
+		for (int i = 0; i < list.size(); i++)
 			objects[i] = list.get(i);
 		return objects;
 	}
