@@ -12,7 +12,7 @@ final class BaseComponentSerializer {
 	static String toString(final BaseComponent... components)
 	{
 		final StringBuilder sb = new StringBuilder();
-		for(final BaseComponent component : components)
+		for (final BaseComponent component : components)
 			sb.append(toString(component));
 		return sb.toString();
 	}
@@ -41,11 +41,11 @@ final class BaseComponentSerializer {
 		sb.append(component.getColor());
 		
 		if (component.isBold())
-			sb.append( ChatColor.BOLD );
+			sb.append(ChatColor.BOLD);
 		if (component.isItalic())
-			sb.append( ChatColor.ITALIC );
+			sb.append(ChatColor.ITALIC);
 		if (component.isUnderlined())
-			sb.append( ChatColor.UNDERLINE);
+			sb.append(ChatColor.UNDERLINE);
 		if (component.isStrikethrough())
 			sb.append(ChatColor.STRIKETHROUGH);
 		if (component.isObfuscated())
@@ -57,7 +57,7 @@ final class BaseComponentSerializer {
 	private static String getClickEvent(final BaseComponent component)
 	{
 		final ClickEvent event = component.getClickEvent();
-		if(event == null)
+		if (event == null)
 			return "";
 		final String action = event.getAction().toString().replace("_", " ").toLowerCase();
 		final String value = event.getValue();
@@ -67,19 +67,20 @@ final class BaseComponentSerializer {
 	private static String getHoverEvent(final BaseComponent component)
 	{
 		final HoverEvent event = component.getHoverEvent();
-		if(event == null)
+		if (event == null)
 			return "";
 		final String action = event.getAction().toString().replace("_", " ").toLowerCase();
 		String value = null;
-		switch(event.getAction()) {
-		case SHOW_ACHIEVEMENT:
-			return "";
-		case SHOW_ENTITY:
-			return "";
-		case SHOW_ITEM:
-			return "";
-		case SHOW_TEXT:
-			value = toString(event.getValue());
+		switch (event.getAction())
+		{
+			case SHOW_ACHIEVEMENT:
+				return "";
+			case SHOW_ENTITY:
+				return "";
+			case SHOW_ITEM:
+				return "";
+			case SHOW_TEXT:
+				value = toString(event.getValue());
 		}
 		return "<" + action + ":" + value + ">";
 	}

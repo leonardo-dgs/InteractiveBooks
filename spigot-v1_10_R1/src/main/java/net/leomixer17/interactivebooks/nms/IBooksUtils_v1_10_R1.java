@@ -29,14 +29,17 @@ final class IBooksUtils_v1_10_R1 implements IBooksUtils {
 		bookMeta.setTitle(meta.getTitle());
 		bookMeta.setAuthor(meta.getAuthor());
 		bookMeta.setLore(meta.getLore());
-		if(IBooksUtils.hasPlaceholderAPISupport())
+		if (IBooksUtils.hasPlaceholderAPISupport())
 			IBooksUtils.replacePlaceholders(bookMeta, player);
 		else
 			IBooksUtils.replaceColorCodes(bookMeta);
 		List<IChatBaseComponent> pages = null;
-		try {
+		try
+		{
 			pages = (List<IChatBaseComponent>) CraftMetaBook.class.getDeclaredField("pages").get(bookMeta);
-		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+		{
 			e.printStackTrace();
 		}
 		pages.addAll(this.getPages(bookMeta, rawPages, player));
