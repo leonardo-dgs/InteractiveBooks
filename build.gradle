@@ -9,6 +9,7 @@ allprojects {
     version = '1.3.3-SNAPSHOT'
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+    compileJava.options.encoding = 'UTF-8'
     repositories {
         jcenter()
         mavenCentral()
