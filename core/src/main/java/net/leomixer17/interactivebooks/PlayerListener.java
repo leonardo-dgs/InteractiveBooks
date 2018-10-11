@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 public final class PlayerListener implements Listener {
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(final PlayerJoinEvent event)
     {
@@ -32,7 +32,7 @@ public final class PlayerListener implements Listener {
             });
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(final PlayerInteractEvent e)
     {
@@ -52,7 +52,7 @@ public final class PlayerListener implements Listener {
         bookItem.setAmount(IBooksUtils.getItemInMainHand(e.getPlayer()).getAmount());
         IBooksUtils.setItemInMainHand(e.getPlayer(), bookItem);
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event)
     {
@@ -71,9 +71,9 @@ public final class PlayerListener implements Listener {
             event.getPlayer().sendMessage("§cYou don't have permission to open this book.");
             return;
         }
-        
+
         iBook.open(event.getPlayer());
         event.setCancelled(true);
     }
-    
+
 }

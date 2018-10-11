@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public final class CommandIBooks implements CommandExecutor {
-    
+
     static final String helpMessage =
             "§6InteractiveBooks §7- §6Commands\n"
                     + "§e/ibooks list\n"
@@ -22,7 +22,7 @@ public final class CommandIBooks implements CommandExecutor {
                     // WIP: Book importing
                     // + "§e/ibooks import <book-id>\n"
                     + "§e/ibooks reload";
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
     {
@@ -36,7 +36,7 @@ public final class CommandIBooks implements CommandExecutor {
             sender.sendMessage(helpMessage);
             return false;
         }
-        
+
         switch (args[0])
         {
             case "list":
@@ -50,7 +50,7 @@ public final class CommandIBooks implements CommandExecutor {
                     sb.append("§6%book_id%§7, ".replace("%book_id%", book.getId()));
                 sender.sendMessage("§eBooks:\n" + (sb.toString().equals("") ? "" : sb.toString().substring(0, sb.toString().length() - 2)));
                 break;
-            
+
             case "open":
                 if (!sender.hasPermission("interactivebooks.command.open"))
                 {
@@ -90,7 +90,7 @@ public final class CommandIBooks implements CommandExecutor {
                 InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
                 sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
                 break;
-            
+
             case "get":
                 if (!sender.hasPermission("interactivebooks.command.get"))
                 {
@@ -117,7 +117,7 @@ public final class CommandIBooks implements CommandExecutor {
                 playerToGet.getInventory().addItem(InteractiveBooks.getBook(bookIdToGet).getItem(playerToGet));
                 sender.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGet));
                 break;
-            
+
             case "give":
                 if (!sender.hasPermission("interactivebooks.command.give"))
                 {
@@ -145,7 +145,7 @@ public final class CommandIBooks implements CommandExecutor {
                 sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", bookIdToGive).replace("%player%", args[2]));
                 playerToGive.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGive));
                 break;
-            
+
             case "create":
                 if (!sender.hasPermission("interactivebooks.command.create"))
                 {
@@ -162,7 +162,7 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cA book with that id already exists");
                     return false;
                 }
-                
+
                 final String bookId = args[1];
                 final String bookName = args[2];
                 final String bookTitle = args[3];
@@ -175,7 +175,7 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
                     return false;
                 }
-                
+
                 final IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
                 createdBook.save();
                 InteractiveBooks.registerBook(createdBook);
@@ -217,12 +217,12 @@ public final class CommandIBooks implements CommandExecutor {
                 Config.loadAll();
                 sender.sendMessage("§aConfig reloaded!");
                 break;
-            
+
             default:
                 sender.sendMessage(helpMessage);
         }
-        
+
         return false;
     }
-    
+
 }

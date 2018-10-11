@@ -4,16 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class NBTListCompound {
-    
+
     private NBTList owner;
     private Object compound;
-    
+
     protected NBTListCompound(NBTList parent, Object obj)
     {
         owner = parent;
         compound = obj;
     }
-    
+
     public void setString(String key, String value)
     {
         if (value == null)
@@ -31,7 +31,7 @@ public class NBTListCompound {
             ex.printStackTrace();
         }
     }
-    
+
     public void setInteger(String key, int value)
     {
         try
@@ -44,7 +44,7 @@ public class NBTListCompound {
             ex.printStackTrace();
         }
     }
-    
+
     public int getInteger(String value)
     {
         try
@@ -57,7 +57,7 @@ public class NBTListCompound {
         }
         return 0;
     }
-    
+
     public void setDouble(String key, double value)
     {
         try
@@ -70,7 +70,7 @@ public class NBTListCompound {
             ex.printStackTrace();
         }
     }
-    
+
     public double getDouble(String key)
     {
         try
@@ -83,8 +83,8 @@ public class NBTListCompound {
         }
         return 0;
     }
-    
-    
+
+
     public String getString(String key)
     {
         try
@@ -97,7 +97,7 @@ public class NBTListCompound {
         }
         return "";
     }
-    
+
     public boolean hasKey(String key)
     {
         try
@@ -110,7 +110,7 @@ public class NBTListCompound {
         }
         return false;
     }
-    
+
     @SuppressWarnings("unchecked")
     public Set<String> getKeys()
     {
@@ -124,7 +124,7 @@ public class NBTListCompound {
         }
         return new HashSet<>();
     }
-    
+
     public void remove(String key)
     {
         try
@@ -136,5 +136,5 @@ public class NBTListCompound {
             ex.printStackTrace();
         }
     }
-    
+
 }

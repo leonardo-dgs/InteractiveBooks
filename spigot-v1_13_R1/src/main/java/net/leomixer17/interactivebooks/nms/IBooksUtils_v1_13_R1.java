@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class IBooksUtils_v1_13_R1 implements IBooksUtils {
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public BookMeta getBookMeta(final BookMeta meta, final List<String> rawPages, final Player player)
@@ -40,10 +40,10 @@ final class IBooksUtils_v1_13_R1 implements IBooksUtils {
             e.printStackTrace();
         }
         pages.addAll(this.getPages(bookMeta, rawPages, player));
-        
+
         return bookMeta;
     }
-    
+
     @Override
     public List<IChatBaseComponent> getPages(final BookMeta meta, final List<String> rawPages, final Player player)
     {
@@ -51,7 +51,7 @@ final class IBooksUtils_v1_13_R1 implements IBooksUtils {
         rawPages.forEach(page -> pages.add(ChatSerializer.a(ComponentSerializer.toString(IBooksUtils.getPage(page, player)))));
         return pages;
     }
-    
+
     @Override
     public void openBook(final ItemStack book, final Player player)
     {
@@ -62,5 +62,5 @@ final class IBooksUtils_v1_13_R1 implements IBooksUtils {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
         player.getInventory().setItem(slot, old);
     }
-    
+
 }
