@@ -14,22 +14,22 @@ public enum MinecraftVersion {
     MC1_12_R1(1121),
     MC1_13_R1(1131),
     MC1_13_R2(1132);
-    
+
     private static MinecraftVersion version;
     private static Boolean hasGsonSupport;
-    
+
     private final int versionId;
-    
+
     MinecraftVersion(int versionId)
     {
         this.versionId = versionId;
     }
-    
+
     public int getVersionId()
     {
         return versionId;
     }
-    
+
     public static MinecraftVersion getVersion()
     {
         if (version != null)
@@ -47,7 +47,7 @@ public enum MinecraftVersion {
         }
         return version;
     }
-    
+
     public static boolean hasGsonSupport()
     {
         if (hasGsonSupport != null)
@@ -64,5 +64,5 @@ public enum MinecraftVersion {
         }
         return hasGsonSupport;
     }
-    
+
 }

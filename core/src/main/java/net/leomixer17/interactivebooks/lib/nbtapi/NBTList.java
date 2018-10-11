@@ -1,12 +1,12 @@
 package net.leomixer17.interactivebooks.lib.nbtapi;
 
 public class NBTList {
-    
+
     private String listName;
     private NBTCompound parent;
     private NBTType type;
     private Object listObject;
-    
+
     protected NBTList(NBTCompound owner, String name, NBTType type, Object list)
     {
         parent = owner;
@@ -18,12 +18,12 @@ public class NBTList {
             System.err.println("List types != String/Compound are currently not implemented!");
         }
     }
-    
+
     protected void save()
     {
         parent.set(listName, listObject);
     }
-    
+
     public NBTListCompound addCompound()
     {
         if (type != NBTType.NBTTagCompound)
@@ -43,7 +43,7 @@ public class NBTList {
         }
         return null;
     }
-    
+
     public NBTListCompound getCompound(int id)
     {
         if (type != NBTType.NBTTagCompound)
@@ -62,7 +62,7 @@ public class NBTList {
         }
         return null;
     }
-    
+
     public String getString(int i)
     {
         if (type != NBTType.NBTTagString)
@@ -80,7 +80,7 @@ public class NBTList {
         }
         return null;
     }
-    
+
     public void addString(String s)
     {
         if (type != NBTType.NBTTagString)
@@ -98,7 +98,7 @@ public class NBTList {
             ex.printStackTrace();
         }
     }
-    
+
     public void setString(int i, String s)
     {
         if (type != NBTType.NBTTagString)
@@ -116,7 +116,7 @@ public class NBTList {
             ex.printStackTrace();
         }
     }
-    
+
     public void remove(int i)
     {
         try
@@ -129,7 +129,7 @@ public class NBTList {
             ex.printStackTrace();
         }
     }
-    
+
     public int size()
     {
         try
@@ -142,10 +142,10 @@ public class NBTList {
         }
         return -1;
     }
-    
+
     public NBTType getType()
     {
         return type;
     }
-    
+
 }

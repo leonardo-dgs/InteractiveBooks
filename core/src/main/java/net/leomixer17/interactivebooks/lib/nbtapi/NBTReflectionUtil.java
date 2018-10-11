@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.Stack;
 
 public class NBTReflectionUtil {
-    
+
     public static Object getNMSEntity(Entity entity)
     {
         try
@@ -25,7 +25,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static Object readNBTFile(FileInputStream stream)
     {
         try
@@ -38,7 +38,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static Object saveNBTFile(Object nbt, FileOutputStream stream)
     {
         try
@@ -51,7 +51,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public static Object getItemRootNBTTagCompound(Object nmsitem)
     {
@@ -70,7 +70,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public static Object convertNBTCompoundtoNMSItem(NBTCompound nbtcompound)
     {
@@ -87,7 +87,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public static NBTContainer convertNMSItemtoNBTCompound(Object nmsitem)
     {
@@ -106,7 +106,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static Object getEntityNBTTagCompound(Object NMSEntity)
     {
         try
@@ -123,7 +123,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static Object setEntityNBTTag(Object NBTTag, Object NMSEntity)
     {
         try
@@ -137,7 +137,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static Object getTileEntityNBTTagCompound(BlockState tile)
     {
         try
@@ -158,7 +158,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static void setTileEntityNBTTagCompound(BlockState tile, Object comp)
     {
         try
@@ -174,8 +174,8 @@ public class NBTReflectionUtil {
             e.printStackTrace();
         }
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     public static Object getSubNBTTagCompound(Object compound, String name)
     {
@@ -194,7 +194,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static void addNBTTagCompound(NBTCompound comp, String name)
     {
         if (name == null)
@@ -223,7 +223,7 @@ public class NBTReflectionUtil {
         }
         return;
     }
-    
+
     public static Boolean valideCompound(NBTCompound comp)
     {
         Object root = comp.getCompound();
@@ -233,7 +233,7 @@ public class NBTReflectionUtil {
         }
         return (gettoCompount(root, comp)) != null;
     }
-    
+
     static Object gettoCompount(Object nbttag, NBTCompound comp)
     {
         Stack<String> structure = new Stack<>();
@@ -252,7 +252,7 @@ public class NBTReflectionUtil {
         }
         return nbttag;
     }
-    
+
     public static void addOtherNBTCompound(NBTCompound comp, NBTCompound nbtcompound)
     {
         Object rootnbttag = comp.getCompound();
@@ -272,7 +272,7 @@ public class NBTReflectionUtil {
             ex.printStackTrace();
         }
     }
-    
+
     public static String getContent(NBTCompound comp, String key)
     {
         Object rootnbttag = comp.getCompound();
@@ -294,7 +294,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static void set(NBTCompound comp, String key, Object val)
     {
         if (val == null)
@@ -325,7 +325,7 @@ public class NBTReflectionUtil {
             ex.printStackTrace();
         }
     }
-    
+
     public static NBTList getList(NBTCompound comp, String key, NBTType type)
     {
         Object rootnbttag = comp.getCompound();
@@ -347,7 +347,7 @@ public class NBTReflectionUtil {
         }
         return null;
     }
-    
+
     public static void setObject(NBTCompound comp, String key, Object value)
     {
         if (!MinecraftVersion.hasGsonSupport()) return;
@@ -361,7 +361,7 @@ public class NBTReflectionUtil {
             ex.printStackTrace();
         }
     }
-    
+
     public static <T> T getObject(NBTCompound comp, String key, Class<T> type)
     {
         if (!MinecraftVersion.hasGsonSupport()) return null;
@@ -372,7 +372,7 @@ public class NBTReflectionUtil {
         }
         return GsonWrapper.deserializeJson(json, type);
     }
-    
+
     public static void remove(NBTCompound comp, String key)
     {
         Object rootnbttag = comp.getCompound();
@@ -385,7 +385,7 @@ public class NBTReflectionUtil {
         ReflectionMethod.COMPOUND_REMOVE_KEY.run(workingtag, key);
         comp.setCompound(rootnbttag);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Set<String> getKeys(NBTCompound comp)
     {
@@ -398,7 +398,7 @@ public class NBTReflectionUtil {
         Object workingtag = gettoCompount(rootnbttag, comp);
         return (Set<String>) ReflectionMethod.COMPOUND_GET_KEYS.run(workingtag);
     }
-    
+
     public static void setData(NBTCompound comp, ReflectionMethod type, String key, Object data)
     {
         if (data == null)
@@ -416,7 +416,7 @@ public class NBTReflectionUtil {
         type.run(workingtag, key, data);
         comp.setCompound(rootnbttag);
     }
-    
+
     public static Object getData(NBTCompound comp, ReflectionMethod type, String key)
     {
         Object rootnbttag = comp.getCompound();
@@ -428,5 +428,5 @@ public class NBTReflectionUtil {
         Object workingtag = gettoCompount(rootnbttag, comp);
         return type.run(workingtag, key);
     }
-    
+
 }
