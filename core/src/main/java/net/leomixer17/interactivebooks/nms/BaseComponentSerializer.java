@@ -8,7 +8,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import java.util.List;
 
 final class BaseComponentSerializer {
-    
+
     static String toString(final BaseComponent... components)
     {
         final StringBuilder sb = new StringBuilder();
@@ -16,14 +16,14 @@ final class BaseComponentSerializer {
             sb.append(toString(component));
         return sb.toString();
     }
-    
+
     static String toString(final List<BaseComponent> components)
     {
         final StringBuilder sb = new StringBuilder();
         components.forEach(component -> sb.append(toString(component)));
         return sb.toString();
     }
-    
+
     static String toString(final BaseComponent component)
     {
         final StringBuilder sb = new StringBuilder();
@@ -33,13 +33,13 @@ final class BaseComponentSerializer {
         sb.append("<reset>");
         return sb.toString();
     }
-    
+
     private static String getColorAndFormatting(final BaseComponent component)
     {
         final StringBuilder sb = new StringBuilder();
-        
+
         sb.append(component.getColor());
-        
+
         if (component.isBold())
             sb.append(ChatColor.BOLD);
         if (component.isItalic())
@@ -50,10 +50,10 @@ final class BaseComponentSerializer {
             sb.append(ChatColor.STRIKETHROUGH);
         if (component.isObfuscated())
             sb.append(ChatColor.MAGIC);
-        
+
         return sb.toString();
     }
-    
+
     private static String getClickEvent(final BaseComponent component)
     {
         final ClickEvent event = component.getClickEvent();
@@ -63,7 +63,7 @@ final class BaseComponentSerializer {
         final String value = event.getValue();
         return "<" + action + ":" + value + ">";
     }
-    
+
     private static String getHoverEvent(final BaseComponent component)
     {
         final HoverEvent event = component.getHoverEvent();
@@ -84,5 +84,5 @@ final class BaseComponentSerializer {
         }
         return "<" + action + ":" + value + ">";
     }
-    
+
 }

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IBooksUtils {
-    
+
     String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-    
+
     static IBooksUtils setupIBooksUtils()
     {
         try
@@ -30,16 +30,16 @@ public interface IBooksUtils {
             return null;
         }
     }
-    
+
     void openBook(final ItemStack book, final Player player);
-    
+
     BookMeta getBookMeta(final BookMeta meta, final List<String> rawPages, final Player player);
-    
+
     static boolean hasPlaceholderAPISupport()
     {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") instanceof PlaceholderAPIPlugin;
     }
-    
+
     static void replacePlaceholders(final BookMeta meta, final Player player)
     {
         meta.setDisplayName(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getDisplayName()));
@@ -47,7 +47,7 @@ public interface IBooksUtils {
         meta.setAuthor(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getAuthor()));
         meta.setLore(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getLore()));
     }
-    
+
     static void replaceColorCodes(final BookMeta meta)
     {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
@@ -56,17 +56,17 @@ public interface IBooksUtils {
         for (int i = 0; i < meta.getLore().size(); i++)
             meta.getLore().set(i, ChatColor.translateAlternateColorCodes('&', meta.getLore().get(i)));
     }
-    
+
     static boolean hasBookGenerationSupport()
     {
         return !version.equals("v1_8_R2") && !version.equals("v1_8_R3") && !version.equals("v1_9_R1") && !version.equals("v1_9_R2");
     }
-    
+
     static Generation getBookGeneration(final String generation)
     {
         return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
     }
-    
+
     @SuppressWarnings("deprecation")
     static ItemStack getItemInMainHand(final Player player)
     {
@@ -74,7 +74,7 @@ public interface IBooksUtils {
             return player.getInventory().getItemInHand();
         return player.getInventory().getItemInMainHand();
     }
-    
+
     @SuppressWarnings("deprecation")
     static void setItemInMainHand(final Player player, final ItemStack item)
     {
@@ -85,7 +85,7 @@ public interface IBooksUtils {
         }
         player.getInventory().setItemInMainHand(item);
     }
-    
+
     static List<String> getPages(final BookMeta meta)
     {
         final List<String> plainPages = new ArrayList<>();
@@ -93,7 +93,7 @@ public interface IBooksUtils {
         components.forEach(component -> plainPages.add(getPage(component)));
         return plainPages;
     }
-    
+
     static String getPage(final BaseComponent[] components)
     {
         final StringBuilder sb = new StringBuilder();
@@ -101,9 +101,9 @@ public interface IBooksUtils {
             sb.append(BaseComponentSerializer.toString(component));
         return sb.toString();
     }
-    
+
     List<?> getPages(final BookMeta meta, final List<String> rawPages, final Player player);
-    
+
     static TextComponent[] getPage(final String page, final Player player)
     {
         final String[] plainRows = page.split("\n");
@@ -112,21 +112,21 @@ public interface IBooksUtils {
             compBuilder.add(parseRow(plainRows[i] + (i < plainRows.length - 1 ? "\n" : ""), player));
         return convertListToArray(compBuilder.getComponents());
     }
-    
+
     static TextComponentBuilder parseRow(String plainRow, final Player player)
     {
         final boolean papiSupport = hasPlaceholderAPISupport();
-        
+
         plainRow = plainRow.replace("<br>", "\n");
-        
+
         final TextComponentBuilder compBuilder = new TextComponentBuilder();
         final char[] chars = plainRow.toCharArray();
-        
+
         String clickType = null;
         String hoverType = null;
         String clickValue = null;
         String hoverValue = null;
-        
+
         TextComponent current = new TextComponent();
         StringBuilder curStr = new StringBuilder();
         for (int i = 0; i < chars.length; i++)
@@ -147,7 +147,7 @@ public interface IBooksUtils {
                             current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
                             compBuilder.add(current);
                             curStr = new StringBuilder();
-                            
+
                             clickType = hoverType = clickValue = hoverValue = null;
                             compBuilder.setNextClickEvent(null);
                             compBuilder.setNextHoverEvent(null);
@@ -212,16 +212,16 @@ public interface IBooksUtils {
             else
                 curStr.append(chars[i]);
         }
-        
+
         if (!curStr.toString().isEmpty())
         {
             current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
             compBuilder.add(current);
         }
-        
+
         return compBuilder;
     }
-    
+
     static Character getEscapedChar(final String escapeCode)
     {
         switch (escapeCode)
@@ -235,7 +235,7 @@ public interface IBooksUtils {
         }
         return null;
     }
-    
+
     static String setPlaceholders(final Player player, final String text, final boolean papi)
     {
         if (papi)
@@ -243,12 +243,12 @@ public interface IBooksUtils {
         else
             return ChatColor.translateAlternateColorCodes('&', text);
     }
-    
+
     static ClickEvent getClickEvent(final String type, final String value)
     {
         if (type == null)
             return null;
-        
+
         ClickEvent.Action action = null;
         switch (type.toLowerCase())
         {
@@ -271,15 +271,15 @@ public interface IBooksUtils {
                 action = ClickEvent.Action.CHANGE_PAGE;
                 break;
         }
-        
+
         return new ClickEvent(action, value);
     }
-    
+
     static HoverEvent getHoverEvent(final String type, final String value)
     {
         if (type == null)
             return null;
-        
+
         HoverEvent.Action action = null;
         switch (type.toLowerCase())
         {
@@ -290,7 +290,7 @@ public interface IBooksUtils {
         }
         return new HoverEvent(action, new ComponentBuilder(value).create());
     }
-    
+
     static boolean isValidTag(final String tag)
     {
         switch (tag.split(":", 2)[0].toLowerCase())
@@ -311,7 +311,7 @@ public interface IBooksUtils {
         }
         return false;
     }
-    
+
     static boolean isClickEvent(final String type)
     {
         switch (type.toLowerCase())
@@ -322,7 +322,7 @@ public interface IBooksUtils {
         }
         return true;
     }
-    
+
     static TextComponent[] convertListToArray(final List<TextComponent> list)
     {
         final TextComponent[] objects = new TextComponent[list.size()];
@@ -330,5 +330,5 @@ public interface IBooksUtils {
             objects[i] = list.get(i);
         return objects;
     }
-    
+
 }

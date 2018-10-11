@@ -18,10 +18,10 @@ public enum ClassWrapper {
     NMS_WORLD("net.minecraft.server.", ".WorldServer"),
     NMS_ENTITY("net.minecraft.server.", ".Entity"),
     ;
-    
-    
+
+
     private Class<?> clazz;
-    
+
     ClassWrapper(String pre, String suffix)
     {
         try
@@ -34,10 +34,10 @@ public enum ClassWrapper {
             ex.printStackTrace();
         }
     }
-    
+
     public Class<?> getClazz()
     {
         return clazz;
     }
-    
+
 }

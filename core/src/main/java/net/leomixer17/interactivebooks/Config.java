@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 final class Config {
-    
+
     static final void loadAll()
     {
         InteractiveBooks.getPlugin().saveDefaultConfig();
@@ -26,7 +26,7 @@ final class Config {
         }
         loadBookConfigs();
     }
-    
+
     static final void loadBookConfigs()
     {
         InteractiveBooks.getBooks().keySet().forEach(id -> InteractiveBooks.unregisterBook(id));
