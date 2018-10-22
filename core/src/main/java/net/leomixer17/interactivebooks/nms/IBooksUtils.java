@@ -164,13 +164,13 @@ public interface IBooksUtils {
                         {
                             clickType = tagArgs[0];
                             clickValue = tagArgs[1];
-                            compBuilder.setNextClickEvent(getClickEvent(clickType, clickValue));
+                            compBuilder.setNextClickEvent(getClickEvent(clickType, setPlaceholders(player, clickValue, papiSupport)));
                         }
                         else
                         {
                             hoverType = tagArgs[0];
                             hoverValue = tagArgs[1];
-                            compBuilder.setNextHoverEvent(getHoverEvent(hoverType, hoverValue));
+                            compBuilder.setNextHoverEvent(getHoverEvent(hoverType, setPlaceholders(player, hoverValue, papiSupport)));
                         }
                         i = j;
                         break;
