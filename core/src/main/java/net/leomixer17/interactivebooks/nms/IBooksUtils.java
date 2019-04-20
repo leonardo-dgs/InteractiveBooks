@@ -148,7 +148,6 @@ public interface IBooksUtils {
                             compBuilder.add(current);
                             curStr = new StringBuilder();
 
-                            clickType = hoverType = clickValue = hoverValue = null;
                             compBuilder.setNextClickEvent(null);
                             compBuilder.setNextHoverEvent(null);
                             i = j;
