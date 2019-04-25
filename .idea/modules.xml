@@ -2,7 +2,40 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/InteractiveBooks.iml" filepath="$PROJECT_DIR$/.idea/modules/InteractiveBooks.iml" group="InteractiveBooks" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/InteractiveBooks_main.iml" filepath="$PROJECT_DIR$/.idea/modules/InteractiveBooks_main.iml" group="InteractiveBooks" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/InteractiveBooks_test.iml" filepath="$PROJECT_DIR$/.idea/modules/InteractiveBooks_test.iml" group="InteractiveBooks" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Plugin InteractiveBooks.iml" filepath="$PROJECT_DIR$/.idea/Plugin InteractiveBooks.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" group="InteractiveBooks/core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_main.iml" group="InteractiveBooks/core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_test.iml" group="InteractiveBooks/core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1.iml" group="InteractiveBooks/spigot-v1_10_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1_main.iml" group="InteractiveBooks/spigot-v1_10_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_10_R1/spigot-v1_10_R1_test.iml" group="InteractiveBooks/spigot-v1_10_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1.iml" group="InteractiveBooks/spigot-v1_11_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1_main.iml" group="InteractiveBooks/spigot-v1_11_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_11_R1/spigot-v1_11_R1_test.iml" group="InteractiveBooks/spigot-v1_11_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1.iml" group="InteractiveBooks/spigot-v1_12_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1_main.iml" group="InteractiveBooks/spigot-v1_12_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_12_R1/spigot-v1_12_R1_test.iml" group="InteractiveBooks/spigot-v1_12_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1.iml" group="InteractiveBooks/spigot-v1_13_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1_main.iml" group="InteractiveBooks/spigot-v1_13_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R1/spigot-v1_13_R1_test.iml" group="InteractiveBooks/spigot-v1_13_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2.iml" group="InteractiveBooks/spigot-v1_13_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2_main.iml" group="InteractiveBooks/spigot-v1_13_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_13_R2/spigot-v1_13_R2_test.iml" group="InteractiveBooks/spigot-v1_13_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2.iml" group="InteractiveBooks/spigot-v1_8_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2_main.iml" group="InteractiveBooks/spigot-v1_8_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R2/spigot-v1_8_R2_test.iml" group="InteractiveBooks/spigot-v1_8_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3.iml" group="InteractiveBooks/spigot-v1_8_R3" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3_main.iml" group="InteractiveBooks/spigot-v1_8_R3" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_8_R3/spigot-v1_8_R3_test.iml" group="InteractiveBooks/spigot-v1_8_R3" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1.iml" group="InteractiveBooks/spigot-v1_9_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1_main.iml" group="InteractiveBooks/spigot-v1_9_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R1/spigot-v1_9_R1_test.iml" group="InteractiveBooks/spigot-v1_9_R1" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2.iml" group="InteractiveBooks/spigot-v1_9_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2_main.iml" group="InteractiveBooks/spigot-v1_9_R2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot-v1_9_R2/spigot-v1_9_R2_test.iml" group="InteractiveBooks/spigot-v1_9_R2" />
     </modules>
   </component>
 </project>

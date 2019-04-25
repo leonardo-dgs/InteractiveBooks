@@ -1,16 +1,23 @@
-/target
-/.gradle/
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+out/
+bin/
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Gradle
+.gradle/
 build/
 */build/
-out/
-/bin/
-
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/dictionaries
-.idea/**/inspectionProfiles
-.idea/**/deployment.xml
-
-*.iml
-.idea/**/libraries
-.idea/**/modules

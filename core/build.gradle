@@ -1,12 +1,25 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.9.2'
 }
 
-processResources {
-    filter ReplaceTokens, tokens: [
-            "version": project.property("version")
-    ]
+dependencies {
+    compileOnly 'net.md-5:bungeecord-chat:1.13-SNAPSHOT'
+    compile 'com.github.Leomixer17.PluginLib:bukkit:-SNAPSHOT'
+}
+
+tasks.jar.enabled = false
+
+tasks.shadowJar {
+    archiveFileName = 'InteractiveBooks-Core.jar'
+    minimize()
+    relocate 'net.leomixer17.pluginlib', 'net.leomixer17.interactivebooks'
+}
+
+artifacts {
+    archives shadowJar
+}
+
+configurations.all {
+    transitive = false
 }
