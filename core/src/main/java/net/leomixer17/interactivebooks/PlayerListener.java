@@ -1,7 +1,7 @@
 package net.leomixer17.interactivebooks;
 
-import net.leomixer17.interactivebooks.lib.nbtapi.NBTItem;
 import net.leomixer17.interactivebooks.nms.IBooksUtils;
+import net.leomixer17.pluginlib.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
