@@ -55,12 +55,7 @@ final class IBooksUtils_v1_14_R1 implements IBooksUtils {
     @Override
     public void openBook(final ItemStack book, final Player player)
     {
-        final int slot = player.getInventory().getHeldItemSlot();
-        final ItemStack old = player.getInventory().getItem(slot);
-        player.getInventory().setItem(slot, book);
-        final PacketPlayOutCustomPayload packet = new PacketPlayOutCustomPayload(MinecraftKey.a("minecraft:book_open"), new PacketDataSerializer(Unpooled.buffer()).a(EnumHand.MAIN_HAND));
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-        player.getInventory().setItem(slot, old);
+        player.openBook(book);
     }
 
 }
