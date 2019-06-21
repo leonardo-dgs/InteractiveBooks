@@ -1,9 +1,10 @@
 package net.leomixer17.interactivebooks.nms;
 
-import io.netty.buffer.Unpooled;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_14_R1.EnumHand;
+import net.minecraft.server.v1_14_R1.IChatBaseComponent;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_14_R1.PacketPlayOutOpenBook;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftMetaBook;
@@ -47,7 +48,7 @@ final class IBooksUtils_v1_14_R1 implements IBooksUtils {
     @Override
     public List<IChatBaseComponent> getPages(final BookMeta meta, final List<String> rawPages, final Player player)
     {
-        final List<IChatBaseComponent> pages = new ArrayList<IChatBaseComponent>();
+        final List<IChatBaseComponent> pages = new ArrayList<>();
         rawPages.forEach(page -> pages.add(ChatSerializer.a(ComponentSerializer.toString(IBooksUtils.getPage(page, player)))));
         return pages;
     }
@@ -58,7 +59,7 @@ final class IBooksUtils_v1_14_R1 implements IBooksUtils {
         final int slot = player.getInventory().getHeldItemSlot();
         final ItemStack old = player.getInventory().getItem(slot);
         player.getInventory().setItem(slot, book);
-        final PacketPlayOutCustomPayload packet = new PacketPlayOutCustomPayload(MinecraftKey.a("minecraft:book_open"), new PacketDataSerializer(Unpooled.buffer()).a(EnumHand.MAIN_HAND));
+        final PacketPlayOutOpenBook packet = new PacketPlayOutOpenBook(EnumHand.MAIN_HAND);
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
         player.getInventory().setItem(slot, old);
     }
