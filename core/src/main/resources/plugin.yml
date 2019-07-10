@@ -1,7 +1,7 @@
 name: InteractiveBooks
 main: net.leomixer17.interactivebooks.InteractiveBooks
 version: @version@
-api-version: 1.14
+api-version: 1.13
 description: @description@
 softdepend: [PlaceholderAPI]
 commands:
