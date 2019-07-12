@@ -1,3 +1,5 @@
 update_books_on_use: true
+open_book_on_join: ''
+open_book_on_first_join: ''
 books_on_join: []
 books_on_first_join: []
