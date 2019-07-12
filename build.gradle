@@ -8,7 +8,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'
     group = 'net.leomixer17'
-    version = '1.3.6'
+    version = '1.3.7'
     description = 'Create cool interactive books!'
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

@@ -19,6 +19,9 @@ public final class PlayerListener implements Listener {
     {
         if (event.getPlayer().hasPlayedBefore())
         {
+            final String openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_join");
+            if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
+                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
             InteractiveBooks.getPlugin().getConfig().getStringList("books_on_join").forEach(id -> {
                 if (InteractiveBooks.getBook(id) != null)
                     event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
@@ -26,6 +29,9 @@ public final class PlayerListener implements Listener {
         }
         else
         {
+            final String openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_first_join");
+            if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
+                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
             InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join").forEach(id -> {
                 if (InteractiveBooks.getBook(id) != null)
                     event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
