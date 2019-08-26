@@ -1,6 +1,7 @@
 package net.leomixer17.interactivebooks;
 
 import net.leomixer17.interactivebooks.nms.IBooksUtils;
+import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +28,7 @@ public final class InteractiveBooks extends JavaPlugin {
         }
         this.getCommand("ibooks").setExecutor(new CommandIBooks());
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        new MetricsLite(this);
     }
 
     @Override
