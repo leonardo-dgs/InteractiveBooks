@@ -12,31 +12,32 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public final class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(final PlayerJoinEvent event)
     {
+        String openBookId;
+        List<String> booksToGiveIds;
         if (event.getPlayer().hasPlayedBefore())
         {
-            final String openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_join");
-            if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
-                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
-            InteractiveBooks.getPlugin().getConfig().getStringList("books_on_join").forEach(id -> {
-                if (InteractiveBooks.getBook(id) != null)
-                    event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
-            });
+            openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_join");
+            booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_join");
         }
         else
         {
-            final String openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_first_join");
-            if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
-                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
-            InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join").forEach(id -> {
-                if (InteractiveBooks.getBook(id) != null)
-                    event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
-            });
+            openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_first_join");
+            booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join");
         }
+        if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
+            InteractiveBooks.getBook(openBookId).open(event.getPlayer());
+        booksToGiveIds.forEach(id ->
+        {
+            if (InteractiveBooks.getBook(id) != null)
+                event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
+        });
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
