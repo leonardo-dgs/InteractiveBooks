@@ -62,6 +62,11 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cUsage: §7/ibooks open <book-id> [player]");
                     return false;
                 }
+                if (args.length == 2 && !(sender instanceof Player))
+                {
+                    sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
+                    return false;
+                }
                 final Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
                 final String bookIdToOpen = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToOpen) == null)
@@ -69,26 +74,14 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cThat book doesn't exists.");
                     return false;
                 }
-                if (args.length == 2)
-                {
-                    if (sender instanceof Player)
-                    {
-                        InteractiveBooks.getBook(bookIdToOpen).open((Player) sender);
-                        return false;
-                    }
-                    else
-                    {
-                        sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
-                        return false;
-                    }
-                }
                 if (playerToOpen == null)
                 {
                     sender.sendMessage("§cThat player isn't connected.");
                     return false;
                 }
                 InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
-                sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
+                if(!playerToOpen.equals(sender))
+                    sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
                 break;
 
             case "get":
