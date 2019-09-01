@@ -36,7 +36,9 @@ public final class PlayerListener implements Listener {
         booksToGiveIds.forEach(id ->
         {
             if (InteractiveBooks.getBook(id) != null)
+            {
                 event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
+            }
         });
     }
 
