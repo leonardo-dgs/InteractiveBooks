@@ -2,6 +2,8 @@ package net.leomixer17.interactivebooks;
 
 import net.leomixer17.interactivebooks.nms.IBooksUtils;
 import net.leomixer17.pluginlib.nbt.NBTItem;
+import net.leomixer17.pluginlib.reflect.MinecraftVersion;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +34,20 @@ public final class PlayerListener implements Listener {
             booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join");
         }
         if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
-            InteractiveBooks.getBook(openBookId).open(event.getPlayer());
+        {
+            if (MinecraftVersion.getVersion().getVersionId() < 1141)
+            {
+                Bukkit.getScheduler().runTask(InteractiveBooks.getPlugin(), () ->
+                {
+                    InteractiveBooks.getBook(openBookId).open(event.getPlayer());
+                });
+            }
+            else
+            {
+                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
+            }
+        }
+
         booksToGiveIds.forEach(id ->
         {
             if (InteractiveBooks.getBook(id) != null)
