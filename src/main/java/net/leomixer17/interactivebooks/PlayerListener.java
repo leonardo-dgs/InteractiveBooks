@@ -35,7 +35,7 @@ public final class PlayerListener implements Listener {
         }
         if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
         {
-            if (MinecraftVersion.getVersion().getVersionId() < 1141)
+            if (MinecraftVersion.getVersion().getId() < 1141)
             {
                 Bukkit.getScheduler().runTask(InteractiveBooks.getPlugin(), () ->
                 {

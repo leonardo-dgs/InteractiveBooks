@@ -30,7 +30,7 @@ public final class IBooksUtils {
 
     public static void openBook(final ItemStack book, final Player player)
     {
-        if (MinecraftVersion.getVersion().getVersionId() > MinecraftVersion.v1_14_R1.getVersionId())
+        if (MinecraftVersion.getVersion().getId() > MinecraftVersion.v1_14_R1.getId())
         {
             player.openBook(book);
             return;
@@ -138,7 +138,7 @@ public final class IBooksUtils {
 
     public static boolean hasBookGenerationSupport()
     {
-        return !version.equals("v1_8_R2") && !version.equals("v1_8_R3") && !version.equals("v1_9_R1") && !version.equals("v1_9_R2");
+        return MinecraftVersion.getVersion().getId() >= MinecraftVersion.v1_10_R1.getId();
     }
 
     public static Generation getBookGeneration(final String generation)
