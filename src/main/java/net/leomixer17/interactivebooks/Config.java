@@ -5,19 +5,21 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 
 final class Config {
 
-    static final void loadAll()
+    static void loadAll()
     {
         InteractiveBooks.getPlugin().saveDefaultConfig();
         final File f = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
         if (!f.exists())
         {
-            f.mkdirs();
             try
             {
-                Files.copy(InteractiveBooks.getPlugin().getResource("resources/examplebook.yml"), new File(f, "resources/examplebook.yml").toPath());
+                if(!f.mkdirs())
+                    throw new IOException();
+                Files.copy(Objects.requireNonNull(InteractiveBooks.getPlugin().getResource("examplebook.yml")), new File(f, "examplebook.yml").toPath());
             }
             catch (IOException e)
             {
@@ -27,11 +29,11 @@ final class Config {
         loadBookConfigs();
     }
 
-    static final void loadBookConfigs()
+    private static void loadBookConfigs()
     {
-        InteractiveBooks.getBooks().keySet().forEach(id -> InteractiveBooks.unregisterBook(id));
+        InteractiveBooks.getBooks().keySet().forEach(InteractiveBooks::unregisterBook);
         final File booksFolder = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
-        for (final File f : booksFolder.listFiles())
+        for (final File f : Objects.requireNonNull(booksFolder.listFiles()))
             if (f.getName().endsWith(".yml"))
                 InteractiveBooks.registerBook(new IBook(f.getName().substring(0, f.getName().length() - 4), YamlConfiguration.loadConfiguration(f)));
     }
