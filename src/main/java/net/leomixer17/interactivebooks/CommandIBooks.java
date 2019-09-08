@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public final class CommandIBooks implements CommandExecutor {
 
-    static final String helpMessage =
+    private static final String helpMessage =
             "§6InteractiveBooks §7- §6Commands\n"
                     + "§e/ibooks list\n"
                     + "§e/ibooks open <book-id> [player]\n"
@@ -26,11 +26,6 @@ public final class CommandIBooks implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
     {
-        if (!sender.hasPermission("interactivebooks.command"))
-        {
-            sender.sendMessage("§4You don't have permission to access to this command.");
-            return false;
-        }
         if (args.length == 0)
         {
             sender.sendMessage(helpMessage);
