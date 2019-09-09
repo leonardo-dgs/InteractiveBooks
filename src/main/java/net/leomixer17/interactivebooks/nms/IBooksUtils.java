@@ -64,6 +64,9 @@ public final class IBooksUtils {
                     packet = packetConstructor.newInstance(minecraftKey, packetDataSerializer);
                     break;
 
+                case "v1_12_R1":
+                case "v1_11_R1":
+                case "v1_10_R1":
                 case "v1_9_R2":
                 case "v1_9_R1":
                     enumHand = BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
@@ -217,12 +220,12 @@ public final class IBooksUtils {
         final TextComponentBuilder compBuilder = new TextComponentBuilder();
         final char[] chars = plainRow.toCharArray();
 
-        String clickType = null;
-        String hoverType = null;
-        String clickValue = null;
-        String hoverValue = null;
+        String clickType;
+        String hoverType;
+        String clickValue;
+        String hoverValue;
 
-        TextComponent current = new TextComponent();
+        TextComponent current;
         StringBuilder curStr = new StringBuilder();
         for (int i = 0; i < chars.length; i++)
         {
