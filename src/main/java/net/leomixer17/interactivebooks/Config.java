@@ -11,13 +11,14 @@ final class Config {
 
     static void loadAll()
     {
-        InteractiveBooks.getPlugin().saveDefaultConfig();
+        InteractiveBooks.getPlugin().getConfig().options().copyDefaults(true);
+        InteractiveBooks.getPlugin().reloadConfig();
         final File f = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
         if (!f.exists())
         {
             try
             {
-                if(!f.mkdirs())
+                if (!f.mkdirs())
                     throw new IOException();
                 Files.copy(Objects.requireNonNull(InteractiveBooks.getPlugin().getResource("examplebook.yml")), new File(f, "examplebook.yml").toPath());
             }
