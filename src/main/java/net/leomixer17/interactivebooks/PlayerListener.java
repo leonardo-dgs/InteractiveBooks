@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class PlayerListener implements Listener {
 
@@ -33,14 +34,11 @@ public final class PlayerListener implements Listener {
             openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_first_join");
             booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join");
         }
-        if (!openBookId.equals("") && InteractiveBooks.getBook(openBookId) != null)
+        if (!Objects.equals(openBookId, "") && InteractiveBooks.getBook(openBookId) != null)
         {
             if (MinecraftVersion.getVersion().getId() < 1141)
             {
-                Bukkit.getScheduler().runTask(InteractiveBooks.getPlugin(), () ->
-                {
-                    InteractiveBooks.getBook(openBookId).open(event.getPlayer());
-                });
+                Bukkit.getScheduler().runTask(InteractiveBooks.getPlugin(), () -> InteractiveBooks.getBook(openBookId).open(event.getPlayer()));
             }
             else
             {
@@ -90,13 +88,11 @@ public final class PlayerListener implements Listener {
             }
         if (iBook == null)
             return;
-        if (!event.getPlayer().hasPermission("interactivebooks.open." + iBook.getId()))
-        {
+        if (event.getPlayer().hasPermission("interactivebooks.open." + iBook.getId()))
+            iBook.open(event.getPlayer());
+        else
             event.getPlayer().sendMessage("§cYou don't have permission to open this book.");
-            return;
-        }
 
-        iBook.open(event.getPlayer());
         event.setCancelled(true);
     }
 
