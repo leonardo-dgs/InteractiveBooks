@@ -11,7 +11,7 @@ final class Config {
 
     static void loadAll()
     {
-        InteractiveBooks.getPlugin().getConfig().options().copyDefaults(true);
+        InteractiveBooks.getPlugin().saveDefaultConfig();
         InteractiveBooks.getPlugin().reloadConfig();
         final File f = new File(InteractiveBooks.getPlugin().getDataFolder(), "books");
         if (!f.exists())
