@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'net.leomixer17'
-version = '1.4.3'
+version = '1.4.4'
 description = 'Create cool interactive books!'
 
 sourceCompatibility = 1.8
