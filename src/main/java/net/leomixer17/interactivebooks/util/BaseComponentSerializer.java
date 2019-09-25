@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks.nms;
+package net.leomixer17.interactivebooks.util;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -9,7 +9,7 @@ import java.util.List;
 
 final class BaseComponentSerializer {
 
-    static String toString(final BaseComponent... components)
+    private static String toString(final BaseComponent... components)
     {
         final StringBuilder sb = new StringBuilder();
         for (final BaseComponent component : components)
@@ -26,12 +26,11 @@ final class BaseComponentSerializer {
 
     static String toString(final BaseComponent component)
     {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(getClickEvent(component));
-        sb.append(getHoverEvent(component));
-        sb.append(getColorAndFormatting(component) + component.toPlainText());
-        sb.append("<reset>");
-        return sb.toString();
+        String sb = getClickEvent(component) +
+                getHoverEvent(component) +
+                getColorAndFormatting(component) + component.toPlainText() +
+                "<reset>";
+        return sb;
     }
 
     private static String getColorAndFormatting(final BaseComponent component)

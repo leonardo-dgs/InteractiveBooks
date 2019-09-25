@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks.nms;
+package net.leomixer17.interactivebooks.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -6,7 +6,10 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import net.leomixer17.pluginlib.reflect.BukkitReflection;
 import net.leomixer17.pluginlib.reflect.MinecraftVersion;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,12 +26,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class IBooksUtils {
+public final class BooksUtils {
 
     private static String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
-    public static void openBook(final ItemStack book, final Player player)
+    public static void openBook(ItemStack book, Player player)
     {
         if (MinecraftVersion.getVersion().getId() > MinecraftVersion.v1_14_R1.getId())
         {
@@ -93,18 +99,18 @@ public final class IBooksUtils {
         player.getInventory().setItem(slot, old);
     }
 
-    public static BookMeta getBookMeta(final BookMeta meta, final List<String> rawPages, final Player player)
+    public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player)
     {
         final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         final BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setDisplayName(meta.getDisplayName());
+        Objects.requireNonNull(bookMeta).setDisplayName(meta.getDisplayName());
         bookMeta.setTitle(meta.getTitle());
         bookMeta.setAuthor(meta.getAuthor());
         bookMeta.setLore(meta.getLore());
-        if (IBooksUtils.hasPlaceholderAPISupport())
-            IBooksUtils.replacePlaceholders(bookMeta, player);
+        if (BooksUtils.hasPlaceholderAPISupport())
+            BooksUtils.replacePlaceholders(bookMeta, player);
         else
-            IBooksUtils.replaceColorCodes(bookMeta);
+            BooksUtils.replaceColorCodes(bookMeta);
         try
         {
             List<?> pages = (List<?>) BukkitReflection.getOBCClass("inventory.CraftMetaBook").getDeclaredField("pages").get(bookMeta);
@@ -122,7 +128,7 @@ public final class IBooksUtils {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") instanceof PlaceholderAPIPlugin;
     }
 
-    private static void replacePlaceholders(final BookMeta meta, final Player player)
+    private static void replacePlaceholders(BookMeta meta, Player player)
     {
         meta.setDisplayName(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getDisplayName()));
         meta.setTitle(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getTitle()));
@@ -130,12 +136,12 @@ public final class IBooksUtils {
         meta.setLore(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getLore()));
     }
 
-    private static void replaceColorCodes(final BookMeta meta)
+    private static void replaceColorCodes(BookMeta meta)
     {
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
-        meta.setTitle(ChatColor.translateAlternateColorCodes('&', meta.getTitle()));
-        meta.setAuthor(ChatColor.translateAlternateColorCodes('&', meta.getAuthor()));
-        for (int i = 0; i < meta.getLore().size(); i++)
+        meta.setTitle(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(meta.getTitle())));
+        meta.setAuthor(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(meta.getAuthor())));
+        for (int i = 0; i < Objects.requireNonNull(meta.getLore()).size(); i++)
             meta.getLore().set(i, ChatColor.translateAlternateColorCodes('&', meta.getLore().get(i)));
     }
 
@@ -144,23 +150,23 @@ public final class IBooksUtils {
         return MinecraftVersion.getVersion().getId() >= MinecraftVersion.v1_10_R1.getId();
     }
 
-    public static Generation getBookGeneration(final String generation)
+    public static Generation getBookGeneration(String generation)
     {
         return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack getItemInMainHand(final Player player)
+    public static ItemStack getItemInMainHand(Player player)
     {
-        if (version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+        if (version.equals("v1_8_R1") || version.equals("v1_8_R2") || version.equals("v1_8_R3"))
             return player.getInventory().getItemInHand();
         return player.getInventory().getItemInMainHand();
     }
 
     @SuppressWarnings("deprecation")
-    public static void setItemInMainHand(final Player player, final ItemStack item)
+    public static void setItemInMainHand(Player player, ItemStack item)
     {
-        if (version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+        if (version.equals("v1_8_R1") || version.equals("v1_8_R2") || version.equals("v1_8_R3"))
         {
             player.getInventory().setItemInHand(item);
             return;
@@ -168,7 +174,7 @@ public final class IBooksUtils {
         player.getInventory().setItemInMainHand(item);
     }
 
-    public static List<String> getPages(final BookMeta meta)
+    public static List<String> getPages(BookMeta meta)
     {
         final List<String> plainPages = new ArrayList<>();
         final List<BaseComponent[]> components = meta.spigot().getPages();
@@ -176,7 +182,7 @@ public final class IBooksUtils {
         return plainPages;
     }
 
-    private static String getPage(final BaseComponent[] components)
+    private static String getPage(BaseComponent[] components)
     {
         final StringBuilder sb = new StringBuilder();
         for (final BaseComponent component : components)
@@ -184,7 +190,7 @@ public final class IBooksUtils {
         return sb.toString();
     }
 
-    private static List<?> getPages(final BookMeta meta, final List<String> rawPages, final Player player)
+    private static List<?> getPages(BookMeta meta, List<String> rawPages, Player player)
     {
         List<Object> pages = new ArrayList<>();
         Method chatSerializerA = BukkitReflection.getMethod(BukkitReflection.getNMSClass("IChatBaseComponent").getClasses()[0], "a", String.class);
@@ -192,7 +198,7 @@ public final class IBooksUtils {
         {
             try
             {
-                pages.add(chatSerializerA.invoke(null, ComponentSerializer.toString(IBooksUtils.getPage(page, player))));
+                pages.add(chatSerializerA.invoke(null, ComponentSerializer.toString(BooksUtils.getPage(page, player))));
             }
             catch (IllegalAccessException | InvocationTargetException e)
             {
@@ -202,7 +208,7 @@ public final class IBooksUtils {
         return pages;
     }
 
-    private static TextComponent[] getPage(final String page, final Player player)
+    private static TextComponent[] getPage(String page, Player player)
     {
         final String[] plainRows = page.split("\n");
         final TextComponentBuilder compBuilder = new TextComponentBuilder();
@@ -211,129 +217,84 @@ public final class IBooksUtils {
         return convertListToArray(compBuilder.getComponents());
     }
 
-    private static TextComponentBuilder parseRow(String plainRow, final Player player)
+    private static TextComponentBuilder parseRow(String plainRow, Player player)
     {
-        final boolean papiSupport = hasPlaceholderAPISupport();
-
         plainRow = plainRow.replace("<br>", "\n");
-
-        final TextComponentBuilder compBuilder = new TextComponentBuilder();
-        final char[] chars = plainRow.toCharArray();
-
-        String clickType;
-        String hoverType;
-        String clickValue;
-        String hoverValue;
-
-        TextComponent current;
+        TextComponentBuilder compBuilder = new TextComponentBuilder();
+        boolean papiSupport = hasPlaceholderAPISupport();
+        Matcher matcher = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)").matcher(plainRow);
+        int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
-        for (int i = 0; i < chars.length; i++)
+        while (matcher.find())
         {
-            if (chars[i] == '<')
+            if (matcher.start() != 0)
             {
-                final StringBuilder sb = new StringBuilder();
-                int j;
-                for (j = i; j < chars.length; j++)
-                {
-                    if (chars[j] == '>')
-                    {
-                        final String tag = sb.toString().replaceFirst("<", "");
-                        if (!tag.contains(":"))
-                        {
-                            if (!tag.equalsIgnoreCase("reset"))
-                                break;
-                            current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
-                            compBuilder.add(current);
-                            curStr = new StringBuilder();
-
-                            compBuilder.setNextClickEvent(null);
-                            compBuilder.setNextHoverEvent(null);
-                            i = j;
-                            break;
-                        }
-                        if (!isValidTag(tag))
-                            break;
-                        current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
-                        compBuilder.add(current);
-                        curStr = new StringBuilder();
-                        final String[] tagArgs = tag.split(":", 2);
-                        if (isClickEvent(tagArgs[0]))
-                        {
-                            clickType = tagArgs[0];
-                            clickValue = tagArgs[1];
-                            compBuilder.setNextClickEvent(getClickEvent(clickType, setPlaceholders(player, clickValue, papiSupport)));
-                        }
-                        else
-                        {
-                            hoverType = tagArgs[0];
-                            hoverValue = tagArgs[1];
-                            compBuilder.setNextHoverEvent(getHoverEvent(hoverType, setPlaceholders(player, hoverValue, papiSupport)));
-                        }
-                        i = j;
-                        break;
-                    }
-                    else if (chars[j] == '&')
-                    {
-                        final StringBuilder specialCharSb = new StringBuilder();
-                        int k;
-                        for (k = j + 1; k < chars.length && chars[k] != ';'; k++)
-                            specialCharSb.append(chars[k]);
-                        Character specialChar = getEscapedChar(specialCharSb.toString());
-                        if (specialChar != null)
-                        {
-                            sb.append(specialChar);
-                            j = k;
-                            continue;
-                        }
-                    }
-                    sb.append(chars[j]);
-                }
-                if (j == chars.length)
-                    curStr.append(sb);
+                curStr.append(plainRow, lastIndex, matcher.start());
+                TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, replaceEscapedChars(curStr.toString()), papiSupport)));
+                compBuilder.add(current);
+                curStr.delete(0, curStr.length());
             }
-            else if (chars[i] == '&')
+            lastIndex = matcher.end();
+            if (matcher.group().equals("<reset>"))
             {
-                final StringBuilder specialCharSb = new StringBuilder();
-                int k;
-                for (k = i + 1; k < chars.length && chars[k] != ';'; k++)
-                    specialCharSb.append(chars[k]);
-                Character specialChar = getEscapedChar(specialCharSb.toString());
-                if (specialChar != null)
-                {
-                    curStr.append(specialChar);
-                    i = k;
-                    continue;
-                }
-                curStr.append(chars[i]);
+                compBuilder.setNextHoverEvent(null);
+                compBuilder.setNextClickEvent(null);
             }
             else
-                curStr.append(chars[i]);
+            {
+                Object event = parseEvent(matcher.group());
+                if (event != null)
+                {
+                    if (event instanceof HoverEvent)
+                        compBuilder.setNextHoverEvent((HoverEvent) event);
+                    else if (event instanceof ClickEvent)
+                        compBuilder.setNextClickEvent((ClickEvent) event);
+                }
+            }
         }
-
-        if (!curStr.toString().isEmpty())
+        if (lastIndex < plainRow.length())
         {
-            current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
+            curStr.append(plainRow, lastIndex, plainRow.length());
+            TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
             compBuilder.add(current);
         }
 
         return compBuilder;
     }
 
-    private static Character getEscapedChar(final String escapeCode)
+    private static Object parseEvent(String attribute)
     {
-        switch (escapeCode)
+        String trimmed = attribute.replaceFirst("<", "").substring(0, attribute.length() - 2);
+        String[] attributes = trimmed.split(":", 2);
+        BookEventActionType type = BookEventActionType.parse(attributes[0]);
+        String value = attributes[1];
+        if (type == null)
+            return null;
+        value = replaceEscapedChars(value);
+        switch (type)
         {
-            case "amp":
-                return '&';
-            case "lt":
-                return '<';
-            case "gt":
-                return '>';
+            case SHOW_TEXT:
+                return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
+            case SHOW_ITEM:
+            case SHOW_ENTITY:
+            case SUGGEST_COMMAND:
+                return null;
+            case RUN_COMMAND:
+                return new ClickEvent(ClickEvent.Action.RUN_COMMAND, value);
+            case OPEN_URL:
+                return new ClickEvent(ClickEvent.Action.OPEN_URL, value);
+            case CHANGE_PAGE:
+                return new ClickEvent(ClickEvent.Action.CHANGE_PAGE, value);
         }
         return null;
     }
 
-    private static String setPlaceholders(final Player player, final String text, final boolean papi)
+    private static String replaceEscapedChars(String str)
+    {
+        return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
+    }
+
+    private static String setPlaceholders(Player player, String text, boolean papi)
     {
         if (papi)
             return PlaceholderAPI.setPlaceholders(player, text);
@@ -341,86 +302,7 @@ public final class IBooksUtils {
             return ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    private static ClickEvent getClickEvent(final String type, final String value)
-    {
-        if (type == null)
-            return null;
-
-        ClickEvent.Action action = null;
-        switch (type.toLowerCase())
-        {
-            case "link":
-            case "open url":
-            case "url":
-                action = ClickEvent.Action.OPEN_URL;
-                break;
-            case "run command":
-            case "command":
-            case "cmd":
-                action = ClickEvent.Action.RUN_COMMAND;
-                break;
-            case "suggest command":
-            case "suggest cmd":
-            case "suggest":
-                action = ClickEvent.Action.SUGGEST_COMMAND;
-                break;
-            case "change page":
-                action = ClickEvent.Action.CHANGE_PAGE;
-                break;
-        }
-
-        return new ClickEvent(action, value);
-    }
-
-    private static HoverEvent getHoverEvent(final String type, final String value)
-    {
-        if (type == null)
-            return null;
-
-        HoverEvent.Action action = null;
-        switch (type.toLowerCase())
-        {
-            case "tooltip":
-            case "show text":
-                action = HoverEvent.Action.SHOW_TEXT;
-                break;
-        }
-        return new HoverEvent(action, new ComponentBuilder(value).create());
-    }
-
-    private static boolean isValidTag(final String tag)
-    {
-        switch (tag.split(":", 2)[0].toLowerCase())
-        {
-            case "link":
-            case "open url":
-            case "url":
-            case "run command":
-            case "command":
-            case "cmd":
-            case "suggest command":
-            case "suggest cmd":
-            case "suggest":
-            case "change page":
-            case "tooltip":
-            case "show text":
-                return true;
-        }
-        return false;
-    }
-
-    private static boolean isClickEvent(final String type)
-    {
-        switch (type.toLowerCase())
-        {
-            case "tooltip":
-            case "show text":
-                return false;
-        }
-        return true;
-    }
-
-    private static TextComponent[] convertListToArray(final List<TextComponent> list)
+    private static TextComponent[] convertListToArray(List<TextComponent> list)
     {
         final TextComponent[] objects = new TextComponent[list.size()];
         for (int i = 0; i < list.size(); i++)

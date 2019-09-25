@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks.nms;
+package net.leomixer17.interactivebooks.util;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -23,41 +23,41 @@ final class TextComponentBuilder {
         return this.components;
     }
 
-    void add(final TextComponent component)
+    void add(TextComponent component)
     {
-        if (this.getNextClickEvent() != null)
+        if (getNextClickEvent() != null)
             component.setClickEvent(this.getNextClickEvent());
-        if (this.getNextHoverEvent() != null)
+        if (getNextHoverEvent() != null)
             component.setHoverEvent(this.getNextHoverEvent());
         this.components.add(component);
     }
 
-    void add(final TextComponentBuilder builder)
+    void add(TextComponentBuilder builder)
     {
-        builder.getComponents().forEach(component -> this.add(component));
+        builder.getComponents().forEach(this::add);
     }
 
-    void add(final List<TextComponent> components)
+    void add(List<TextComponent> components)
     {
-        components.forEach(component -> this.add(component));
+        components.forEach(this::add);
     }
 
-    public ClickEvent getNextClickEvent()
+    private ClickEvent getNextClickEvent()
     {
         return this.nextClickEvent;
     }
 
-    public void setNextClickEvent(final ClickEvent nextClickEvent)
+    void setNextClickEvent(ClickEvent nextClickEvent)
     {
         this.nextClickEvent = nextClickEvent;
     }
 
-    public HoverEvent getNextHoverEvent()
+    private HoverEvent getNextHoverEvent()
     {
         return this.nextHoverEvent;
     }
 
-    public void setNextHoverEvent(final HoverEvent nextHoverEvent)
+    void setNextHoverEvent(HoverEvent nextHoverEvent)
     {
         this.nextHoverEvent = nextHoverEvent;
     }

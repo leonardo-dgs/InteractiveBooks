@@ -9,8 +9,8 @@ group = 'net.leomixer17'
 version = '1.4.4'
 description = 'Create cool interactive books!'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+tasks.compileJava.sourceCompatibility = 1.8
+tasks.compileJava.targetCompatibility = 1.8
 
 tasks.compileJava.options.encoding = 'UTF-8'
 
