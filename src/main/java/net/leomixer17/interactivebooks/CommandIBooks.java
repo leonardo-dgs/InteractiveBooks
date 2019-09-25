@@ -1,7 +1,7 @@
 package net.leomixer17.interactivebooks;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.leomixer17.interactivebooks.nms.IBooksUtils;
+import net.leomixer17.interactivebooks.util.BooksUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,7 +63,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 final Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
-                final String bookIdToOpen = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
+                final String bookIdToOpen = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToOpen) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -96,7 +96,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 final Player playerToGet = (Player) sender;
-                final String bookIdToGet = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGet, args[1]) : args[1];
+                final String bookIdToGet = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGet, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToGet) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -118,7 +118,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 final Player playerToGive = Bukkit.getPlayer(args[2]);
-                final String bookIdToGive = IBooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGive, args[1]) : args[1];
+                final String bookIdToGive = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGive, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToGive) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -158,7 +158,7 @@ public final class CommandIBooks implements CommandExecutor {
                 String bookGeneration = "ORIGINAL";
                 if (args.length > 5)
                     bookGeneration = args[5].toUpperCase();
-                if (IBooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
+                if (BooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
                 {
                     sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
                     return false;

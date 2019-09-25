@@ -1,6 +1,6 @@
 package net.leomixer17.interactivebooks;
 
-import net.leomixer17.interactivebooks.nms.IBooksUtils;
+import net.leomixer17.interactivebooks.util.BooksUtils;
 import net.leomixer17.pluginlib.nbt.NBTItem;
 import net.leomixer17.pluginlib.reflect.MinecraftVersion;
 import org.bukkit.Bukkit;
@@ -56,17 +56,17 @@ public final class PlayerListener implements Listener {
             return;
         if (!InteractiveBooks.getPlugin().getConfig().getBoolean("update_books_on_use"))
             return;
-        if (!IBooksUtils.getItemInMainHand(e.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
+        if (!BooksUtils.getItemInMainHand(e.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
-        final NBTItem nbti = new NBTItem(IBooksUtils.getItemInMainHand(e.getPlayer()));
+        final NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(e.getPlayer()));
         if (!nbti.hasKey("InteractiveBooks|Book-Id"))
             return;
         final IBook book = InteractiveBooks.getBook(nbti.getString("InteractiveBooks|Book-Id"));
         if (book == null)
             return;
         final ItemStack bookItem = book.getItem(e.getPlayer());
-        bookItem.setAmount(IBooksUtils.getItemInMainHand(e.getPlayer()).getAmount());
-        IBooksUtils.setItemInMainHand(e.getPlayer(), bookItem);
+        bookItem.setAmount(BooksUtils.getItemInMainHand(e.getPlayer()).getAmount());
+        BooksUtils.setItemInMainHand(e.getPlayer(), bookItem);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

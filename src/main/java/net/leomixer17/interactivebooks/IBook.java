@@ -1,6 +1,6 @@
 package net.leomixer17.interactivebooks;
 
-import net.leomixer17.interactivebooks.nms.IBooksUtils;
+import net.leomixer17.interactivebooks.util.BooksUtils;
 import net.leomixer17.pluginlib.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,10 +13,7 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class IBook {
 
@@ -32,7 +29,7 @@ public class IBook {
     {
         this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"), bookConfig.getString("generation"),
                 bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
-                (bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("") ? null : bookConfig.getString("open_command").split(" ")));
+                (((bookConfig.getString("open_command") == null) || Objects.equals(bookConfig.getString("open_command"), "")) ? null : Objects.requireNonNull(bookConfig.getString("open_command")).split(" ")));
     }
 
     public IBook(final String id, final ItemStack book)
@@ -44,7 +41,7 @@ public class IBook {
     {
         this.id = id;
         this.bookMeta = bookMeta;
-        this.setPages(IBooksUtils.getPages(bookMeta));
+        this.setPages(BooksUtils.getPages(bookMeta));
     }
 
     public IBook(final String id, final String displayName, final String title, final String author, List<String> lore, List<String> pages, final String... openCommands)
@@ -69,8 +66,8 @@ public class IBook {
     public IBook(final String id, final String displayName, final String title, final String author, final String generation, List<String> lore, List<String> pages, final String... openCommands)
     {
         this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null && IBooksUtils.hasBookGenerationSupport())
-            this.bookMeta.setGeneration(IBooksUtils.getBookGeneration(generation));
+        if (generation != null && BooksUtils.hasBookGenerationSupport())
+            this.bookMeta.setGeneration(BooksUtils.getBookGeneration(generation));
     }
 
     public IBook(final String id, final String displayName, final String title, final String author, final Generation generation, List<String> lore, List<String> pages, final String... openCommands)
@@ -87,7 +84,7 @@ public class IBook {
 
     public void open(final Player player)
     {
-        IBooksUtils.openBook(this.getItem(player), player);
+        BooksUtils.openBook(this.getItem(player), player);
     }
 
     public ItemStack getItem()
@@ -111,7 +108,7 @@ public class IBook {
 
     public BookMeta getBookMeta(final Player player)
     {
-        return IBooksUtils.getBookMeta(this.bookMeta, this.getPages(), player);
+        return BooksUtils.getBookMeta(this.bookMeta, this.getPages(), player);
     }
 
     public void setBookMeta(final BookMeta bookMeta)
@@ -141,13 +138,14 @@ public class IBook {
         try
         {
             if (!file.exists())
-                file.createNewFile();
+                if (file.createNewFile())
+                    throw new IOException();
             final YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
             bookConfig.set("name", meta.getDisplayName());
             bookConfig.set("title", meta.getTitle());
             bookConfig.set("author", meta.getAuthor());
-            if (IBooksUtils.hasBookGenerationSupport())
-                bookConfig.set("generation", meta.getGeneration().toString());
+            if (BooksUtils.hasBookGenerationSupport())
+                bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL));
             bookConfig.set("lore", meta.getLore());
             bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
             if (this.getPages().isEmpty())
@@ -177,13 +175,13 @@ public class IBook {
 
     private static List<String> mergeLines(final ConfigurationSection section)
     {
-        final List<String> pages = new ArrayList<>();
+        List<String> pages = new ArrayList<>();
         if (section == null)
             return pages;
         section.getKeys(false).forEach(key ->
         {
-            final StringBuilder sb = new StringBuilder();
-            section.getStringList(key).forEach(line -> sb.append("\n" + line));
+            StringBuilder sb = new StringBuilder();
+            section.getStringList(key).forEach(line -> sb.append("\n").append(line));
             pages.add(sb.toString().replaceFirst("\n", ""));
         });
         return pages;
