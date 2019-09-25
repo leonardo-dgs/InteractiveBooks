@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 public final class BooksUtils {
 
     private static String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
 
     public static void openBook(ItemStack book, Player player)
     {
@@ -222,7 +223,7 @@ public final class BooksUtils {
         plainRow = plainRow.replace("<br>", "\n");
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         boolean papiSupport = hasPlaceholderAPISupport();
-        Matcher matcher = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)").matcher(plainRow);
+        Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainRow);
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
         while (matcher.find())
