@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'net.leomixer17'
-version = '1.4.4'
+version = '1.4.5'
 description = 'Create cool interactive books!'
 
 tasks.compileJava.sourceCompatibility = 1.8
