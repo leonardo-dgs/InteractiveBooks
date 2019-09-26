@@ -26,18 +26,18 @@ public final class PlayerListener implements Listener {
         List<String> booksToGiveIds;
         if (event.getPlayer().hasPlayedBefore())
         {
-            openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_join");
-            booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_join");
+            openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_join");
+            booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_join");
         }
         else
         {
-            openBookId = InteractiveBooks.getPlugin().getConfig().getString("open_book_on_first_join");
-            booksToGiveIds = InteractiveBooks.getPlugin().getConfig().getStringList("books_on_first_join");
+            openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_first_join");
+            booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_first_join");
         }
         if (!Objects.equals(openBookId, "") && InteractiveBooks.getBook(openBookId) != null)
         {
             if (MinecraftVersion.getVersion().getId() < MinecraftVersion.v1_14_R1.getId())
-                Bukkit.getScheduler().runTask(InteractiveBooks.getPlugin(), () -> InteractiveBooks.getBook(openBookId).open(event.getPlayer()));
+                Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> InteractiveBooks.getBook(openBookId).open(event.getPlayer()));
             else
                 InteractiveBooks.getBook(openBookId).open(event.getPlayer());
         }
@@ -54,7 +54,7 @@ public final class PlayerListener implements Listener {
     {
         if (!e.getAction().equals(Action.RIGHT_CLICK_AIR) && !e.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             return;
-        if (!InteractiveBooks.getPlugin().getConfig().getBoolean("update_books_on_use"))
+        if (!InteractiveBooks.getInstance().getConfig().getBoolean("update_books_on_use"))
             return;
         if (!BooksUtils.getItemInMainHand(e.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
