@@ -5,6 +5,7 @@ import net.leomixer17.pluginlib.nbt.NBTItem;
 import net.leomixer17.pluginlib.reflect.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public final class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(final PlayerJoinEvent event)
+    public void onPlayerJoin(PlayerJoinEvent event)
     {
         String openBookId;
         List<String> booksToGiveIds;
@@ -50,27 +51,29 @@ public final class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteract(final PlayerInteractEvent e)
+    public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if (!e.getAction().equals(Action.RIGHT_CLICK_AIR) && !e.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (event.useItemInHand().equals(Event.Result.DENY))
+            return;
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             return;
         if (!InteractiveBooks.getInstance().getConfig().getBoolean("update_books_on_use"))
             return;
-        if (!BooksUtils.getItemInMainHand(e.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
+        if (!BooksUtils.getItemInMainHand(event.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
-        final NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(e.getPlayer()));
+        final NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
         if (!nbti.hasKey("InteractiveBooks|Book-Id"))
             return;
         final IBook book = InteractiveBooks.getBook(nbti.getString("InteractiveBooks|Book-Id"));
         if (book == null)
             return;
-        final ItemStack bookItem = book.getItem(e.getPlayer());
-        bookItem.setAmount(BooksUtils.getItemInMainHand(e.getPlayer()).getAmount());
-        BooksUtils.setItemInMainHand(e.getPlayer(), bookItem);
+        final ItemStack bookItem = book.getItem(event.getPlayer());
+        bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
+        BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
         final String command = event.getMessage().split(" ", 2)[0].replaceFirst("/", "").toLowerCase();
         IBook iBook = null;

@@ -7,4 +7,5 @@ softdepend: [PlaceholderAPI]
 commands:
   ibooks:
     description: Command to manage books
+    permission: interactivebooks.command
     aliases: [interactivebooks, ib]
