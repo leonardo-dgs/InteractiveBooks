@@ -11,13 +11,13 @@ import java.util.Objects;
 
 public final class InteractiveBooks extends JavaPlugin {
 
-    private static InteractiveBooks plugin;
+    private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
 
     @Override
     public void onEnable()
     {
-        plugin = this;
+        instance = this;
         Config.loadAll();
         registerCommand();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
@@ -27,30 +27,57 @@ public final class InteractiveBooks extends JavaPlugin {
     @Override
     public void onDisable()
     {
-        plugin = null;
+        instance = null;
     }
 
-    public static InteractiveBooks getPlugin()
+    /**
+     * Gets the instance of this plugin.
+     *
+     * @return an instance of the plugin
+     */
+    public static InteractiveBooks getInstance()
     {
-        return plugin;
+        return instance;
     }
 
+    /**
+     * Gets the registered books.
+     *
+     * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
+     */
     public static Map<String, IBook> getBooks()
     {
         return new HashMap<>(books);
     }
 
-    public static IBook getBook(final String id)
+    /**
+     * Gets an {@link IBook} by its id.
+     *
+     * @param id the id of the book to get
+     * @return the book with the specified id if it's registered, or null if not found
+     * @see #registerBook(IBook)
+     */
+    public static IBook getBook(String id)
     {
         return books.get(id);
     }
 
-    public static void registerBook(final IBook book)
+    /**
+     * Registers a book.
+     *
+     * @param book the book id to register
+     */
+    public static void registerBook(IBook book)
     {
         books.put(book.getId(), book);
     }
 
-    public static void unregisterBook(final String id)
+    /**
+     * Unegisters a book by its id.
+     *
+     * @param id the book id to unregister
+     */
+    public static void unregisterBook(String id)
     {
         books.remove(id);
     }
