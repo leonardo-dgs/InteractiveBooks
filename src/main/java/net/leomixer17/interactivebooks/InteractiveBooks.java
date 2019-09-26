@@ -61,6 +61,7 @@ public final class InteractiveBooks extends JavaPlugin {
         Objects.requireNonNull(commandIBooks).setPermission("interactivebooks.command");
         commandIBooks.setPermissionMessage("§4You don't have permission to access to this command.");
         commandIBooks.setExecutor(new CommandIBooks());
+        commandIBooks.setTabCompleter(new TabCompleterIBooks());
     }
 
 }
