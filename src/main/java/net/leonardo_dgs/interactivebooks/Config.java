@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks;
+package net.leonardo_dgs.interactivebooks;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 

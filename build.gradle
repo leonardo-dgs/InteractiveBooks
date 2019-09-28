@@ -5,8 +5,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
-group = 'net.leomixer17'
-version = '1.4.5'
+group = 'net.leonardo_dgs'
+version = '1.4.6'
 description = 'Create cool interactive books!'
 
 tasks.compileJava.sourceCompatibility = 1.8
@@ -46,8 +46,8 @@ tasks.jar.enabled = false
 tasks.shadowJar {
     archiveFileName = 'InteractiveBooks.jar'
     minimize()
-    relocate 'net.leomixer17.pluginlib', 'net.leomixer17.interactivebooks'
-    relocate 'org.bstats.bukkit', 'net.leomixer17.interactivebooks.bstats'
+    relocate 'net.leomixer17.pluginlib', 'net.leonardo_dgs.interactivebooks'
+    relocate 'org.bstats.bukkit', 'net.leonardo_dgs.interactivebooks.bstats'
 }
 
 artifacts {

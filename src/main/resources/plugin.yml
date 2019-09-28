@@ -1,5 +1,5 @@
 name: InteractiveBooks
-main: net.leomixer17.interactivebooks.InteractiveBooks
+main: net.leonardo_dgs.interactivebooks.InteractiveBooks
 version: @version@
 api-version: 1.13
 description: @description@
