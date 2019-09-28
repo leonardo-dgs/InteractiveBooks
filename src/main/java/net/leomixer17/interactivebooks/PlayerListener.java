@@ -61,13 +61,13 @@ public final class PlayerListener implements Listener {
             return;
         if (!BooksUtils.getItemInMainHand(event.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
-        final NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
+        NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
         if (!nbti.hasKey("InteractiveBooks|Book-Id"))
             return;
-        final IBook book = InteractiveBooks.getBook(nbti.getString("InteractiveBooks|Book-Id"));
+        IBook book = InteractiveBooks.getBook(nbti.getString("InteractiveBooks|Book-Id"));
         if (book == null)
             return;
-        final ItemStack bookItem = book.getItem(event.getPlayer());
+        ItemStack bookItem = book.getItem(event.getPlayer());
         bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
         BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
     }
@@ -75,9 +75,9 @@ public final class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
-        final String command = event.getMessage().split(" ", 2)[0].replaceFirst("/", "").toLowerCase();
+        String command = event.getMessage().split(" ", 2)[0].replaceFirst("/", "").toLowerCase();
         IBook iBook = null;
-        for (final IBook book : InteractiveBooks.getBooks().values())
+        for (IBook book : InteractiveBooks.getBooks().values())
             if (book.getOpenCommands().contains(command))
             {
                 iBook = book;

@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class BooksUtils {
+public class BooksUtils {
 
     private static String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
@@ -170,16 +170,16 @@ public final class BooksUtils {
 
     public static List<String> getPages(BookMeta meta)
     {
-        final List<String> plainPages = new ArrayList<>();
-        final List<BaseComponent[]> components = meta.spigot().getPages();
+        List<String> plainPages = new ArrayList<>();
+        List<BaseComponent[]> components = meta.spigot().getPages();
         components.forEach(component -> plainPages.add(getPage(component)));
         return plainPages;
     }
 
     private static String getPage(BaseComponent[] components)
     {
-        final StringBuilder sb = new StringBuilder();
-        for (final BaseComponent component : components)
+        StringBuilder sb = new StringBuilder();
+        for (BaseComponent component : components)
             sb.append(BaseComponentSerializer.toString(component));
         return sb.toString();
     }
@@ -307,7 +307,7 @@ public final class BooksUtils {
 
     private static TextComponent[] convertListToArray(List<TextComponent> list)
     {
-        final TextComponent[] objects = new TextComponent[list.size()];
+        TextComponent[] objects = new TextComponent[list.size()];
         for (int i = 0; i < list.size(); i++)
             objects[i] = list.get(i);
         return objects;
