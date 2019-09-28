@@ -14,7 +14,6 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -102,16 +101,16 @@ public final class BooksUtils {
 
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player)
     {
-        final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        final BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        Objects.requireNonNull(bookMeta).setDisplayName(meta.getDisplayName());
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        Objects.requireNonNull(bookMeta);
+        bookMeta.setDisplayName(meta.getDisplayName());
         bookMeta.setTitle(meta.getTitle());
         bookMeta.setAuthor(meta.getAuthor());
         bookMeta.setLore(meta.getLore());
-        if (BooksUtils.hasPlaceholderAPISupport())
-            BooksUtils.replacePlaceholders(bookMeta, player);
-        else
-            BooksUtils.replaceColorCodes(bookMeta);
+        if (hasBookGenerationSupport())
+            bookMeta.setGeneration(meta.getGeneration());
+        replacePlaceholders(bookMeta, player, hasPlaceholderAPISupport());
         try
         {
             List<?> pages = (List<?>) BukkitReflection.getOBCClass("inventory.CraftMetaBook").getDeclaredField("pages").get(bookMeta);
@@ -129,21 +128,15 @@ public final class BooksUtils {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") instanceof PlaceholderAPIPlugin;
     }
 
-    private static void replacePlaceholders(BookMeta meta, Player player)
+    private static void replacePlaceholders(BookMeta meta, Player player, boolean papi)
     {
-        meta.setDisplayName(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getDisplayName()));
-        meta.setTitle(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getTitle()));
-        meta.setAuthor(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getAuthor()));
-        meta.setLore(PlaceholderAPI.setPlaceholders((OfflinePlayer) player, meta.getLore()));
-    }
-
-    private static void replaceColorCodes(BookMeta meta)
-    {
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', meta.getDisplayName()));
-        meta.setTitle(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(meta.getTitle())));
-        meta.setAuthor(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(meta.getAuthor())));
-        for (int i = 0; i < Objects.requireNonNull(meta.getLore()).size(); i++)
-            meta.getLore().set(i, ChatColor.translateAlternateColorCodes('&', meta.getLore().get(i)));
+        meta.setDisplayName(setPlaceholders(player, meta.getDisplayName(), papi));
+        if (meta.getTitle() != null)
+            meta.setTitle(setPlaceholders(player, meta.getTitle(), papi));
+        if (meta.getAuthor() != null)
+            meta.setAuthor(setPlaceholders(player, meta.getAuthor(), papi));
+        if (meta.getLore() != null)
+            meta.setLore(setPlaceholders(player, meta.getLore(), papi));
     }
 
     public static boolean hasBookGenerationSupport()
@@ -211,26 +204,22 @@ public final class BooksUtils {
 
     private static TextComponent[] getPage(String page, Player player)
     {
-        final String[] plainRows = page.split("\n");
-        final TextComponentBuilder compBuilder = new TextComponentBuilder();
-        for (int i = 0; i < plainRows.length; i++)
-            compBuilder.add(parseRow(plainRows[i] + (i < plainRows.length - 1 ? "\n" : ""), player));
-        return convertListToArray(compBuilder.getComponents());
+        return convertListToArray(parsePage(page, player).getComponents());
     }
 
-    private static TextComponentBuilder parseRow(String plainRow, Player player)
+    private static TextComponentBuilder parsePage(String plainPage, Player player)
     {
-        plainRow = plainRow.replace("<br>", "\n");
+        plainPage = plainPage.replace("<br>", "\n");
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         boolean papiSupport = hasPlaceholderAPISupport();
-        Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainRow);
+        Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainPage);
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
         while (matcher.find())
         {
             if (matcher.start() != 0)
             {
-                curStr.append(plainRow, lastIndex, matcher.start());
+                curStr.append(plainPage, lastIndex, matcher.start());
                 TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, replaceEscapedChars(curStr.toString()), papiSupport)));
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
@@ -253,9 +242,9 @@ public final class BooksUtils {
                 }
             }
         }
-        if (lastIndex < plainRow.length())
+        if (lastIndex < plainPage.length())
         {
-            curStr.append(plainRow, lastIndex, plainRow.length());
+            curStr.append(plainPage, lastIndex, plainPage.length());
             TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
             compBuilder.add(current);
         }
@@ -293,6 +282,19 @@ public final class BooksUtils {
     private static String replaceEscapedChars(String str)
     {
         return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
+    }
+
+    private static List<String> setPlaceholders(Player player, List<String> text, boolean papi)
+    {
+        if (papi)
+            return PlaceholderAPI.setPlaceholders(player, text);
+        else
+        {
+            List<String> coloredText = new ArrayList<>();
+            for (String s : text)
+                coloredText.add(ChatColor.translateAlternateColorCodes('&', s));
+            return coloredText;
+        }
     }
 
     private static String setPlaceholders(Player player, String text, boolean papi)
