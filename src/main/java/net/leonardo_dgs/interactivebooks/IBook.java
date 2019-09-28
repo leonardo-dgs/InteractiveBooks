@@ -1,6 +1,6 @@
-package net.leomixer17.interactivebooks;
+package net.leonardo_dgs.interactivebooks;
 
-import net.leomixer17.interactivebooks.util.BooksUtils;
+import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import net.leomixer17.pluginlib.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
