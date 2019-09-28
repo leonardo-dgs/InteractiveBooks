@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks.util;
+package net.leonardo_dgs.interactivebooks.util;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

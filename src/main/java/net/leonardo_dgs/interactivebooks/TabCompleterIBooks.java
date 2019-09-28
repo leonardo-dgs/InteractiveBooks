@@ -1,6 +1,6 @@
-package net.leomixer17.interactivebooks;
+package net.leonardo_dgs.interactivebooks;
 
-import net.leomixer17.interactivebooks.util.BooksUtils;
+import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
-package net.leomixer17.interactivebooks.util;
+package net.leonardo_dgs.interactivebooks.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
