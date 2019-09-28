@@ -40,8 +40,8 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§4You don't have permission to execute this action.");
                     return false;
                 }
-                final StringBuilder sb = new StringBuilder();
-                for (final IBook book : InteractiveBooks.getBooks().values())
+                StringBuilder sb = new StringBuilder();
+                for (IBook book : InteractiveBooks.getBooks().values())
                     sb.append("§6%book_id%§7, ".replace("%book_id%", book.getId()));
                 sender.sendMessage("§eBooks:\n" + (sb.toString().equals("") ? "" : sb.toString().substring(0, sb.toString().length() - 2)));
                 break;
@@ -62,8 +62,8 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
                     return false;
                 }
-                final Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
-                final String bookIdToOpen = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
+                Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
+                String bookIdToOpen = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToOpen, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToOpen) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -95,8 +95,8 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cUsage: §7/ibooks get <book-id>");
                     return false;
                 }
-                final Player playerToGet = (Player) sender;
-                final String bookIdToGet = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGet, args[1]) : args[1];
+                Player playerToGet = (Player) sender;
+                String bookIdToGet = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGet, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToGet) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -117,8 +117,8 @@ public final class CommandIBooks implements CommandExecutor {
                     sender.sendMessage("§cUsage: §7/ibooks give <book-id> <player>");
                     return false;
                 }
-                final Player playerToGive = Bukkit.getPlayer(args[2]);
-                final String bookIdToGive = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGive, args[1]) : args[1];
+                Player playerToGive = Bukkit.getPlayer(args[2]);
+                String bookIdToGive = BooksUtils.hasPlaceholderAPISupport() ? PlaceholderAPI.setPlaceholders(playerToGive, args[1]) : args[1];
                 if (InteractiveBooks.getBook(bookIdToGive) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -151,10 +151,10 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
 
-                final String bookId = args[1];
-                final String bookName = args[2];
-                final String bookTitle = args[3];
-                final String bookAuthor = args[4];
+                String bookId = args[1];
+                String bookName = args[2];
+                String bookTitle = args[3];
+                String bookAuthor = args[4];
                 String bookGeneration = "ORIGINAL";
                 if (args.length > 5)
                     bookGeneration = args[5].toUpperCase();
@@ -164,7 +164,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
 
-                final IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
+                IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
                 createdBook.save();
                 InteractiveBooks.registerBook(createdBook);
                 sender.sendMessage("§aBook successfully created.");
@@ -189,8 +189,8 @@ public final class CommandIBooks implements CommandExecutor {
 				return false;
 			}
 			
-			final ItemStack itemToImport = IBooksUtils.getItemInMainHand((Player) sender);
-			final IBook importedBook = new IBook(args[1], (BookMeta) itemToImport.getItemMeta());
+			ItemStack itemToImport = IBooksUtils.getItemInMainHand((Player) sender);
+			IBook importedBook = new IBook(args[1], (BookMeta) itemToImport.getItemMeta());
 			importedBook.save();
 			InteractiveBooks.registerBook(importedBook);
 			sender.sendMessage("§aBook successfully imported.");

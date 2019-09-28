@@ -9,33 +9,32 @@ import java.util.List;
 
 final class BaseComponentSerializer {
 
-    private static String toString(final BaseComponent... components)
+    private static String toString(BaseComponent... components)
     {
-        final StringBuilder sb = new StringBuilder();
-        for (final BaseComponent component : components)
+        StringBuilder sb = new StringBuilder();
+        for (BaseComponent component : components)
             sb.append(toString(component));
         return sb.toString();
     }
 
-    static String toString(final List<BaseComponent> components)
+    static String toString(List<BaseComponent> components)
     {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         components.forEach(component -> sb.append(toString(component)));
         return sb.toString();
     }
 
-    static String toString(final BaseComponent component)
+    static String toString(BaseComponent component)
     {
-        String sb = getClickEvent(component) +
+        return getClickEvent(component) +
                 getHoverEvent(component) +
                 getColorAndFormatting(component) + component.toPlainText() +
                 "<reset>";
-        return sb;
     }
 
-    private static String getColorAndFormatting(final BaseComponent component)
+    private static String getColorAndFormatting(BaseComponent component)
     {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(component.getColor());
 
@@ -53,22 +52,22 @@ final class BaseComponentSerializer {
         return sb.toString();
     }
 
-    private static String getClickEvent(final BaseComponent component)
+    private static String getClickEvent(BaseComponent component)
     {
-        final ClickEvent event = component.getClickEvent();
+        ClickEvent event = component.getClickEvent();
         if (event == null)
             return "";
-        final String action = event.getAction().toString().replace("_", " ").toLowerCase();
-        final String value = event.getValue();
+        String action = event.getAction().toString().replace("_", " ").toLowerCase();
+        String value = event.getValue();
         return "<" + action + ":" + value + ">";
     }
 
-    private static String getHoverEvent(final BaseComponent component)
+    private static String getHoverEvent(BaseComponent component)
     {
-        final HoverEvent event = component.getHoverEvent();
+        HoverEvent event = component.getHoverEvent();
         if (event == null)
             return "";
-        final String action = event.getAction().toString().replace("_", " ").toLowerCase();
+        String action = event.getAction().toString().replace("_", " ").toLowerCase();
         String value = null;
         switch (event.getAction())
         {
