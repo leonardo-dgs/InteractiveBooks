@@ -31,8 +31,9 @@ import java.util.regex.Pattern;
 
 public class BooksUtils {
 
-    private static String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
+    private static final Method CHATSERIALIZER_A = BukkitReflection.getMethod(BukkitReflection.getNMSClass("IChatBaseComponent").getClasses()[0], "a", String.class);
 
     public static void openBook(ItemStack book, Player player)
     {
@@ -48,21 +49,21 @@ public class BooksUtils {
         {
             Object packet = null;
             Constructor<?> packetConstructor;
-            Object enumHand;
+            Enum<?> enumHand;
             Object packetDataSerializer;
             Object packetDataSerializerArg;
             Object minecraftKey;
-            switch (version)
+            switch (VERSION)
             {
                 case "v1_14_R1":
-                    enumHand = BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
+                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
                     packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutOpenBook").getConstructor(BukkitReflection.getNMSClass("EnumHand"));
                     packet = packetConstructor.newInstance(enumHand);
                     break;
 
                 case "v1_13_R2":
                 case "v1_13_R1":
-                    enumHand = BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
+                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
                     minecraftKey = BukkitReflection.getNMSClass("MinecraftKey").getMethod("a", String.class).invoke(null, "minecraft:book_open");
                     packetDataSerializerArg = BukkitReflection.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(Unpooled.buffer());
                     packetDataSerializer = BukkitReflection.getNMSClass("PacketDataSerializer").getMethod("a", Enum.class).invoke(packetDataSerializerArg, enumHand);
@@ -75,7 +76,7 @@ public class BooksUtils {
                 case "v1_10_R1":
                 case "v1_9_R2":
                 case "v1_9_R1":
-                    enumHand = BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
+                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
                     packetDataSerializerArg = BukkitReflection.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(Unpooled.buffer());
                     packetDataSerializer = BukkitReflection.getNMSClass("PacketDataSerializer").getMethod("a", Enum.class).invoke(packetDataSerializerArg, enumHand);
                     packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutCustomPayload").getConstructor(String.class, BukkitReflection.getNMSClass("PacketDataSerializer"));
@@ -152,7 +153,7 @@ public class BooksUtils {
     @SuppressWarnings("deprecation")
     public static ItemStack getItemInMainHand(Player player)
     {
-        if (version.equals("v1_8_R1") || version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+        if (VERSION.equals("v1_8_R1") || VERSION.equals("v1_8_R2") || VERSION.equals("v1_8_R3"))
             return player.getInventory().getItemInHand();
         return player.getInventory().getItemInMainHand();
     }
@@ -160,7 +161,7 @@ public class BooksUtils {
     @SuppressWarnings("deprecation")
     public static void setItemInMainHand(Player player, ItemStack item)
     {
-        if (version.equals("v1_8_R1") || version.equals("v1_8_R2") || version.equals("v1_8_R3"))
+        if (VERSION.equals("v1_8_R1") || VERSION.equals("v1_8_R2") || VERSION.equals("v1_8_R3"))
         {
             player.getInventory().setItemInHand(item);
             return;
@@ -187,12 +188,11 @@ public class BooksUtils {
     private static List<?> getPages(BookMeta meta, List<String> rawPages, Player player)
     {
         List<Object> pages = new ArrayList<>();
-        Method chatSerializerA = BukkitReflection.getMethod(BukkitReflection.getNMSClass("IChatBaseComponent").getClasses()[0], "a", String.class);
         rawPages.forEach(page ->
         {
             try
             {
-                pages.add(chatSerializerA.invoke(null, ComponentSerializer.toString(BooksUtils.getPage(page, player))));
+                pages.add(CHATSERIALIZER_A.invoke(null, ComponentSerializer.toString(BooksUtils.getPage(page, player))));
             }
             catch (IllegalAccessException | InvocationTargetException e)
             {
