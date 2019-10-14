@@ -29,7 +29,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-chat:1.14-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.3'
-    compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.39.Final'
+    compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.42.Final'
     compile 'org.bstats:bstats-bukkit-lite:1.5'
     compile 'com.github.Leomixer17.PluginLib:bukkit:-SNAPSHOT'
 }
