@@ -1,11 +1,10 @@
 package net.leonardo_dgs.interactivebooks.util;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
-import net.leomixer17.pluginlib.reflect.BukkitReflection;
-import net.leomixer17.pluginlib.reflect.MinecraftVersion;
+import me.lucko.helper.reflect.MinecraftVersion;
+import me.lucko.helper.reflect.MinecraftVersions;
+import me.lucko.helper.reflect.ServerReflection;
+import me.lucko.helper.text.Text;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -18,8 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,72 +32,35 @@ import java.util.regex.Pattern;
 public class BooksUtils {
 
     private static String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static final Plugin PAPIPLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
-    private static final Method CHATSERIALIZER_A = BukkitReflection.getMethod(BukkitReflection.getNMSClass("IChatBaseComponent").getClasses()[0], "a", String.class);
+    private static final Method CHATSERIALIZER_A;
+    private static final Field FIELD_PAGES;
 
-    public static void openBook(ItemStack book, Player player)
+    static
     {
-        if (MinecraftVersion.getVersion().getId() > MinecraftVersion.v1_14_R1.getId())
-        {
-            player.openBook(book);
-            return;
-        }
-        int slot = player.getInventory().getHeldItemSlot();
-        ItemStack old = player.getInventory().getItem(slot);
-        player.getInventory().setItem(slot, book);
+        Method chatSerializerA;
         try
         {
-            Object packet = null;
-            Constructor<?> packetConstructor;
-            Enum<?> enumHand;
-            Object packetDataSerializer;
-            Object packetDataSerializerArg;
-            Object minecraftKey;
-            switch (VERSION)
-            {
-                case "v1_14_R1":
-                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
-                    packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutOpenBook").getConstructor(BukkitReflection.getNMSClass("EnumHand"));
-                    packet = packetConstructor.newInstance(enumHand);
-                    break;
-
-                case "v1_13_R2":
-                case "v1_13_R1":
-                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
-                    minecraftKey = BukkitReflection.getNMSClass("MinecraftKey").getMethod("a", String.class).invoke(null, "minecraft:book_open");
-                    packetDataSerializerArg = BukkitReflection.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(Unpooled.buffer());
-                    packetDataSerializer = BukkitReflection.getNMSClass("PacketDataSerializer").getMethod("a", Enum.class).invoke(packetDataSerializerArg, enumHand);
-                    packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutCustomPayload").getConstructor(BukkitReflection.getNMSClass("MinecraftKey"), BukkitReflection.getNMSClass("PacketDataSerializer"));
-                    packet = packetConstructor.newInstance(minecraftKey, packetDataSerializer);
-                    break;
-
-                case "v1_12_R1":
-                case "v1_11_R1":
-                case "v1_10_R1":
-                case "v1_9_R2":
-                case "v1_9_R1":
-                    enumHand = (Enum<?>) BukkitReflection.getNMSClass("EnumHand").getField("MAIN_HAND").get(null);
-                    packetDataSerializerArg = BukkitReflection.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(Unpooled.buffer());
-                    packetDataSerializer = BukkitReflection.getNMSClass("PacketDataSerializer").getMethod("a", Enum.class).invoke(packetDataSerializerArg, enumHand);
-                    packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutCustomPayload").getConstructor(String.class, BukkitReflection.getNMSClass("PacketDataSerializer"));
-                    packet = packetConstructor.newInstance("MC|BOpen", packetDataSerializer);
-                    break;
-
-                case "v1_8_R3":
-                case "v1_8_R2":
-                case "v1_8_R1":
-                    packetDataSerializer = BukkitReflection.getNMSClass("PacketDataSerializer").getConstructor(ByteBuf.class).newInstance(Unpooled.buffer());
-                    packetConstructor = BukkitReflection.getNMSClass("PacketPlayOutCustomPayload").getConstructor(String.class, BukkitReflection.getNMSClass("PacketDataSerializer"));
-                    packet = packetConstructor.newInstance("MC|BOpen", packetDataSerializer);
-                    break;
-            }
-            BukkitReflection.sendPacket(packet, player);
+            chatSerializerA = ServerReflection.getMethod(ServerReflection.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
         }
-        catch (IllegalAccessException | NoSuchFieldException | NoSuchMethodException | InstantiationException | InvocationTargetException e)
+        catch (ClassNotFoundException e)
         {
             e.printStackTrace();
+            chatSerializerA = null;
         }
-        player.getInventory().setItem(slot, old);
+        CHATSERIALIZER_A = chatSerializerA;
+        Field fieldPages;
+        try
+        {
+            fieldPages = ServerReflection.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
+        }
+        catch (NoSuchFieldException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+            fieldPages = null;
+        }
+        FIELD_PAGES = fieldPages;
     }
 
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player)
@@ -111,38 +74,33 @@ public class BooksUtils {
         bookMeta.setLore(meta.getLore());
         if (hasBookGenerationSupport())
             bookMeta.setGeneration(meta.getGeneration());
-        replacePlaceholders(bookMeta, player, hasPlaceholderAPISupport());
+        replacePlaceholders(bookMeta, player);
         try
         {
-            List<?> pages = (List<?>) BukkitReflection.getOBCClass("inventory.CraftMetaBook").getDeclaredField("pages").get(bookMeta);
-            pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages(bookMeta, rawPages, player));
+            List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
+            pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages(rawPages, player));
         }
-        catch (IllegalAccessException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException e)
+        catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {
             e.printStackTrace();
         }
         return bookMeta;
     }
 
-    public static boolean hasPlaceholderAPISupport()
+    private static void replacePlaceholders(BookMeta meta, Player player)
     {
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") instanceof PlaceholderAPIPlugin;
-    }
-
-    private static void replacePlaceholders(BookMeta meta, Player player, boolean papi)
-    {
-        meta.setDisplayName(setPlaceholders(player, meta.getDisplayName(), papi));
+        meta.setDisplayName(Text.setPlaceholders(player, meta.getDisplayName()));
         if (meta.getTitle() != null)
-            meta.setTitle(setPlaceholders(player, meta.getTitle(), papi));
+            meta.setTitle(Text.setPlaceholders(player, meta.getTitle()));
         if (meta.getAuthor() != null)
-            meta.setAuthor(setPlaceholders(player, meta.getAuthor(), papi));
+            meta.setAuthor(Text.setPlaceholders(player, meta.getAuthor()));
         if (meta.getLore() != null)
-            meta.setLore(setPlaceholders(player, meta.getLore(), papi));
+            meta.setLore(setPlaceholders(player, meta.getLore()));
     }
 
     public static boolean hasBookGenerationSupport()
     {
-        return MinecraftVersion.getVersion().getId() >= MinecraftVersion.v1_10_R1.getId();
+        return MinecraftVersion.getRuntimeVersion().isAfterOrEq(MinecraftVersions.v1_10);
     }
 
     public static Generation getBookGeneration(String generation)
@@ -185,7 +143,7 @@ public class BooksUtils {
         return sb.toString();
     }
 
-    private static List<?> getPages(BookMeta meta, List<String> rawPages, Player player)
+    private static List<?> getPages(List<String> rawPages, Player player)
     {
         List<Object> pages = new ArrayList<>();
         rawPages.forEach(page ->
@@ -211,7 +169,6 @@ public class BooksUtils {
     {
         plainPage = plainPage.replace("<br>", "\n");
         TextComponentBuilder compBuilder = new TextComponentBuilder();
-        boolean papiSupport = hasPlaceholderAPISupport();
         Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainPage);
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
@@ -220,7 +177,7 @@ public class BooksUtils {
             if (matcher.start() != 0)
             {
                 curStr.append(plainPage, lastIndex, matcher.start());
-                TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, replaceEscapedChars(curStr.toString()), papiSupport)));
+                TextComponent current = new TextComponent(TextComponent.fromLegacyText(Text.setPlaceholders(player, replaceEscapedChars(curStr.toString()))));
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
             }
@@ -245,7 +202,7 @@ public class BooksUtils {
         if (lastIndex < plainPage.length())
         {
             curStr.append(plainPage, lastIndex, plainPage.length());
-            TextComponent current = new TextComponent(TextComponent.fromLegacyText(setPlaceholders(player, curStr.toString(), papiSupport)));
+            TextComponent current = new TextComponent(TextComponent.fromLegacyText(Text.setPlaceholders(player, curStr.toString())));
             compBuilder.add(current);
         }
 
@@ -284,9 +241,9 @@ public class BooksUtils {
         return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
     }
 
-    private static List<String> setPlaceholders(Player player, List<String> text, boolean papi)
+    private static List<String> setPlaceholders(Player player, List<String> text)
     {
-        if (papi)
+        if (PAPIPLUGIN != null && PAPIPLUGIN.isEnabled())
             return PlaceholderAPI.setPlaceholders(player, text);
         else
         {
@@ -295,14 +252,6 @@ public class BooksUtils {
                 coloredText.add(ChatColor.translateAlternateColorCodes('&', s));
             return coloredText;
         }
-    }
-
-    private static String setPlaceholders(Player player, String text, boolean papi)
-    {
-        if (papi)
-            return PlaceholderAPI.setPlaceholders(player, text);
-        else
-            return ChatColor.translateAlternateColorCodes('&', text);
     }
 
     private static TextComponent[] convertListToArray(List<TextComponent> list)

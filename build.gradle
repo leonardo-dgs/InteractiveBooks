@@ -2,21 +2,32 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group = 'net.leonardo_dgs'
-version = '1.4.6'
+version = '1.4.7'
 description = 'Create cool interactive books!'
+
+String mainPackage = project.group + '.' + project.name.toLowerCase()
+String apiVersion = '1.13'
+String author = 'Leonardo_DGS'
+String website = 'https://www.spigotmc.org/resources/45604/'
+
+String spigotVersion = '1.15-R0.1-SNAPSHOT'
+String nungeeChatVersion = '1.15-SNAPSHOT'
+String lombokVersion = '1.18.10'
+String bStatsVersion = '1.5'
+String nettyVersion = '4.1.43.Final'
+String papiVersion = '2.10.4'
+String nbtApiVersion = '2.1.1-SNAPSHOT'
 
 tasks.compileJava.sourceCompatibility = 1.8
 tasks.compileJava.targetCompatibility = 1.8
-
 tasks.compileJava.options.encoding = 'UTF-8'
 
 repositories {
     jcenter()
-    mavenCentral()
 
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
@@ -26,28 +37,37 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-chat:1.14-SNAPSHOT'
-    compileOnly 'me.clip:placeholderapi:2.10.3'
-    compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.42.Final'
-    compile 'org.bstats:bstats-bukkit-lite:1.5'
-    compile 'com.github.Leomixer17.PluginLib:bukkit:-SNAPSHOT'
+    shadow 'org.spigotmc:spigot-api:' + spigotVersion
+    shadow 'net.md-5:bungeecord-chat:' + nungeeChatVersion
+    shadow 'me.clip:placeholderapi:' + papiVersion
+    shadow group: 'io.netty', name: 'netty-all', version: nettyVersion
+    shadow 'org.projectlombok:lombok:' + lombokVersion
+    annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
+    implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
+    implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion
+    implementation 'com.github.Leonardo-DGS.helper:helper:-SNAPSHOT'
 }
 
 tasks.processResources {
     filter ReplaceTokens, tokens: [
-            "version"    : project.property("version"),
-            "description": project.property("description")
+            "name"       : project.name,
+            "mainPackage": mainPackage,
+            "version"    : project.version,
+            "apiVersion" : apiVersion,
+            "description": project.description,
+            "author"     : author,
+            "website"    : website
     ]
 }
 
 tasks.jar.enabled = false
 
 tasks.shadowJar {
-    archiveFileName = 'InteractiveBooks.jar'
+    archiveFileName = project.name + '.jar'
     minimize()
-    relocate 'net.leomixer17.pluginlib', 'net.leonardo_dgs.interactivebooks'
-    relocate 'org.bstats.bukkit', 'net.leonardo_dgs.interactivebooks.bstats'
+    relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
+    relocate 'me.lucko.helper', mainPackage + ".helper"
+    relocate 'org.bstats.bukkit', mainPackage + '.bstats'
 }
 
 artifacts {

@@ -1,8 +1,8 @@
 package net.leonardo_dgs.interactivebooks;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.lucko.helper.reflect.MinecraftVersion;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import net.leomixer17.pluginlib.nbt.NBTItem;
-import net.leomixer17.pluginlib.reflect.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -37,7 +37,7 @@ public final class PlayerListener implements Listener {
         }
         if (!Objects.equals(openBookId, "") && InteractiveBooks.getBook(openBookId) != null)
         {
-            if (MinecraftVersion.getVersion().getId() < MinecraftVersion.v1_14_R1.getId())
+            if (MinecraftVersion.getRuntimeVersion().isBefore(MinecraftVersion.of(1, 14, 0)))
                 Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> InteractiveBooks.getBook(openBookId).open(event.getPlayer()));
             else
                 InteractiveBooks.getBook(openBookId).open(event.getPlayer());
