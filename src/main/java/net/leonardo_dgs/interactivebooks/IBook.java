@@ -1,7 +1,8 @@
 package net.leonardo_dgs.interactivebooks;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.lucko.helper.utils.Players;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import net.leomixer17.pluginlib.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -147,7 +148,7 @@ public class IBook {
      */
     public void open(Player player)
     {
-        BooksUtils.openBook(this.getItem(player), player);
+        Players.openBook(this.getItem(player), player);
     }
 
     /**
