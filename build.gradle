@@ -14,9 +14,10 @@ String apiVersion = '1.13'
 String author = 'Leonardo_DGS'
 String website = 'https://www.spigotmc.org/resources/45604/'
 
-String spigotVersion = '1.15.1-R0.1-SNAPSHOT'
+String spigotVersion = '1.15.2-R0.1-SNAPSHOT'
 String bungeeChatVersion = '1.15-SNAPSHOT'
 String lombokVersion = '1.18.10'
+String helperVersion = '5.6.2'
 String bStatsVersion = '1.5'
 String papiVersion = '2.10.4'
 String nbtApiVersion = '2.1.1'
@@ -38,12 +39,13 @@ repositories {
 dependencies {
     shadow 'org.spigotmc:spigot-api:' + spigotVersion
     shadow 'net.md-5:bungeecord-chat:' + bungeeChatVersion
+    shadow 'io.netty:netty-all:4.1.25.Final'
     shadow 'me.clip:placeholderapi:' + papiVersion
     shadow 'org.projectlombok:lombok:' + lombokVersion
     annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
     implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
     implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion
-    implementation 'com.github.Leonardo-DGS.helper:helper:-SNAPSHOT'
+    implementation 'me.lucko:helper:' + helperVersion
 }
 
 tasks.processResources {

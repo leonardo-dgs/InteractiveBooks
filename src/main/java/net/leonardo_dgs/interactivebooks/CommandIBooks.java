@@ -1,7 +1,7 @@
 package net.leonardo_dgs.interactivebooks;
 
-import me.lucko.helper.text.Text;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
+import net.leonardo_dgs.interactivebooks.util.PAPIUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,7 +63,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
-                String bookIdToOpen = Text.setPlaceholders(playerToOpen, args[1]);
+                String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, args[1]);
                 if (InteractiveBooks.getBook(bookIdToOpen) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -96,7 +96,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 Player playerToGet = (Player) sender;
-                String bookIdToGet = Text.setPlaceholders(playerToGet, args[1]);
+                String bookIdToGet = PAPIUtil.setPlaceholders(playerToGet, args[1]);
                 if (InteractiveBooks.getBook(bookIdToGet) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
@@ -118,7 +118,7 @@ public final class CommandIBooks implements CommandExecutor {
                     return false;
                 }
                 Player playerToGive = Bukkit.getPlayer(args[2]);
-                String bookIdToGive = Text.setPlaceholders(playerToGive, args[1]);
+                String bookIdToGive = PAPIUtil.setPlaceholders(playerToGive, args[1]);
                 if (InteractiveBooks.getBook(bookIdToGive) == null)
                 {
                     sender.sendMessage("§cThat book doesn't exists.");
