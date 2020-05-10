@@ -42,7 +42,7 @@ public class BooksUtils {
         Method chatSerializerA;
         try
         {
-            chatSerializerA = ServerReflection.getMethod(ServerReflection.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
+            chatSerializerA = ReflectionUtil.getMethod(ServerReflection.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
         }
         catch (ClassNotFoundException e)
         {
@@ -89,11 +89,11 @@ public class BooksUtils {
 
     private static void replacePlaceholders(BookMeta meta, Player player)
     {
-        meta.setDisplayName(Text.setPlaceholders(player, meta.getDisplayName()));
+        meta.setDisplayName(PAPIUtil.setPlaceholders(player, meta.getDisplayName()));
         if (meta.getTitle() != null)
-            meta.setTitle(Text.setPlaceholders(player, meta.getTitle()));
+            meta.setTitle(PAPIUtil.setPlaceholders(player, meta.getTitle()));
         if (meta.getAuthor() != null)
-            meta.setAuthor(Text.setPlaceholders(player, meta.getAuthor()));
+            meta.setAuthor(PAPIUtil.setPlaceholders(player, meta.getAuthor()));
         if (meta.getLore() != null)
             meta.setLore(setPlaceholders(player, meta.getLore()));
     }
@@ -177,7 +177,7 @@ public class BooksUtils {
             if (matcher.start() != 0)
             {
                 curStr.append(plainPage, lastIndex, matcher.start());
-                TextComponent current = new TextComponent(TextComponent.fromLegacyText(Text.setPlaceholders(player, replaceEscapedChars(curStr.toString()))));
+                TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, replaceEscapedChars(curStr.toString()))));
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
             }
@@ -202,7 +202,7 @@ public class BooksUtils {
         if (lastIndex < plainPage.length())
         {
             curStr.append(plainPage, lastIndex, plainPage.length());
-            TextComponent current = new TextComponent(TextComponent.fromLegacyText(Text.setPlaceholders(player, curStr.toString())));
+            TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, curStr.toString())));
             compBuilder.add(current);
         }
 
