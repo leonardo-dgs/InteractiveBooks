@@ -39,7 +39,7 @@ repositories {
 dependencies {
     shadow 'org.spigotmc:spigot-api:' + spigotVersion
     shadow 'net.md-5:bungeecord-chat:' + bungeeChatVersion
-    shadow 'io.netty:netty-all:4.1.25.Final'
+    shadow 'io.netty:netty-all:4.1.42.Final'
     shadow 'me.clip:placeholderapi:' + papiVersion
     shadow 'org.projectlombok:lombok:' + lombokVersion
     annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
