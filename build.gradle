@@ -37,11 +37,11 @@ repositories {
 }
 
 dependencies {
-    shadow 'org.spigotmc:spigot-api:' + spigotVersion
-    shadow 'net.md-5:bungeecord-chat:' + bungeeChatVersion
-    shadow 'io.netty:netty-all:4.1.42.Final'
-    shadow 'me.clip:placeholderapi:' + papiVersion
-    shadow 'org.projectlombok:lombok:' + lombokVersion
+    compileOnly 'org.spigotmc:spigot-api:' + spigotVersion
+    compileOnly 'net.md-5:bungeecord-chat:' + bungeeChatVersion
+    compileOnly 'io.netty:netty-all:4.1.25.Final'
+    compileOnly 'me.clip:placeholderapi:' + papiVersion
+    compileOnly 'org.projectlombok:lombok:' + lombokVersion
     annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
     implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
     implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion

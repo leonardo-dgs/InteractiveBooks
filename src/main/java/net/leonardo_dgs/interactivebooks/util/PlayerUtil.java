@@ -17,41 +17,23 @@ public final class PlayerUtil {
 
     private static final Object OPENBOOK_PACKET;
 
-    private static final Object TITLE_ENUM;
-    private static final Object SUBTITLE_ENUM;
-    private static final Constructor<?> TITLE_CONSTRUCTOR;
-
     private static final Method ICHATBASECOMPONENT_A_METHOD;
-
-    private static final Constructor<?> TABLIST_CONSTRUCTOR;
 
     private static final Object ACTIONBAR_ENUM;
      private static final Constructor<?> ACTIONBAR_CONSTRUCTOR;
 
     static {
-        Object title_Enum = null;
-        Object subtitle_Enum = null;
-        Constructor<?> title_Constructor = null;
         Method iChatBaseComponent_A_Method = null;
-        Constructor<?> tablist_Constructor = null;
         Object actionbar_Enum = null;
         Constructor<?> actionbar_Constructor = null;
         try {
-            title_Enum = ServerReflection.nmsClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("TITLE").get(null);
-            subtitle_Enum = ServerReflection.nmsClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("SUBTITLE").get(null);
-            title_Constructor = ServerReflection.nmsClass("PacketPlayOutTitle").getConstructor(ServerReflection.nmsClass("PacketPlayOutTitle").getDeclaredClasses()[0], ServerReflection.nmsClass("IChatBaseComponent"), int.class, int.class, int.class);
             iChatBaseComponent_A_Method = ServerReflection.nmsClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class);
-            tablist_Constructor = ServerReflection.nmsClass("PacketPlayOutPlayerListHeaderFooter").getConstructor();
             actionbar_Enum = ServerReflection.nmsClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("ACTIONBAR").get(null);
             actionbar_Constructor = ServerReflection.nmsClass("PacketPlayOutTitle").getConstructor(ServerReflection.nmsClass("PacketPlayOutTitle").getDeclaredClasses()[0], ServerReflection.nmsClass("IChatBaseComponent"));
         } catch (IllegalAccessException | NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        TITLE_ENUM = title_Enum;
-        SUBTITLE_ENUM = subtitle_Enum;
-        TITLE_CONSTRUCTOR = title_Constructor;
         ICHATBASECOMPONENT_A_METHOD = iChatBaseComponent_A_Method;
-        TABLIST_CONSTRUCTOR = tablist_Constructor;
         ACTIONBAR_ENUM = actionbar_Enum;
         ACTIONBAR_CONSTRUCTOR = actionbar_Constructor;
 
