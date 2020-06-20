@@ -1,9 +1,7 @@
 package net.leonardo_dgs.interactivebooks;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import me.lucko.helper.reflect.MinecraftVersion;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -16,7 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Objects;
 
 public final class PlayerListener implements Listener {
 
@@ -35,18 +32,18 @@ public final class PlayerListener implements Listener {
             openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_first_join");
             booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_first_join");
         }
-        if (!Objects.equals(openBookId, "") && InteractiveBooks.getBook(openBookId) != null)
+        if(openBookId != null && !openBookId.equals(""))
         {
-            if (MinecraftVersion.getRuntimeVersion().isBefore(MinecraftVersion.of(1, 14, 0)))
-                Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> InteractiveBooks.getBook(openBookId).open(event.getPlayer()));
-            else
-                InteractiveBooks.getBook(openBookId).open(event.getPlayer());
+            IBook book = InteractiveBooks.getBook(openBookId);
+            if (book != null)
+                book.open(event.getPlayer());
         }
 
         booksToGiveIds.forEach(id ->
         {
-            if (InteractiveBooks.getBook(id) != null)
-                event.getPlayer().getInventory().addItem(InteractiveBooks.getBook(id).getItem(event.getPlayer()));
+            IBook book = InteractiveBooks.getBook(id);
+            if (book != null)
+                event.getPlayer().getInventory().addItem(book.getItem(event.getPlayer()));
         });
     }
 
