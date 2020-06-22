@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +67,7 @@ public final class PlayerListener implements Listener {
         bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
         BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
     }
-
+/*
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
     {
@@ -89,5 +88,5 @@ public final class PlayerListener implements Listener {
 
         event.setCancelled(true);
     }
-
+*/
 }
