@@ -1,5 +1,7 @@
 package net.leonardo_dgs.interactivebooks;
 
+import co.aikar.commands.CommandReplacements;
+import co.aikar.commands.PaperCommandManager;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -13,13 +15,14 @@ public final class InteractiveBooks extends JavaPlugin {
 
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
+    private static PaperCommandManager commandManager;
 
     @Override
     public void onEnable()
     {
         instance = this;
+        registerCommands();
         Config.loadAll();
-        registerCommand();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         new MetricsLite(this);
     }
@@ -69,6 +72,15 @@ public final class InteractiveBooks extends JavaPlugin {
      */
     public static void registerBook(IBook book)
     {
+        if(!book.getOpenCommands().isEmpty())
+        {
+            CommandReplacements replacements = commandManager.getCommandReplacements();
+            replacements.addReplacement("openbook", String.join("|", book.getOpenCommands()));
+            replacements.addReplacement("interactivebooks.open", "interactivebooks.open." + book.getId());
+            CommandOpenBook command = new CommandOpenBook(book);
+            commandManager.registerCommand(command);
+            book.setCommandExecutor(command);
+        }
         books.put(book.getId(), book);
     }
 
@@ -79,11 +91,15 @@ public final class InteractiveBooks extends JavaPlugin {
      */
     public static void unregisterBook(String id)
     {
+        IBook book = getBook(id);
+        if(book.getCommandExecutor() != null)
+            commandManager.unregisterCommand(book.getCommandExecutor());
         books.remove(id);
     }
 
-    private void registerCommand()
+    private void registerCommands()
     {
+        commandManager = new PaperCommandManager(this);
         PluginCommand commandIBooks = getCommand("ibooks");
         Objects.requireNonNull(commandIBooks).setExecutor(new CommandIBooks());
         commandIBooks.setTabCompleter(new TabCompleterIBooks());
