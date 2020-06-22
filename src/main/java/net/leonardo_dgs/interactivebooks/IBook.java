@@ -1,6 +1,9 @@
 package net.leonardo_dgs.interactivebooks;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import net.leonardo_dgs.interactivebooks.util.PlayerUtil;
 import org.bukkit.Material;
@@ -25,6 +28,10 @@ public class IBook {
     private List<String> pages;
 
     private final Set<String> openCommands = new HashSet<>();
+
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private CommandOpenBook commandExecutor;
 
     /**
      * Constructor for {@link IBook} that takes data from the supplied configuration.

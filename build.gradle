@@ -18,6 +18,7 @@ String spigotVersion = '1.15.2-R0.1-SNAPSHOT'
 String bungeeChatVersion = '1.15-SNAPSHOT'
 String lombokVersion = '1.18.12'
 String helperVersion = '5.6.2'
+String acfVersion = '0.5.0-SNAPSHOT'
 String bStatsVersion = '1.5'
 String papiVersion = '2.10.6'
 String nbtApiVersion = '2.3.1'
@@ -33,6 +34,7 @@ repositories {
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
     maven { url = 'https://www.jitpack.io' }
 }
 
@@ -46,6 +48,7 @@ dependencies {
     implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
     implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion
     implementation 'me.lucko:helper:' + helperVersion
+    implementation 'co.aikar:acf-paper:' + acfVersion
 }
 
 tasks.processResources {
@@ -66,8 +69,16 @@ tasks.shadowJar {
     archiveFileName = project.name + '.jar'
     minimize()
     relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
-    relocate 'me.lucko.helper', mainPackage + ".helper"
+    relocate 'me.lucko.helper', mainPackage + '.helper'
+    relocate 'co.aikar.commands', mainPackage + '.acf'
+    relocate 'co.aikar.locales', mainPackage + '.locales'
     relocate 'org.bstats.bukkit', mainPackage + '.bstats'
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
 }
 
 artifacts {
