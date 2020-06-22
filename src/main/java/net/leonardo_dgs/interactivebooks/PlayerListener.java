@@ -67,26 +67,5 @@ public final class PlayerListener implements Listener {
         bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
         BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
     }
-/*
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
-    {
-        String command = event.getMessage().split(" ", 2)[0].replaceFirst("/", "").toLowerCase();
-        IBook iBook = null;
-        for (IBook book : InteractiveBooks.getBooks().values())
-            if (book.getOpenCommands().contains(command))
-            {
-                iBook = book;
-                break;
-            }
-        if (iBook == null)
-            return;
-        if (event.getPlayer().hasPermission("interactivebooks.open." + iBook.getId()))
-            iBook.open(event.getPlayer());
-        else
-            event.getPlayer().sendMessage("§cYou don't have permission to open this book.");
 
-        event.setCancelled(true);
-    }
-*/
 }
