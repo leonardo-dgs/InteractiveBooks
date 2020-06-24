@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 public final class PlayerUtil {
 
     private static final NmsVersion NMS_VERSION = ServerReflection.getNmsVersion();
-    private static final boolean OPENBOOK_NATIVE_SUPPORT = MinecraftVersion.getRuntimeVersion().isAfterOrEq(MinecraftVersion.of(1, 14, 2));
+    private static final boolean OPENBOOK_NATIVE_SUPPORT;
 
     private static final Enum<?> ENUM_HAND;
     private static final Constructor<?> PACKET_CONSTRUCTOR;
@@ -25,6 +25,9 @@ public final class PlayerUtil {
     private static final Method PACKETDATASERIALIZER_ENUM;
 
     static {
+        MinecraftVersion runningVersion = MinecraftVersion.getRuntimeVersion();
+        MinecraftVersion v1_14_2 = MinecraftVersion.parse("1.14.2");
+        OPENBOOK_NATIVE_SUPPORT = runningVersion.equals(v1_14_2) || runningVersion.isAfter(v1_14_2);
         Enum<?> enumHand = null;
         Constructor<?> packetConstructor = null;
         Object minecraftKey = null;
