@@ -18,7 +18,14 @@ import java.util.List;
 
 public final class PlayerListener implements Listener {
 
-    private static final boolean MC_BEFORE_1_14 = MinecraftVersion.getRuntimeVersion().isBefore(MinecraftVersion.of(1, 14, 0));
+    private static final boolean MC_AFTER_1_14;
+
+    static
+    {
+        MinecraftVersion runningVersion = MinecraftVersion.getRuntimeVersion();
+        MinecraftVersion v1_14 = MinecraftVersion.parse("1.14");
+        MC_AFTER_1_14 = runningVersion.equals(v1_14) || runningVersion.isAfter(v1_14);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event)
@@ -40,10 +47,10 @@ public final class PlayerListener implements Listener {
             IBook book = InteractiveBooks.getBook(openBookId);
             if (book != null)
             {
-                if(MC_BEFORE_1_14)
-                    Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> book.open(event.getPlayer()));
-                else
+                if(MC_AFTER_1_14)
                     book.open(event.getPlayer());
+                else
+                    Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> book.open(event.getPlayer()));
             }
         }
 
