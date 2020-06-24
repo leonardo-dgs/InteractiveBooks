@@ -1,7 +1,9 @@
 package net.leonardo_dgs.interactivebooks;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.lucko.helper.reflect.MinecraftVersion;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -16,7 +18,9 @@ import java.util.List;
 
 public final class PlayerListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    private static final boolean MC_BEFORE_1_14 = MinecraftVersion.getRuntimeVersion().isBefore(MinecraftVersion.of(1, 14, 0));
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         String openBookId;
@@ -35,7 +39,12 @@ public final class PlayerListener implements Listener {
         {
             IBook book = InteractiveBooks.getBook(openBookId);
             if (book != null)
-                book.open(event.getPlayer());
+            {
+                if(MC_BEFORE_1_14)
+                    Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> book.open(event.getPlayer()));
+                else
+                    book.open(event.getPlayer());
+            }
         }
 
         booksToGiveIds.forEach(id ->
