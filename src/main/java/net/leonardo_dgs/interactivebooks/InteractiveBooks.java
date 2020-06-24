@@ -2,6 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
+import me.lucko.helper.reflect.MinecraftVersion;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -10,17 +11,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public final class InteractiveBooks extends JavaPlugin {
 
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
     private static PaperCommandManager commandManager;
+    private final String PREFIX = "[" + getName() + "] ";
 
     @Override
     public void onEnable()
     {
         instance = this;
+        MinecraftVersion runningVersion = MinecraftVersion.getRuntimeVersion();
+        MinecraftVersion firstSupportedVersion = MinecraftVersion.parse("1.8.8");
+        if(!runningVersion.equals(firstSupportedVersion) && runningVersion.isBefore(firstSupportedVersion))
+        {
+            Bukkit.getLogger().log(Level.WARNING, PREFIX + "This Minecraft version is not supported, please use 1.8.8 or newer");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         registerCommands();
         Config.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
