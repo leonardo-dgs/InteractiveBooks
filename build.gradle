@@ -21,7 +21,7 @@ String helperVersion = '5.6.2'
 String acfVersion = '0.5.0-SNAPSHOT'
 String bStatsVersion = '1.5'
 String papiVersion = '2.10.6'
-String nbtApiVersion = '2.3.1'
+String nbtApiVersion = '2.4.1'
 
 tasks.compileJava.sourceCompatibility = 1.8
 tasks.compileJava.targetCompatibility = 1.8
