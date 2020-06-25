@@ -6,8 +6,3 @@ description: @description@
 author: @author@
 website: @website@
 softdepend: [PlaceholderAPI]
-commands:
-  ibooks:
-    description: Command to manage books
-    permission: interactivebooks.command
-    aliases: [interactivebooks, ib]
