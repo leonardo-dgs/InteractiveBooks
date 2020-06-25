@@ -5,12 +5,10 @@ import co.aikar.commands.PaperCommandManager;
 import me.lucko.helper.reflect.MinecraftVersion;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Level;
 
 public final class InteractiveBooks extends JavaPlugin {
@@ -111,9 +109,9 @@ public final class InteractiveBooks extends JavaPlugin {
     private void registerCommands()
     {
         commandManager = new PaperCommandManager(this);
-        PluginCommand commandIBooks = getCommand("ibooks");
-        Objects.requireNonNull(commandIBooks).setExecutor(new CommandIBooks());
-        commandIBooks.setTabCompleter(new TabCompleterIBooks());
+        commandManager.getCommandCompletions().registerCompletion("ibooks", handler -> getBooks().keySet());
+        commandManager.getCommandCompletions().registerStaticCompletion("book_generations", new String[] { "original", "copy_of_original", "copy_of_copy", "tattered" } );
+        commandManager.registerCommand(new CommandIBooks());
     }
 
 }

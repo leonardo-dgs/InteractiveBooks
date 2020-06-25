@@ -1,216 +1,173 @@
 package net.leonardo_dgs.interactivebooks;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import net.leonardo_dgs.interactivebooks.util.PAPIUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public final class CommandIBooks implements CommandExecutor {
+@CommandAlias("interactivebooks|ibooks|ib")
+@CommandPermission("interactivebooks.command")
+@Description("Manage books")
+public final class CommandIBooks extends BaseCommand {
 
-    private static final String helpMessage =
-            "§6InteractiveBooks §7- §6Commands\n"
-                    + "§e/ibooks list\n"
-                    + "§e/ibooks open <book-id> [player]\n"
-                    + "§e/ibooks get <book-id>\n"
-                    + "§e/ibooks give <book-id> <player>\n"
-                    + "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
-                    // WIP: Book importing
-                    // + "§e/ibooks import <book-id>\n"
-                    + "§e/ibooks reload";
+    @HelpCommand
+    public void onHelp(CommandSender sender)
+    {
+        sender.sendMessage(
+                "§6InteractiveBooks §7- §6Commands\n"
+                + "§e/ibooks list\n"
+                + "§e/ibooks open <book-id> [player]\n"
+                + "§e/ibooks get <book-id>\n"
+                + "§e/ibooks give <book-id> <player>\n"
+                + "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
+                + "§e/ibooks reload"
+        );
+    }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
+    @Subcommand("list")
+    @CommandPermission("interactivebooks.command.list")
+    public void onList(CommandSender sender)
+    {
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> iterator = InteractiveBooks.getBooks().keySet().iterator();
+        boolean hasNext = iterator.hasNext();
+        while (hasNext)
+        {
+            String bookId = iterator.next();
+            sb.append("§6");
+            sb.append(bookId);
+            if(hasNext = iterator.hasNext())
+                sb.append("§7, ");
+        }
+        sender.sendMessage("§eBooks:\n" + sb.toString());
+    }
+
+    @Subcommand("open")
+    @CommandPermission("interactivebooks.command.open")
+    @CommandCompletion("@ibooks @players @nothing")
+    public void onOpen(CommandSender sender, String[] args)
     {
         if (args.length == 0)
         {
-            sender.sendMessage(helpMessage);
-            return false;
+            sender.sendMessage("§cUsage: §7/ibooks open <book-id> [player]");
+            return;
         }
-
-        switch (args[0])
+        if (args.length == 1 && !(sender instanceof Player))
         {
-            case "list":
-                if (!sender.hasPermission("interactivebooks.command.list"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                StringBuilder sb = new StringBuilder();
-                for (IBook book : InteractiveBooks.getBooks().values())
-                    sb.append("§6%book_id%§7, ".replace("%book_id%", book.getId()));
-                sender.sendMessage("§eBooks:\n" + (sb.toString().equals("") ? "" : sb.toString().substring(0, sb.toString().length() - 2)));
-                break;
+            sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
+            return;
+        }
+        Player playerToOpen = args.length == 1 ? (Player) sender : Bukkit.getPlayer(args[1]);
+        String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, args[0]);
+        if (InteractiveBooks.getBook(bookIdToOpen) == null)
+        {
+            sender.sendMessage("§cThat book doesn't exists.");
+            return;
+        }
+        if (playerToOpen == null)
+        {
+            sender.sendMessage("§cThat player isn't connected.");
+            return;
+        }
+        InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
+        if (!playerToOpen.equals(sender))
+            sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[1]));
+    }
 
-            case "open":
-                if (!sender.hasPermission("interactivebooks.command.open"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                if (args.length == 1)
-                {
-                    sender.sendMessage("§cUsage: §7/ibooks open <book-id> [player]");
-                    return false;
-                }
-                if (args.length == 2 && !(sender instanceof Player))
-                {
-                    sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
-                    return false;
-                }
-                Player playerToOpen = args.length == 2 ? (Player) sender : Bukkit.getPlayer(args[2]);
-                String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, args[1]);
-                if (InteractiveBooks.getBook(bookIdToOpen) == null)
-                {
-                    sender.sendMessage("§cThat book doesn't exists.");
-                    return false;
-                }
-                if (playerToOpen == null)
-                {
-                    sender.sendMessage("§cThat player isn't connected.");
-                    return false;
-                }
-                InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
-                if (!playerToOpen.equals(sender))
-                    sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[2]));
-                break;
+    @Subcommand("get")
+    @CommandPermission("interactivebooks.command.get")
+    @CommandCompletion("@ibooks @nothing")
+    public void onGet(Player player, String[] args)
+    {
+        if (args.length == 0)
+        {
+            player.sendMessage("§cUsage: §7/ibooks get <book-id>");
+            return;
+        }
+        String bookIdToGet = PAPIUtil.setPlaceholders(player, args[0]);
+        if (InteractiveBooks.getBook(bookIdToGet) == null)
+        {
+            player.sendMessage("§cThat book doesn't exists.");
+            return;
+        }
+        player.getInventory().addItem(InteractiveBooks.getBook(bookIdToGet).getItem(player));
+        player.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGet));
+    }
 
-            case "get":
-                if (!sender.hasPermission("interactivebooks.command.get"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                if (!(sender instanceof Player))
-                {
-                    sender.sendMessage("§cThat command can only be executed by players.");
-                    return false;
-                }
-                if (args.length == 1)
-                {
-                    sender.sendMessage("§cUsage: §7/ibooks get <book-id>");
-                    return false;
-                }
-                Player playerToGet = (Player) sender;
-                String bookIdToGet = PAPIUtil.setPlaceholders(playerToGet, args[1]);
-                if (InteractiveBooks.getBook(bookIdToGet) == null)
-                {
-                    sender.sendMessage("§cThat book doesn't exists.");
-                    return false;
-                }
-                playerToGet.getInventory().addItem(InteractiveBooks.getBook(bookIdToGet).getItem(playerToGet));
-                sender.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGet));
-                break;
+    @Subcommand("give")
+    @CommandPermission("interactivebooks.command.give")
+    @CommandCompletion("@ibooks @players @nothing")
+    public void onGive(CommandSender sender, String[] args)
+    {
+        if (args.length < 2)
+        {
+            sender.sendMessage("§cUsage: §7/ibooks give <book-id> <player>");
+            return;
+        }
+        Player targetPlayer = Bukkit.getPlayer(args[1]);
+        String targetBookId = PAPIUtil.setPlaceholders(targetPlayer, args[0]);
+        if (InteractiveBooks.getBook(targetBookId) == null)
+        {
+            sender.sendMessage("§cThat book doesn't exists.");
+            return;
+        }
+        if (targetPlayer == null)
+        {
+            sender.sendMessage("§cThat player isn't connected.");
+            return;
+        }
+        targetPlayer.getInventory().addItem(InteractiveBooks.getBook(targetBookId).getItem(targetPlayer));
+        sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", targetBookId).replace("%player%", args[1]));
+        targetPlayer.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", targetBookId));
+    }
 
-            case "give":
-                if (!sender.hasPermission("interactivebooks.command.give"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                if (args.length < 3)
-                {
-                    sender.sendMessage("§cUsage: §7/ibooks give <book-id> <player>");
-                    return false;
-                }
-                Player playerToGive = Bukkit.getPlayer(args[2]);
-                String bookIdToGive = PAPIUtil.setPlaceholders(playerToGive, args[1]);
-                if (InteractiveBooks.getBook(bookIdToGive) == null)
-                {
-                    sender.sendMessage("§cThat book doesn't exists.");
-                    return false;
-                }
-                if (playerToGive == null)
-                {
-                    sender.sendMessage("§cThat player isn't connected.");
-                    return false;
-                }
-                playerToGive.getInventory().addItem(InteractiveBooks.getBook(bookIdToGive).getItem(playerToGive));
-                sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", bookIdToGive).replace("%player%", args[2]));
-                playerToGive.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGive));
-                break;
-
-            case "create":
-                if (!sender.hasPermission("interactivebooks.command.create"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                if (args.length < 5)
-                {
-                    sender.sendMessage("§cUsage: §7/ibooks create <book-id> <name> <title> <author> [generation]");
-                    return false;
-                }
-                if (InteractiveBooks.getBook(args[1]) != null)
-                {
-                    sender.sendMessage("§cA book with that id already exists");
-                    return false;
-                }
-
-                String bookId = args[1];
-                String bookName = args[2];
-                String bookTitle = args[3];
-                String bookAuthor = args[4];
-                String bookGeneration = "ORIGINAL";
-                if (args.length > 5)
-                    bookGeneration = args[5].toUpperCase();
-                if (BooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
-                {
-                    sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
-                    return false;
-                }
-
-                IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
-                createdBook.save();
-                InteractiveBooks.registerBook(createdBook);
-                sender.sendMessage("§aBook successfully created.");
-                break;
-            // WIP: Book importing
-		/*
-		case "import":
-			if(!sender.hasPermission("interactivebooks.command.import")) {
-				sender.sendMessage("§4You don't have permission to execute this action.");
-				return false;
-			}
-			if(args.length < 2) {
-				sender.sendMessage("§cUsage: §7/ibooks import <book-id>");
-				return false;
-			}
-			if(InteractiveBooks.getBook(args[1]) != null) {
-				sender.sendMessage("§cA book with that id already exists.");
-				return false;
-			}
-			if(!IBooksUtils.getItemInMainHand((Player) sender).getType().equals(Material.WRITTEN_BOOK)) {
-				sender.sendMessage("§cIn order to import a book, you must have it in your hand.");
-				return false;
-			}
-			
-			ItemStack itemToImport = IBooksUtils.getItemInMainHand((Player) sender);
-			IBook importedBook = new IBook(args[1], (BookMeta) itemToImport.getItemMeta());
-			importedBook.save();
-			InteractiveBooks.registerBook(importedBook);
-			sender.sendMessage("§aBook successfully imported.");
-			break;
-		*/
-            case "reload":
-                if (!sender.hasPermission("interactivebooks.command.reload"))
-                {
-                    sender.sendMessage("§4You don't have permission to execute this action.");
-                    return false;
-                }
-                Config.loadAll();
-                sender.sendMessage("§aConfig reloaded!");
-                break;
-
-            default:
-                sender.sendMessage(helpMessage);
+    @Subcommand("create")
+    @CommandPermission("interactivebooks.command.create")
+    @CommandCompletion("@nothing @nothing @nothing @players @book_generations @nothing")
+    public void onCreate(CommandSender sender, String[] args)
+    {
+        if (args.length < 4)
+        {
+            sender.sendMessage("§cUsage: §7/ibooks create <book-id> <name> <title> <author> [generation]");
+            return;
+        }
+        if (InteractiveBooks.getBook(args[0]) != null)
+        {
+            sender.sendMessage("§cA book with that id already exists");
+            return;
         }
 
-        return false;
+        String bookId = args[0];
+        String bookName = args[1];
+        String bookTitle = args[2];
+        String bookAuthor = args[3];
+        String bookGeneration = "ORIGINAL";
+        if (args.length > 4)
+            bookGeneration = args[4].toUpperCase();
+        if (BooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
+        {
+            sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
+            return;
+        }
+
+        IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
+        createdBook.save();
+        InteractiveBooks.registerBook(createdBook);
+        sender.sendMessage("§aBook successfully created.");
+    }
+
+    @Subcommand("reload")
+    @CommandPermission("interactivebooks.command.reload")
+    public void onReload(CommandSender sender)
+    {
+        Config.loadAll();
+        sender.sendMessage("§aConfig reloaded!");
     }
 
 }
