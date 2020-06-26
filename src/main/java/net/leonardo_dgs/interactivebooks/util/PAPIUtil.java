@@ -1,8 +1,8 @@
 package net.leonardo_dgs.interactivebooks.util;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.lucko.helper.text.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -46,7 +46,7 @@ public final class PAPIUtil {
             return PlaceholderAPI.setPlaceholders(null, text);
         }
 
-        return Text.colorize(text);
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 
     private static boolean isPlaceholderAPISupported()

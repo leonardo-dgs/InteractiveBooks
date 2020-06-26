@@ -1,9 +1,7 @@
 package net.leonardo_dgs.interactivebooks.util;
 
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.lucko.helper.reflect.MinecraftVersion;
-import me.lucko.helper.reflect.MinecraftVersions;
-import me.lucko.helper.reflect.ServerReflection;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -30,7 +28,10 @@ import java.util.regex.Pattern;
 
 public class BooksUtils {
 
-    private static String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    @Getter
+    private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
+
+    private static final boolean OLD_ITEMINHAND_METHOD = ReflectionUtil.getNmsVersion().equals("v1_8_R3");
     private static final Plugin PAPIPLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
     private static final Method CHATSERIALIZER_A;
@@ -41,7 +42,7 @@ public class BooksUtils {
         Method chatSerializerA;
         try
         {
-            chatSerializerA = ReflectionUtil.getMethod(ServerReflection.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
+            chatSerializerA = ReflectionUtil.getMethod(ReflectionUtil.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
         }
         catch (ClassNotFoundException e)
         {
@@ -52,7 +53,7 @@ public class BooksUtils {
         Field fieldPages;
         try
         {
-            fieldPages = ServerReflection.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
+            fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
         }
         catch (NoSuchFieldException | ClassNotFoundException e)
         {
@@ -71,7 +72,7 @@ public class BooksUtils {
         bookMeta.setTitle(meta.getTitle());
         bookMeta.setAuthor(meta.getAuthor());
         bookMeta.setLore(meta.getLore());
-        if (hasBookGenerationSupport())
+        if (isBookGenerationSupported())
             bookMeta.setGeneration(meta.getGeneration());
         replacePlaceholders(bookMeta, player);
         try
@@ -97,11 +98,6 @@ public class BooksUtils {
             meta.setLore(setPlaceholders(player, meta.getLore()));
     }
 
-    public static boolean hasBookGenerationSupport()
-    {
-        return MinecraftVersion.getRuntimeVersion().isAfterOrEq(MinecraftVersions.v1_10);
-    }
-
     public static Generation getBookGeneration(String generation)
     {
         return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
@@ -110,20 +106,19 @@ public class BooksUtils {
     @SuppressWarnings("deprecation")
     public static ItemStack getItemInMainHand(Player player)
     {
-        if (VERSION.equals("v1_8_R1") || VERSION.equals("v1_8_R2") || VERSION.equals("v1_8_R3"))
+        if (OLD_ITEMINHAND_METHOD)
             return player.getInventory().getItemInHand();
-        return player.getInventory().getItemInMainHand();
+        else
+            return player.getInventory().getItemInMainHand();
     }
 
     @SuppressWarnings("deprecation")
     public static void setItemInMainHand(Player player, ItemStack item)
     {
-        if (VERSION.equals("v1_8_R1") || VERSION.equals("v1_8_R2") || VERSION.equals("v1_8_R3"))
-        {
+        if (OLD_ITEMINHAND_METHOD)
             player.getInventory().setItemInHand(item);
-            return;
-        }
-        player.getInventory().setItemInMainHand(item);
+        else
+            player.getInventory().setItemInMainHand(item);
     }
 
     public static List<String> getPages(BookMeta meta)

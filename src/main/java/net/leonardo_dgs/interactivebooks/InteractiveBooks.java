@@ -2,7 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
-import me.lucko.helper.reflect.MinecraftVersion;
+import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,14 +22,14 @@ public final class InteractiveBooks extends JavaPlugin {
     public void onEnable()
     {
         instance = this;
-        MinecraftVersion runningVersion = MinecraftVersion.getRuntimeVersion();
-        MinecraftVersion firstSupportedVersion = MinecraftVersion.parse("1.8.8");
-        if(!runningVersion.equals(firstSupportedVersion) && runningVersion.isBefore(firstSupportedVersion))
+        if(MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8")))
         {
             Bukkit.getLogger().log(Level.WARNING, PREFIX + "This Minecraft version is not supported, please use 1.8.8 or newer");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
+        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
         registerCommands();
         Config.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

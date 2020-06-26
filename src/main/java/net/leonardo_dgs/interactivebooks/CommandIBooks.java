@@ -1,7 +1,12 @@
 package net.leonardo_dgs.interactivebooks;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Subcommand;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import net.leonardo_dgs.interactivebooks.util.PAPIUtil;
 import org.bukkit.Bukkit;
@@ -150,7 +155,7 @@ public final class CommandIBooks extends BaseCommand {
         String bookGeneration = "ORIGINAL";
         if (args.length > 4)
             bookGeneration = args[4].toUpperCase();
-        if (BooksUtils.hasBookGenerationSupport() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
+        if (BooksUtils.isBookGenerationSupported() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
         {
             sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
             return;
