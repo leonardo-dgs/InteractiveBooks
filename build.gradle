@@ -17,7 +17,6 @@ String website = 'https://www.spigotmc.org/resources/45604/'
 String spigotVersion = '1.16.1-R0.1-SNAPSHOT'
 String bungeeChatVersion = '1.16-R0.1'
 String lombokVersion = '1.18.12'
-String helperVersion = '5.6.2'
 String acfVersion = '0.5.0-SNAPSHOT'
 String bStatsVersion = '1.5'
 String papiVersion = '2.10.6'
@@ -45,7 +44,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
     implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
     implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion
-    implementation 'me.lucko:helper:' + helperVersion
     implementation 'co.aikar:acf-paper:' + acfVersion
 }
 
@@ -67,7 +65,6 @@ tasks.shadowJar {
     archiveFileName = project.name + '.jar'
     minimize()
     relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
-    relocate 'me.lucko.helper', mainPackage + '.helper'
     relocate 'co.aikar.commands', mainPackage + '.acf'
     relocate 'co.aikar.locales', mainPackage + '.locales'
     relocate 'org.bstats.bukkit', mainPackage + '.bstats'

@@ -17,7 +17,12 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class IBook {
 
@@ -115,7 +120,7 @@ public class IBook {
     public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands)
     {
         this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null && BooksUtils.hasBookGenerationSupport())
+        if (generation != null && BooksUtils.isBookGenerationSupported())
             bookMeta.setGeneration(BooksUtils.getBookGeneration(generation));
     }
 
@@ -260,7 +265,7 @@ public class IBook {
             bookConfig.set("name", meta.getDisplayName());
             bookConfig.set("title", meta.getTitle());
             bookConfig.set("author", meta.getAuthor());
-            if (BooksUtils.hasBookGenerationSupport())
+            if (BooksUtils.isBookGenerationSupported())
                 bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL));
             bookConfig.set("lore", meta.getLore());
             bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
