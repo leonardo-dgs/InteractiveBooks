@@ -1,6 +1,7 @@
 package net.leonardo_dgs.interactivebooks.util;
 
-import me.lucko.helper.reflect.ServerReflection;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -8,6 +9,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class ReflectionUtil {
+
+    @Getter
+    private static final String nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+
+    public static Class<?> nmsClass(String className) throws ClassNotFoundException
+    {
+        return Class.forName("net.minecraft.server." + getNmsVersion() + "." + className);
+    }
+
+    public static Class<?> obcClass(String className) throws ClassNotFoundException
+    {
+        return Class.forName("org.bukkit.craftbukkit." + getNmsVersion() + "." + className);
+    }
 
     /**
      * Gets a {@link Field} of a given {@link Class}.
@@ -181,7 +195,7 @@ public final class ReflectionUtil {
             for (Player player : players)
             {
                 Object connection = getConnection(player);
-                getDeclaredMethod(connection.getClass(), "sendPacket", ServerReflection.nmsClass("Packet")).invoke(connection, packet);
+                getDeclaredMethod(connection.getClass(), "sendPacket", nmsClass("Packet")).invoke(connection, packet);
             }
         }
         catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException e)
