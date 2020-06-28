@@ -16,7 +16,6 @@ public final class InteractiveBooks extends JavaPlugin {
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
     private static PaperCommandManager commandManager;
-    private final String PREFIX = "[" + getName() + "] ";
 
     @Override
     public void onEnable()
@@ -24,7 +23,7 @@ public final class InteractiveBooks extends JavaPlugin {
         instance = this;
         if(MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8")))
         {
-            Bukkit.getLogger().log(Level.WARNING, PREFIX + "This Minecraft version is not supported, please use 1.8.8 or newer");
+            getLogger().log(Level.WARNING, "This Minecraft version is not supported, please use 1.8.8 or newer");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
