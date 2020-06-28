@@ -156,7 +156,7 @@ public class BooksUtils {
 
     private static TextComponent[] getPage(String page, Player player)
     {
-        return convertListToArray(parsePage(page, player).getComponents());
+        return parsePage(page, player).getComponents().toArray(new TextComponent[0]);
     }
 
     private static TextComponentBuilder parsePage(String plainPage, Player player)
@@ -246,14 +246,6 @@ public class BooksUtils {
                 coloredText.add(ChatColor.translateAlternateColorCodes('&', s));
             return coloredText;
         }
-    }
-
-    private static TextComponent[] convertListToArray(List<TextComponent> list)
-    {
-        TextComponent[] objects = new TextComponent[list.size()];
-        for (int i = 0; i < list.size(); i++)
-            objects[i] = list.get(i);
-        return objects;
     }
 
 }
