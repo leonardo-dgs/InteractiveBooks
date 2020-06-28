@@ -183,7 +183,7 @@ public class BooksUtils {
             }
             else
             {
-                Object event = parseEvent(matcher.group());
+                Object event = parseEvent(matcher.group(), player);
                 if (event != null)
                 {
                     if (event instanceof HoverEvent)
@@ -203,7 +203,7 @@ public class BooksUtils {
         return compBuilder;
     }
 
-    private static Object parseEvent(String attribute)
+    private static Object parseEvent(String attribute, Player player)
     {
         String trimmed = attribute.replaceFirst("<", "").substring(0, attribute.length() - 2);
         String[] attributes = trimmed.split(":", 2);
@@ -211,7 +211,7 @@ public class BooksUtils {
         String value = attributes[1];
         if (type == null)
             return null;
-        value = replaceEscapedChars(value);
+        value = PAPIUtil.setPlaceholders(player, replaceEscapedChars(value));
         switch (type)
         {
             case SHOW_TEXT:
