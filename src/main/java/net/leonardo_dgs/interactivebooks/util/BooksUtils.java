@@ -232,7 +232,7 @@ public class BooksUtils {
 
     private static String replaceEscapedChars(String str)
     {
-        return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
+        return str.replace("&lt;", "<").replace("&gt;", ">");
     }
 
     private static List<String> setPlaceholders(Player player, List<String> text)
