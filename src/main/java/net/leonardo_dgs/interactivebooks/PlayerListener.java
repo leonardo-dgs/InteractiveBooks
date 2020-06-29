@@ -20,7 +20,7 @@ public final class PlayerListener implements Listener {
 
     private static final boolean MC_AFTER_1_14 = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.14"));
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         String openBookId;
