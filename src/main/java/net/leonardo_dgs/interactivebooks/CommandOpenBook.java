@@ -13,16 +13,14 @@ public final class CommandOpenBook extends BaseCommand {
 
     private final IBook book;
 
-    public CommandOpenBook(IBook book)
-    {
+    public CommandOpenBook(IBook book) {
         super();
         this.book = book;
     }
 
     @Default
     @CatchUnknown
-    public void onCommand(Player player)
-    {
+    public void onCommand(Player player) {
         book.open(player);
     }
 

@@ -22,32 +22,29 @@ import java.util.Iterator;
 public final class CommandIBooks extends BaseCommand {
 
     @HelpCommand
-    public void onHelp(CommandSender sender)
-    {
+    public void onHelp(CommandSender sender) {
         sender.sendMessage(
                 "§6InteractiveBooks §7- §6Commands\n"
-                + "§e/ibooks list\n"
-                + "§e/ibooks open <book-id> [player]\n"
-                + "§e/ibooks get <book-id>\n"
-                + "§e/ibooks give <book-id> <player>\n"
-                + "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
-                + "§e/ibooks reload"
+                        + "§e/ibooks list\n"
+                        + "§e/ibooks open <book-id> [player]\n"
+                        + "§e/ibooks get <book-id>\n"
+                        + "§e/ibooks give <book-id> <player>\n"
+                        + "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
+                        + "§e/ibooks reload"
         );
     }
 
     @Subcommand("list")
     @CommandPermission("interactivebooks.command.list")
-    public void onList(CommandSender sender)
-    {
+    public void onList(CommandSender sender) {
         StringBuilder sb = new StringBuilder();
         Iterator<String> iterator = InteractiveBooks.getBooks().keySet().iterator();
         boolean hasNext = iterator.hasNext();
-        while (hasNext)
-        {
+        while (hasNext) {
             String bookId = iterator.next();
             sb.append("§6");
             sb.append(bookId);
-            if(hasNext = iterator.hasNext())
+            if (hasNext = iterator.hasNext())
                 sb.append("§7, ");
         }
         sender.sendMessage("§eBooks:\n" + sb.toString());
@@ -56,27 +53,22 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("open")
     @CommandPermission("interactivebooks.command.open")
     @CommandCompletion("@ibooks @players @nothing")
-    public void onOpen(CommandSender sender, String[] args)
-    {
-        if (args.length == 0)
-        {
+    public void onOpen(CommandSender sender, String[] args) {
+        if (args.length == 0) {
             sender.sendMessage("§cUsage: §7/ibooks open <book-id> [player]");
             return;
         }
-        if (args.length == 1 && !(sender instanceof Player))
-        {
+        if (args.length == 1 && !(sender instanceof Player)) {
             sender.sendMessage("§cIf you execute this command by the console, you need to specify the player's name.");
             return;
         }
         Player playerToOpen = args.length == 1 ? (Player) sender : Bukkit.getPlayer(args[1]);
         String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, args[0]);
-        if (InteractiveBooks.getBook(bookIdToOpen) == null)
-        {
+        if (InteractiveBooks.getBook(bookIdToOpen) == null) {
             sender.sendMessage("§cThat book doesn't exists.");
             return;
         }
-        if (playerToOpen == null)
-        {
+        if (playerToOpen == null) {
             sender.sendMessage("§cThat player isn't connected.");
             return;
         }
@@ -88,16 +80,13 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("get")
     @CommandPermission("interactivebooks.command.get")
     @CommandCompletion("@ibooks @nothing")
-    public void onGet(Player player, String[] args)
-    {
-        if (args.length == 0)
-        {
+    public void onGet(Player player, String[] args) {
+        if (args.length == 0) {
             player.sendMessage("§cUsage: §7/ibooks get <book-id>");
             return;
         }
         String bookIdToGet = PAPIUtil.setPlaceholders(player, args[0]);
-        if (InteractiveBooks.getBook(bookIdToGet) == null)
-        {
+        if (InteractiveBooks.getBook(bookIdToGet) == null) {
             player.sendMessage("§cThat book doesn't exists.");
             return;
         }
@@ -108,22 +97,18 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("give")
     @CommandPermission("interactivebooks.command.give")
     @CommandCompletion("@ibooks @players @nothing")
-    public void onGive(CommandSender sender, String[] args)
-    {
-        if (args.length < 2)
-        {
+    public void onGive(CommandSender sender, String[] args) {
+        if (args.length < 2) {
             sender.sendMessage("§cUsage: §7/ibooks give <book-id> <player>");
             return;
         }
         Player targetPlayer = Bukkit.getPlayer(args[1]);
         String targetBookId = PAPIUtil.setPlaceholders(targetPlayer, args[0]);
-        if (InteractiveBooks.getBook(targetBookId) == null)
-        {
+        if (InteractiveBooks.getBook(targetBookId) == null) {
             sender.sendMessage("§cThat book doesn't exists.");
             return;
         }
-        if (targetPlayer == null)
-        {
+        if (targetPlayer == null) {
             sender.sendMessage("§cThat player isn't connected.");
             return;
         }
@@ -135,15 +120,12 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("create")
     @CommandPermission("interactivebooks.command.create")
     @CommandCompletion("@nothing @nothing @nothing @players @book_generations @nothing")
-    public void onCreate(CommandSender sender, String[] args)
-    {
-        if (args.length < 4)
-        {
+    public void onCreate(CommandSender sender, String[] args) {
+        if (args.length < 4) {
             sender.sendMessage("§cUsage: §7/ibooks create <book-id> <name> <title> <author> [generation]");
             return;
         }
-        if (InteractiveBooks.getBook(args[0]) != null)
-        {
+        if (InteractiveBooks.getBook(args[0]) != null) {
             sender.sendMessage("§cA book with that id already exists");
             return;
         }
@@ -155,8 +137,7 @@ public final class CommandIBooks extends BaseCommand {
         String bookGeneration = "ORIGINAL";
         if (args.length > 4)
             bookGeneration = args[4].toUpperCase();
-        if (BooksUtils.isBookGenerationSupported() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED"))
-        {
+        if (BooksUtils.isBookGenerationSupported() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED")) {
             sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
             return;
         }
@@ -169,8 +150,7 @@ public final class CommandIBooks extends BaseCommand {
 
     @Subcommand("reload")
     @CommandPermission("interactivebooks.command.reload")
-    public void onReload(CommandSender sender)
-    {
+    public void onReload(CommandSender sender) {
         Config.loadAll();
         sender.sendMessage("§aConfig reloaded!");
     }

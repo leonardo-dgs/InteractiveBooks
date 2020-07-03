@@ -13,18 +13,15 @@ final class TextComponentBuilder {
     private ClickEvent nextClickEvent;
     private HoverEvent nextHoverEvent;
 
-    TextComponentBuilder()
-    {
+    TextComponentBuilder() {
 
     }
 
-    List<TextComponent> getComponents()
-    {
+    List<TextComponent> getComponents() {
         return this.components;
     }
 
-    void add(TextComponent component)
-    {
+    void add(TextComponent component) {
         if (getNextClickEvent() != null)
             component.setClickEvent(this.getNextClickEvent());
         if (getNextHoverEvent() != null)
@@ -32,33 +29,27 @@ final class TextComponentBuilder {
         this.components.add(component);
     }
 
-    void add(TextComponentBuilder builder)
-    {
+    void add(TextComponentBuilder builder) {
         builder.getComponents().forEach(this::add);
     }
 
-    void add(List<TextComponent> components)
-    {
+    void add(List<TextComponent> components) {
         components.forEach(this::add);
     }
 
-    private ClickEvent getNextClickEvent()
-    {
+    private ClickEvent getNextClickEvent() {
         return this.nextClickEvent;
     }
 
-    void setNextClickEvent(ClickEvent nextClickEvent)
-    {
+    void setNextClickEvent(ClickEvent nextClickEvent) {
         this.nextClickEvent = nextClickEvent;
     }
 
-    private HoverEvent getNextHoverEvent()
-    {
+    private HoverEvent getNextHoverEvent() {
         return this.nextHoverEvent;
     }
 
-    void setNextHoverEvent(HoverEvent nextHoverEvent)
-    {
+    void setNextHoverEvent(HoverEvent nextHoverEvent) {
         this.nextHoverEvent = nextHoverEvent;
     }
 

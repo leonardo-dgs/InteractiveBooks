@@ -37,34 +37,26 @@ public class BooksUtils {
     private static final Method CHATSERIALIZER_A;
     private static final Field FIELD_PAGES;
 
-    static
-    {
+    static {
         Method chatSerializerA;
-        try
-        {
+        try {
             chatSerializerA = ReflectionUtil.getMethod(ReflectionUtil.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             chatSerializerA = null;
         }
         CHATSERIALIZER_A = chatSerializerA;
         Field fieldPages;
-        try
-        {
+        try {
             fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
-        }
-        catch (NoSuchFieldException | ClassNotFoundException e)
-        {
+        } catch (NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
             fieldPages = null;
         }
         FIELD_PAGES = fieldPages;
     }
 
-    public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player)
-    {
+    public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
         Objects.requireNonNull(bookMeta);
@@ -75,20 +67,16 @@ public class BooksUtils {
         if (isBookGenerationSupported())
             bookMeta.setGeneration(meta.getGeneration());
         replacePlaceholders(bookMeta, player);
-        try
-        {
+        try {
             List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
             pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages(rawPages, player));
-        }
-        catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
-        {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return bookMeta;
     }
 
-    private static void replacePlaceholders(BookMeta meta, Player player)
-    {
+    private static void replacePlaceholders(BookMeta meta, Player player) {
         meta.setDisplayName(PAPIUtil.setPlaceholders(player, meta.getDisplayName()));
         if (meta.getTitle() != null)
             meta.setTitle(PAPIUtil.setPlaceholders(player, meta.getTitle()));
@@ -98,14 +86,12 @@ public class BooksUtils {
             meta.setLore(setPlaceholders(player, meta.getLore()));
     }
 
-    public static Generation getBookGeneration(String generation)
-    {
+    public static Generation getBookGeneration(String generation) {
         return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack getItemInMainHand(Player player)
-    {
+    public static ItemStack getItemInMainHand(Player player) {
         if (OLD_ITEMINHAND_METHOD)
             return player.getInventory().getItemInHand();
         else
@@ -113,79 +99,64 @@ public class BooksUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static void setItemInMainHand(Player player, ItemStack item)
-    {
+    public static void setItemInMainHand(Player player, ItemStack item) {
         if (OLD_ITEMINHAND_METHOD)
             player.getInventory().setItemInHand(item);
         else
             player.getInventory().setItemInMainHand(item);
     }
 
-    public static List<String> getPages(BookMeta meta)
-    {
+    public static List<String> getPages(BookMeta meta) {
         List<String> plainPages = new ArrayList<>();
         List<BaseComponent[]> components = meta.spigot().getPages();
         components.forEach(component -> plainPages.add(getPage(component)));
         return plainPages;
     }
 
-    private static String getPage(BaseComponent[] components)
-    {
+    private static String getPage(BaseComponent[] components) {
         StringBuilder sb = new StringBuilder();
         for (BaseComponent component : components)
             sb.append(BaseComponentSerializer.toString(component));
         return sb.toString();
     }
 
-    private static List<?> getPages(List<String> rawPages, Player player)
-    {
+    private static List<?> getPages(List<String> rawPages, Player player) {
         List<Object> pages = new ArrayList<>();
         rawPages.forEach(page ->
         {
-            try
-            {
+            try {
                 pages.add(CHATSERIALIZER_A.invoke(null, ComponentSerializer.toString(BooksUtils.getPage(page, player))));
-            }
-            catch (IllegalAccessException | InvocationTargetException e)
-            {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         });
         return pages;
     }
 
-    private static TextComponent[] getPage(String page, Player player)
-    {
+    private static TextComponent[] getPage(String page, Player player) {
         return parsePage(page, player).getComponents().toArray(new TextComponent[0]);
     }
 
-    private static TextComponentBuilder parsePage(String plainPage, Player player)
-    {
+    private static TextComponentBuilder parsePage(String plainPage, Player player) {
         plainPage = plainPage.replace("<br>", "\n");
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainPage);
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
-        while (matcher.find())
-        {
-            if (matcher.start() != 0)
-            {
+        while (matcher.find()) {
+            if (matcher.start() != 0) {
                 curStr.append(plainPage, lastIndex, matcher.start());
                 TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, replaceEscapedChars(curStr.toString()))));
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
             }
             lastIndex = matcher.end();
-            if (matcher.group().equals("<reset>"))
-            {
+            if (matcher.group().equals("<reset>")) {
                 compBuilder.setNextHoverEvent(null);
                 compBuilder.setNextClickEvent(null);
-            }
-            else
-            {
+            } else {
                 Object event = parseEvent(matcher.group(), player);
-                if (event != null)
-                {
+                if (event != null) {
                     if (event instanceof HoverEvent)
                         compBuilder.setNextHoverEvent((HoverEvent) event);
                     else if (event instanceof ClickEvent)
@@ -193,8 +164,7 @@ public class BooksUtils {
                 }
             }
         }
-        if (lastIndex < plainPage.length())
-        {
+        if (lastIndex < plainPage.length()) {
             curStr.append(plainPage, lastIndex, plainPage.length());
             TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, curStr.toString())));
             compBuilder.add(current);
@@ -203,8 +173,7 @@ public class BooksUtils {
         return compBuilder;
     }
 
-    private static Object parseEvent(String attribute, Player player)
-    {
+    private static Object parseEvent(String attribute, Player player) {
         String trimmed = attribute.replaceFirst("<", "").substring(0, attribute.length() - 2);
         String[] attributes = trimmed.split(":", 2);
         BookEventActionType type = BookEventActionType.parse(attributes[0]);
@@ -212,8 +181,7 @@ public class BooksUtils {
         if (type == null)
             return null;
         value = PAPIUtil.setPlaceholders(player, replaceEscapedChars(value));
-        switch (type)
-        {
+        switch (type) {
             case SHOW_TEXT:
                 return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
             case SHOW_ITEM:
@@ -230,17 +198,14 @@ public class BooksUtils {
         return null;
     }
 
-    private static String replaceEscapedChars(String str)
-    {
+    private static String replaceEscapedChars(String str) {
         return str.replace("&lt;", "<").replace("&gt;", ">");
     }
 
-    private static List<String> setPlaceholders(Player player, List<String> text)
-    {
+    private static List<String> setPlaceholders(Player player, List<String> text) {
         if (PAPIPLUGIN != null && PAPIPLUGIN.isEnabled())
             return PlaceholderAPI.setPlaceholders(player, text);
-        else
-        {
+        else {
             List<String> coloredText = new ArrayList<>();
             for (String s : text)
                 coloredText.add(ChatColor.translateAlternateColorCodes('&', s));
