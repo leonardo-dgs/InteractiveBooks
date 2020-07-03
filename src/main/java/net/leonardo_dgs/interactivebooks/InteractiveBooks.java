@@ -18,11 +18,9 @@ public final class InteractiveBooks extends JavaPlugin {
     private static PaperCommandManager commandManager;
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         instance = this;
-        if(MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8")))
-        {
+        if (MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8"))) {
             getLogger().log(Level.WARNING, "This Minecraft version is not supported, please use 1.8.8 or newer");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
@@ -36,8 +34,7 @@ public final class InteractiveBooks extends JavaPlugin {
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
         instance = null;
     }
 
@@ -46,8 +43,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return an instance of the plugin
      */
-    public static InteractiveBooks getInstance()
-    {
+    public static InteractiveBooks getInstance() {
         return instance;
     }
 
@@ -56,8 +52,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
      */
-    public static Map<String, IBook> getBooks()
-    {
+    public static Map<String, IBook> getBooks() {
         return new HashMap<>(books);
     }
 
@@ -68,8 +63,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @return the book with the specified id if it's registered, or null if not found
      * @see #registerBook(IBook)
      */
-    public static IBook getBook(String id)
-    {
+    public static IBook getBook(String id) {
         return books.get(id);
     }
 
@@ -78,10 +72,8 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @param book the book id to register
      */
-    public static void registerBook(IBook book)
-    {
-        if(!book.getOpenCommands().isEmpty())
-        {
+    public static void registerBook(IBook book) {
+        if (!book.getOpenCommands().isEmpty()) {
             CommandReplacements replacements = commandManager.getCommandReplacements();
             replacements.addReplacement("openbook", String.join("|", book.getOpenCommands()));
             replacements.addReplacement("interactivebooks.open", "interactivebooks.open." + book.getId());
@@ -97,19 +89,17 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @param id the book id to unregister
      */
-    public static void unregisterBook(String id)
-    {
+    public static void unregisterBook(String id) {
         IBook book = getBook(id);
-        if(book.getCommandExecutor() != null)
+        if (book.getCommandExecutor() != null)
             commandManager.unregisterCommand(book.getCommandExecutor());
         books.remove(id);
     }
 
-    private void registerCommands()
-    {
+    private void registerCommands() {
         commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("ibooks", handler -> getBooks().keySet());
-        commandManager.getCommandCompletions().registerStaticCompletion("book_generations", new String[] { "original", "copy_of_original", "copy_of_copy", "tattered" } );
+        commandManager.getCommandCompletions().registerStaticCompletion("book_generations", new String[]{"original", "copy_of_original", "copy_of_copy", "tattered"});
         commandManager.registerCommand(new CommandIBooks());
     }
 

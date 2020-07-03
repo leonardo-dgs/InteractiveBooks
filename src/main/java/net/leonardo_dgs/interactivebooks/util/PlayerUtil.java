@@ -71,7 +71,7 @@ public final class PlayerUtil {
     /**
      * Opens a book to a set of players.
      *
-     * @param book the book to open
+     * @param book    the book to open
      * @param players the players to whom open the book
      */
     public static void openBook(ItemStack book, Player... players) {
@@ -81,8 +81,7 @@ public final class PlayerUtil {
         if (OPENBOOK_NATIVE_SUPPORT) {
             for (Player player : players)
                 player.openBook(book);
-        }
-        else {
+        } else {
             Object openBookPacket = null;
             try {
                 Object packetDataSerializer;

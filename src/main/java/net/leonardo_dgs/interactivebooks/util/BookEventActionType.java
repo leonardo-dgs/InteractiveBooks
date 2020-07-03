@@ -11,8 +11,7 @@ enum BookEventActionType {
     OPEN_URL("open url", "url", "link"),
     CHANGE_PAGE("change page");
 
-    static BookEventActionType parse(String type)
-    {
+    static BookEventActionType parse(String type) {
         for (BookEventActionType actionType : values())
             for (String identifier : actionType.getAliases())
                 if (type.equalsIgnoreCase(identifier))
@@ -22,13 +21,11 @@ enum BookEventActionType {
 
     private final String[] aliases;
 
-    BookEventActionType(String... aliases)
-    {
+    BookEventActionType(String... aliases) {
         this.aliases = aliases;
     }
 
-    public String[] getAliases()
-    {
+    public String[] getAliases() {
         return aliases;
     }
 

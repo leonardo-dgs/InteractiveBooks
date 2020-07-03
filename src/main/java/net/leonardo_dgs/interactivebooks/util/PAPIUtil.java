@@ -19,8 +19,7 @@ public final class PAPIUtil {
      * @return the text with placeholders replaced,
      * or just the text colorized if PlaceholderAPI is not installed (and will not be thrown a {@link ClassNotFoundException})
      */
-    public static String setPlaceholders(String text)
-    {
+    public static String setPlaceholders(String text) {
         return setPlaceholders(null, text);
     }
 
@@ -34,12 +33,9 @@ public final class PAPIUtil {
      * @return the text with the placeholders replaced, with sender's information if it's an {@link OfflinePlayer},
      * or just the text colorized if PlaceholderAPI is not installed (and will not be thrown a {@link ClassNotFoundException})
      */
-    public static String setPlaceholders(CommandSender sender, String text)
-    {
-        if (isPlaceholderAPISupported())
-        {
-            if (sender instanceof OfflinePlayer)
-            {
+    public static String setPlaceholders(CommandSender sender, String text) {
+        if (isPlaceholderAPISupported()) {
+            if (sender instanceof OfflinePlayer) {
                 return PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text);
             }
 
@@ -49,8 +45,7 @@ public final class PAPIUtil {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    private static boolean isPlaceholderAPISupported()
-    {
+    private static boolean isPlaceholderAPISupported() {
         return PAPIPLUGIN != null && PAPIPLUGIN.isEnabled();
     }
 
