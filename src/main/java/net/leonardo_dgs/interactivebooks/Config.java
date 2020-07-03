@@ -9,29 +9,23 @@ import java.util.Objects;
 
 final class Config {
 
-    static void loadAll()
-    {
+    static void loadAll() {
         InteractiveBooks.getInstance().saveDefaultConfig();
         InteractiveBooks.getInstance().reloadConfig();
         File f = new File(InteractiveBooks.getInstance().getDataFolder(), "books");
-        if (!f.exists())
-        {
-            try
-            {
+        if (!f.exists()) {
+            try {
                 if (!f.mkdirs())
                     throw new IOException();
                 Files.copy(Objects.requireNonNull(InteractiveBooks.getInstance().getResource("examplebook.yml")), new File(f, "examplebook.yml").toPath());
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         loadBookConfigs();
     }
 
-    private static void loadBookConfigs()
-    {
+    private static void loadBookConfigs() {
         InteractiveBooks.getBooks().keySet().forEach(InteractiveBooks::unregisterBook);
         File booksFolder = new File(InteractiveBooks.getInstance().getDataFolder(), "books");
         for (File f : Objects.requireNonNull(booksFolder.listFiles()))

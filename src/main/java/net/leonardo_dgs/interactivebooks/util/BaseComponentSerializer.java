@@ -9,31 +9,27 @@ import java.util.List;
 
 final class BaseComponentSerializer {
 
-    private static String toString(BaseComponent... components)
-    {
+    private static String toString(BaseComponent... components) {
         StringBuilder sb = new StringBuilder();
         for (BaseComponent component : components)
             sb.append(toString(component));
         return sb.toString();
     }
 
-    static String toString(List<BaseComponent> components)
-    {
+    static String toString(List<BaseComponent> components) {
         StringBuilder sb = new StringBuilder();
         components.forEach(component -> sb.append(toString(component)));
         return sb.toString();
     }
 
-    static String toString(BaseComponent component)
-    {
+    static String toString(BaseComponent component) {
         return getClickEvent(component) +
                 getHoverEvent(component) +
                 getColorAndFormatting(component) + component.toPlainText() +
                 "<reset>";
     }
 
-    private static String getColorAndFormatting(BaseComponent component)
-    {
+    private static String getColorAndFormatting(BaseComponent component) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(component.getColor());
@@ -52,8 +48,7 @@ final class BaseComponentSerializer {
         return sb.toString();
     }
 
-    private static String getClickEvent(BaseComponent component)
-    {
+    private static String getClickEvent(BaseComponent component) {
         ClickEvent event = component.getClickEvent();
         if (event == null)
             return "";
@@ -62,15 +57,13 @@ final class BaseComponentSerializer {
         return "<" + action + ":" + value + ">";
     }
 
-    private static String getHoverEvent(BaseComponent component)
-    {
+    private static String getHoverEvent(BaseComponent component) {
         HoverEvent event = component.getHoverEvent();
         if (event == null)
             return "";
         String action = event.getAction().toString().replace("_", " ").toLowerCase();
         String value = null;
-        switch (event.getAction())
-        {
+        switch (event.getAction()) {
             case SHOW_ACHIEVEMENT:
                 return "";
             case SHOW_ENTITY:

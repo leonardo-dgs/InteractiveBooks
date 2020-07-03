@@ -28,7 +28,7 @@ public class IBook {
 
     private static final String bookIdKey = "InteractiveBooks|Book-Id";
 
-    private String id;
+    private final String id;
     private BookMeta bookMeta;
     private List<String> pages;
 
@@ -44,8 +44,7 @@ public class IBook {
      * @param id         the id of the book
      * @param bookConfig configuration from which to take data to crete the book
      */
-    public IBook(String id, FileConfiguration bookConfig)
-    {
+    public IBook(String id, FileConfiguration bookConfig) {
         this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"), bookConfig.getString("generation"),
                 bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
                 (((bookConfig.getString("open_command") == null) || Objects.equals(bookConfig.getString("open_command"), "")) ? null : Objects.requireNonNull(bookConfig.getString("open_command")).split(" ")));
@@ -57,8 +56,7 @@ public class IBook {
      * @param id   the id of the book
      * @param book {@link ItemStack} book item from which to take data to crete the book
      */
-    public IBook(String id, ItemStack book)
-    {
+    public IBook(String id, ItemStack book) {
         this(id, (BookMeta) book.getItemMeta());
     }
 
@@ -68,8 +66,7 @@ public class IBook {
      * @param id       the id of the book
      * @param bookMeta {@link BookMeta} from which to take information to crete the book
      */
-    public IBook(String id, BookMeta bookMeta)
-    {
+    public IBook(String id, BookMeta bookMeta) {
         this.id = id;
         this.bookMeta = bookMeta;
         this.setPages(BooksUtils.getPages(bookMeta));
@@ -86,8 +83,7 @@ public class IBook {
      * @param pages        the pages that will be converted to the book item pages
      * @param openCommands the commands that will open the book
      */
-    public IBook(String id, String displayName, String title, String author, List<String> lore, List<String> pages, String... openCommands)
-    {
+    public IBook(String id, String displayName, String title, String author, List<String> lore, List<String> pages, String... openCommands) {
         this.id = id;
         BookMeta bookMeta = (BookMeta) new ItemStack(Material.WRITTEN_BOOK).getItemMeta();
         if (lore == null)
@@ -117,8 +113,7 @@ public class IBook {
      * @param pages        the pages that will be converted to the book item pages
      * @param openCommands the commands that will open the book
      */
-    public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands)
-    {
+    public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
         if (generation != null && BooksUtils.isBookGenerationSupported())
             bookMeta.setGeneration(BooksUtils.getBookGeneration(generation));
@@ -136,8 +131,7 @@ public class IBook {
      * @param pages        the pages that will be converted to the book item pages
      * @param openCommands the commands that will open the book
      */
-    public IBook(String id, String displayName, String title, String author, Generation generation, List<String> lore, List<String> pages, String... openCommands)
-    {
+    public IBook(String id, String displayName, String title, String author, Generation generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
         if (generation != null)
             this.bookMeta.setGeneration(generation);
@@ -148,8 +142,7 @@ public class IBook {
      *
      * @return the book id.
      */
-    public String getId()
-    {
+    public String getId() {
         return this.id;
     }
 
@@ -158,8 +151,7 @@ public class IBook {
      *
      * @param player the player to which open the book
      */
-    public void open(Player player)
-    {
+    public void open(Player player) {
         PlayerUtil.openBook(this.getItem(player), player);
     }
 
@@ -168,8 +160,7 @@ public class IBook {
      *
      * @return the book item
      */
-    public ItemStack getItem()
-    {
+    public ItemStack getItem() {
         return this.getItem(null);
     }
 
@@ -179,8 +170,7 @@ public class IBook {
      * @param player the player to get the data from for replacing placeholders
      * @return the book item with placeholders replaced with the specified player data
      */
-    public ItemStack getItem(Player player)
-    {
+    public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         book.setItemMeta(this.getBookMeta(player));
         NBTItem nbti = new NBTItem(book);
@@ -193,8 +183,7 @@ public class IBook {
      *
      * @return the {@link BookMeta} of the book
      */
-    public BookMeta getBookMeta()
-    {
+    public BookMeta getBookMeta() {
         return this.getBookMeta(null);
     }
 
@@ -204,8 +193,7 @@ public class IBook {
      * @param player the player to get the data from for replacing placeholders
      * @return the {@link BookMeta} with placeholders replaced with the specified player data
      */
-    public BookMeta getBookMeta(Player player)
-    {
+    public BookMeta getBookMeta(Player player) {
         return BooksUtils.getBookMeta(bookMeta, this.getPages(), player);
     }
 
@@ -214,8 +202,7 @@ public class IBook {
      *
      * @param bookMeta the {@link BookMeta} to set
      */
-    public void setBookMeta(BookMeta bookMeta)
-    {
+    public void setBookMeta(BookMeta bookMeta) {
         this.bookMeta = bookMeta;
     }
 
@@ -224,8 +211,7 @@ public class IBook {
      *
      * @return the {@link List} containing all pages of this book
      */
-    public List<String> getPages()
-    {
+    public List<String> getPages() {
         return pages;
     }
 
@@ -234,8 +220,7 @@ public class IBook {
      *
      * @param pages the {@link List} of the book pages to set.
      */
-    public void setPages(List<String> pages)
-    {
+    public void setPages(List<String> pages) {
         this.pages = pages;
     }
 
@@ -244,20 +229,17 @@ public class IBook {
      *
      * @return a {@link Set} containing the commands that can be used to open this book
      */
-    public Set<String> getOpenCommands()
-    {
+    public Set<String> getOpenCommands() {
         return this.openCommands;
     }
 
     /**
      * Saves this book to his config file.
      */
-    public void save()
-    {
+    public void save() {
         File file = new File(new File(InteractiveBooks.getInstance().getDataFolder(), "books"), getId() + ".yml");
         BookMeta meta = bookMeta;
-        try
-        {
+        try {
             if (!file.exists())
                 if (file.createNewFile())
                     throw new IOException();
@@ -269,8 +251,7 @@ public class IBook {
                 bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL));
             bookConfig.set("lore", meta.getLore());
             bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
-            if (this.getPages().isEmpty())
-            {
+            if (this.getPages().isEmpty()) {
                 List<String> tempPages = new ArrayList<>();
                 tempPages.add("");
                 bookConfig.set("pages.1", tempPages);
@@ -279,23 +260,19 @@ public class IBook {
                 bookConfig.set("pages." + (i + 1), this.getPages().get(i).split("\n"));
 
             bookConfig.save(file);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (!(obj instanceof IBook))
             return false;
         return ((IBook) obj).getId().equals(this.getId());
     }
 
-    private static List<String> mergeLines(ConfigurationSection section)
-    {
+    private static List<String> mergeLines(ConfigurationSection section) {
         List<String> pages = new ArrayList<>();
         if (section == null)
             return pages;

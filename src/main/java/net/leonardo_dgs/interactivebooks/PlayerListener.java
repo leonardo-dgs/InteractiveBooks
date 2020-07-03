@@ -21,26 +21,20 @@ public final class PlayerListener implements Listener {
     private static final boolean MC_AFTER_1_14 = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.14"));
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event)
-    {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         String openBookId;
         List<String> booksToGiveIds;
-        if (event.getPlayer().hasPlayedBefore())
-        {
+        if (event.getPlayer().hasPlayedBefore()) {
             openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_join");
             booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_join");
-        }
-        else
-        {
+        } else {
             openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_first_join");
             booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_first_join");
         }
-        if(openBookId != null && !openBookId.equals(""))
-        {
+        if (openBookId != null && !openBookId.equals("")) {
             IBook book = InteractiveBooks.getBook(openBookId);
-            if (book != null)
-            {
-                if(MC_AFTER_1_14)
+            if (book != null) {
+                if (MC_AFTER_1_14)
                     book.open(event.getPlayer());
                 else
                     Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> book.open(event.getPlayer()));
@@ -56,8 +50,7 @@ public final class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteract(PlayerInteractEvent event)
-    {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.useItemInHand().equals(Event.Result.DENY))
             return;
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
