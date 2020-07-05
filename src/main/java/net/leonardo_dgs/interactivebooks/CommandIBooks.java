@@ -20,7 +20,9 @@ import java.util.Iterator;
 @CommandPermission("interactivebooks.command")
 @Description("Manage books")
 public final class CommandIBooks extends BaseCommand {
-
+    
+    private boolean silence = false;
+    
     @HelpCommand
     public void onHelp(CommandSender sender) {
         sender.sendMessage(
@@ -29,6 +31,7 @@ public final class CommandIBooks extends BaseCommand {
                         + "§e/ibooks open <book-id> [player]\n"
                         + "§e/ibooks get <book-id>\n"
                         + "§e/ibooks give <book-id> <player>\n"
+                        + "§e/ibooks silentgive\n"
                         + "§e/ibooks create <book-id> <name> <title> <author> [generation]\n"
                         + "§e/ibooks reload"
         );
@@ -114,7 +117,7 @@ public final class CommandIBooks extends BaseCommand {
         }
         targetPlayer.getInventory().addItem(InteractiveBooks.getBook(targetBookId).getItem(targetPlayer));
         sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", targetBookId).replace("%player%", args[1]));
-        targetPlayer.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", targetBookId));
+        if (!silence) {targetPlayer.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", targetBookId));}
     }
 
     @Subcommand("create")
@@ -153,6 +156,13 @@ public final class CommandIBooks extends BaseCommand {
     public void onReload(CommandSender sender) {
         Config.loadAll();
         sender.sendMessage("§aConfig reloaded!");
+    }
+
+    @Subcommand("silentgive")
+    @CommandPermission("interactivebooks.command.silentgive")
+    public void onReload(CommandSender sender) {
+        silence = !silence;
+        if (silence) {sender.sendMessage("§aSilenced give.");} else {sender.sendMessage("§aUnsilenced give.");}
     }
 
 }
