@@ -7,6 +7,7 @@ import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -53,7 +54,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
      */
     public static Map<String, IBook> getBooks() {
-        return new HashMap<>(books);
+        return Collections.unmodifiableMap(books);
     }
 
     /**
