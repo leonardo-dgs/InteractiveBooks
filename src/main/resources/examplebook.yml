@@ -38,3 +38,10 @@ pages:
   - 'Gamemode: &c%player_gamemode%'
   - 'Balance: &6%vault_eco_balance%'
   - 'Online players: &4%server_online%'
+  
+# For the placeholders to work correctly
+# you should download the Player and Vault
+# extensions for PlaceholderAPI:
+# /papi ecloud download Player
+# /papi ecloud download Vault
+# /papi reload
