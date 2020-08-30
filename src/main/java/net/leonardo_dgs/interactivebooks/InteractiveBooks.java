@@ -31,7 +31,7 @@ public final class InteractiveBooks extends JavaPlugin {
         registerCommands();
         Config.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        new MetricsLite(this);
+        new MetricsLite(this, 5483);
     }
 
     @Override
