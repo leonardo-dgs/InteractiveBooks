@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'net.leonardo_dgs'
-version = '1.5.1'
+version = '1.5.2'
 description = 'Create cool interactive books!'
 
 String mainPackage = project.group + '.' + project.name.toLowerCase()
@@ -15,7 +15,7 @@ String author = 'Leonardo_DGS'
 String website = 'https://www.spigotmc.org/resources/45604/'
 
 String spigotVersion = '1.16.2-R0.1-SNAPSHOT'
-String bungeeChatVersion = '1.16-R0.1'
+String bungeeChatVersion = '1.16-R0.3'
 String lombokVersion = '1.18.12'
 String acfVersion = '0.5.0-SNAPSHOT'
 String bStatsVersion = '1.5'
