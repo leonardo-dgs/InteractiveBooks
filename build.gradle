@@ -14,13 +14,13 @@ String apiVersion = '1.13'
 String author = 'Leonardo_DGS'
 String website = 'https://www.spigotmc.org/resources/45604/'
 
-String spigotVersion = '1.16.1-R0.1-SNAPSHOT'
+String spigotVersion = '1.16.2-R0.1-SNAPSHOT'
 String bungeeChatVersion = '1.16-R0.1'
 String lombokVersion = '1.18.12'
 String acfVersion = '0.5.0-SNAPSHOT'
 String bStatsVersion = '1.5'
-String papiVersion = '2.10.6'
-String nbtApiVersion = '2.4.1'
+String papiVersion = '2.10.9'
+String nbtApiVersion = '2.5.0'
 
 tasks.compileJava.sourceCompatibility = 1.8
 tasks.compileJava.targetCompatibility = 1.8
