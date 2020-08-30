@@ -26,7 +26,8 @@ final class Config {
     }
 
     private static void loadBookConfigs() {
-        InteractiveBooks.getBooks().keySet().forEach(InteractiveBooks::unregisterBook);
+        for(String key : InteractiveBooks.getBooks().keySet())
+            InteractiveBooks.unregisterBook(key);
         File booksFolder = new File(InteractiveBooks.getInstance().getDataFolder(), "books");
         for (File f : Objects.requireNonNull(booksFolder.listFiles()))
             if (f.getName().endsWith(".yml"))
