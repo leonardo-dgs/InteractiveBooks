@@ -79,7 +79,3 @@ compileJava {
 artifacts {
     archives shadowJar
 }
-
-configurations.all {
-    transitive = false
-}
