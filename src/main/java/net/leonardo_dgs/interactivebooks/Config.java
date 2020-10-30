@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Objects;
 
 final class Config {
@@ -26,7 +27,7 @@ final class Config {
     }
 
     private static void loadBookConfigs() {
-        for(String key : InteractiveBooks.getBooks().keySet())
+        for(String key : new HashMap<>(InteractiveBooks.getBooks()).keySet())
             InteractiveBooks.unregisterBook(key);
         File booksFolder = new File(InteractiveBooks.getInstance().getDataFolder(), "books");
         for (File f : Objects.requireNonNull(booksFolder.listFiles()))
