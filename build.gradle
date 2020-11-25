@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'net.leonardo_dgs'
-version = '1.5.3'
+version = '1.5.4'
 description = 'Create cool interactive books!'
 
 String mainPackage = project.group + '.' + project.name.toLowerCase()
