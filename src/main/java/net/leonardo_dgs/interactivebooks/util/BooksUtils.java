@@ -31,6 +31,7 @@ public class BooksUtils {
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
+    private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
     private static final boolean OLD_ITEMINHAND_METHOD = ReflectionUtil.getNmsVersion().equals("v1_8_R3");
     private static final Plugin PAPIPLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
@@ -38,21 +39,17 @@ public class BooksUtils {
     private static final Field FIELD_PAGES;
 
     static {
-        Method chatSerializerA;
-        try {
-            chatSerializerA = ReflectionUtil.getMethod(ReflectionUtil.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            chatSerializerA = null;
+        Method chatSerializerA = null;
+        Field fieldPages = null;
+        if (OLD_PAGES_METHODS) {
+            try {
+                chatSerializerA = ReflectionUtil.getMethod(ReflectionUtil.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
+                fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
+            } catch (ClassNotFoundException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
         }
         CHATSERIALIZER_A = chatSerializerA;
-        Field fieldPages;
-        try {
-            fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
-        } catch (NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-            fieldPages = null;
-        }
         FIELD_PAGES = fieldPages;
     }
 
@@ -67,11 +64,15 @@ public class BooksUtils {
         if (isBookGenerationSupported())
             bookMeta.setGeneration(meta.getGeneration());
         replacePlaceholders(bookMeta, player);
-        try {
-            List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
-            pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages(rawPages, player));
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+        if (OLD_PAGES_METHODS) {
+            try {
+                List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
+                pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages_Before_v1_12_2(rawPages, player));
+            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        } else {
+            getPages(rawPages, player).forEach(bookMeta.spigot()::addPage);
         }
         return bookMeta;
     }
@@ -120,10 +121,15 @@ public class BooksUtils {
         return sb.toString();
     }
 
-    private static List<?> getPages(List<String> rawPages, Player player) {
+    private static List<BaseComponent[]> getPages(List<String> rawPages, Player player) {
+        List<BaseComponent[]> pages = new ArrayList<>();
+        rawPages.forEach(page -> pages.add(BooksUtils.getPage(page, player)));
+        return pages;
+    }
+
+    private static List<Object> getPages_Before_v1_12_2(List<String> rawPages, Player player) {
         List<Object> pages = new ArrayList<>();
-        rawPages.forEach(page ->
-        {
+        rawPages.forEach(page -> {
             try {
                 pages.add(CHATSERIALIZER_A.invoke(null, ComponentSerializer.toString(BooksUtils.getPage(page, player))));
             } catch (IllegalAccessException | InvocationTargetException e) {
