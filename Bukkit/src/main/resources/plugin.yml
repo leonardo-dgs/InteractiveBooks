@@ -1,0 +1,8 @@
+name: InteractiveBooks
+main: net.leonardo_dgs.interactivebooks.bukkit.BukkitMain
+version: ${version}
+api-version: 1.13
+description: ${description}
+author: Leonardo_DGS
+website: https://www.spigotmc.org/resources/45604/
+softdepend: [PlaceholderAPI]

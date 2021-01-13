@@ -1,1 +1,3 @@
 rootProject.name = 'InteractiveBooks'
+include 'Core'
+include 'Bukkit'

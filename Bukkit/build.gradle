@@ -1,0 +1,26 @@
+def mainPackage = 'net.leonardo_dgs.interactivebooks.bukkit'
+
+repositories {
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-chat:1.16-R0.4'
+    compileOnly 'io.netty:netty-all:4.1.25.Final'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    implementation 'de.tr7zw:item-nbt-api:2.6.0'
+    implementation 'org.bstats:bstats-bukkit-lite:1.7'
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+}
+
+tasks.shadowJar {
+    minimize()
+    relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
+    relocate 'co.aikar.commands', mainPackage + '.acf'
+    relocate 'co.aikar.locales', mainPackage + '.locales'
+    relocate 'org.bstats.bukkit', mainPackage + '.bstats'
+}

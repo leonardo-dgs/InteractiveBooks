@@ -1,0 +1,11 @@
+repositories {
+
+}
+
+dependencies {
+
+}
+
+tasks.shadowJar {
+
+}
