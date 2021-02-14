@@ -1,30 +1,16 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
+tasks.compileJava.options.encoding = 'UTF-8'
+tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+
 group = 'net.leonardo_dgs'
 version = '1.5.5'
 description = 'Create cool interactive books!'
 
-String mainPackage = project.group + '.' + project.name.toLowerCase()
-String apiVersion = '1.13'
-String author = 'Leonardo_DGS'
-String website = 'https://www.spigotmc.org/resources/45604/'
-
-String spigotVersion = '1.16.4-R0.1-SNAPSHOT'
-String bungeeChatVersion = '1.16-R0.3'
-String lombokVersion = '1.18.12'
-String acfVersion = '0.5.0-SNAPSHOT'
-String bStatsVersion = '1.7'
-String papiVersion = '2.10.9'
-String nbtApiVersion = '2.7.1'
-
-tasks.compileJava.sourceCompatibility = 1.8
-tasks.compileJava.targetCompatibility = 1.8
-tasks.compileJava.options.encoding = 'UTF-8'
+def mainPackage = 'net.leonardo_dgs.interactivebooks'
 
 repositories {
     jcenter()
@@ -36,45 +22,39 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:' + spigotVersion
-    compileOnly 'net.md-5:bungeecord-chat:' + bungeeChatVersion
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-chat:1.16-R0.4'
     compileOnly 'io.netty:netty-all:4.1.25.Final'
-    compileOnly 'me.clip:placeholderapi:' + papiVersion
-    compileOnly 'org.projectlombok:lombok:' + lombokVersion
-    annotationProcessor 'org.projectlombok:lombok:' + lombokVersion
-    implementation 'de.tr7zw:item-nbt-api:' + nbtApiVersion
-    implementation 'org.bstats:bstats-bukkit-lite:' + bStatsVersion
-    implementation 'co.aikar:acf-paper:' + acfVersion
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+    implementation 'de.tr7zw:item-nbt-api:2.7.1'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 }
-
-tasks.processResources {
-    filter ReplaceTokens, tokens: [
-            "name"       : project.name,
-            "mainPackage": mainPackage,
-            "version"    : project.version,
-            "apiVersion" : apiVersion,
-            "description": project.description,
-            "author"     : author,
-            "website"    : website
-    ]
-}
-
-tasks.jar.enabled = false
 
 tasks.shadowJar {
-    archiveFileName = project.name + '.jar'
+    archiveBaseName.set(project.name)
+    archiveClassifier.set('')
+    archiveVersion.set('')
     minimize()
+
     relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
     relocate 'co.aikar.commands', mainPackage + '.acf'
     relocate 'co.aikar.locales', mainPackage + '.locales'
     relocate 'org.bstats.bukkit', mainPackage + '.bstats'
 }
 
-compileJava {
-    options.compilerArgs += ["-parameters"]
-    options.fork = true
-    options.forkOptions.executable = 'javac'
+processResources {
+    expand(
+            version: project.version,
+            description: project.description,
+            author: 'Leonardo_DGS',
+            website: 'https://www.spigotmc.org/resources/45604/'
+    )
 }
+
+tasks.jar.enabled = false
 
 artifacts {
     archives shadowJar

@@ -3,7 +3,7 @@ package net.leonardo_dgs.interactivebooks;
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
 import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
-import org.bstats.bukkit.MetricsLite;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,7 +31,7 @@ public final class InteractiveBooks extends JavaPlugin {
         registerCommands();
         Config.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        new MetricsLite(this, 5483);
+        new Metrics(this, 5483);
     }
 
     @Override
