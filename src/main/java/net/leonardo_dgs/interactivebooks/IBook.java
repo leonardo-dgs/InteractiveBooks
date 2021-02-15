@@ -38,6 +38,8 @@ public class IBook {
     @Setter(AccessLevel.PACKAGE)
     private CommandOpenBook commandExecutor;
 
+    private Integer hashCode;
+
     /**
      * Constructor for {@link IBook} that takes data from the supplied configuration.
      *
@@ -267,9 +269,17 @@ public class IBook {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof IBook))
+        if (!getClass().equals(obj.getClass()))
             return false;
-        return ((IBook) obj).getId().equals(this.getId());
+        IBook other = (IBook) obj;
+        return getId().equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null)
+            hashCode = getId().hashCode();
+        return this.hashCode;
     }
 
     private static List<String> mergeLines(ConfigurationSection section) {
