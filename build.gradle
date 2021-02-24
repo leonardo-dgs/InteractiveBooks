@@ -42,7 +42,7 @@ tasks.shadowJar {
     relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
     relocate 'co.aikar.commands', mainPackage + '.acf'
     relocate 'co.aikar.locales', mainPackage + '.locales'
-    relocate 'org.bstats.bukkit', mainPackage + '.bstats'
+    relocate 'org.bstats', mainPackage + '.bstats'
 }
 
 processResources {
