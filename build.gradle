@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 tasks.compileJava.options.encoding = 'UTF-8'
@@ -28,7 +28,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.9'
     compileOnly 'org.projectlombok:lombok:1.18.18'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    implementation 'de.tr7zw:item-nbt-api:2.7.1'
+    implementation 'de.tr7zw:item-nbt-api:2.8.0'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 }
