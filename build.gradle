@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 tasks.compileJava.options.encoding = 'UTF-8'
@@ -13,7 +13,7 @@ description = 'Create cool interactive books!'
 def mainPackage = 'net.leonardo_dgs.interactivebooks'
 
 repositories {
-    jcenter()
+    mavenCentral()
 
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
@@ -22,13 +22,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-chat:1.16-R0.4'
+    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-chat:1.17-R0.1-SNAPSHOT'
     compileOnly 'io.netty:netty-all:4.1.25.Final'
-    compileOnly 'me.clip:placeholderapi:2.10.9'
-    compileOnly 'org.projectlombok:lombok:1.18.18'
-    annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    implementation 'de.tr7zw:item-nbt-api:2.7.1'
+    compileOnly 'me.clip:placeholderapi:2.10.10'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation 'de.tr7zw:item-nbt-api:2.8.0'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 }
