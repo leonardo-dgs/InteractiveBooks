@@ -1,12 +1,12 @@
 package net.leonardo_dgs.interactivebooks.util;
 
 import lombok.Getter;
+import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import net.kyori.adventure.platform.bukkit.MinecraftComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -16,9 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,45 +27,35 @@ public class BooksUtils {
 
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
     private static final boolean OLD_ITEMINHAND_METHOD = ReflectionUtil.getNmsVersion().equals("v1_8_R3");
-    private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile("(<[a-zA-Z ]+:[^>]*>|<reset>)");
-    private static final Method CHATSERIALIZER_A;
     private static final Field FIELD_PAGES;
+    private static final Pattern OLD_TRANSFORMATIONS_PATTERN = Pattern.compile("(<(show text|tooltip|run command|command|cmd|suggest command|suggest cmd|suggest|open url|url|link|change page):[^>]*>)");
 
     static {
-        Method chatSerializerA = null;
         Field fieldPages = null;
         if (OLD_PAGES_METHODS) {
             try {
-                chatSerializerA = ReflectionUtil.getMethod(ReflectionUtil.nmsClass("IChatBaseComponent").getClasses()[0], "a", String.class);
                 fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
             } catch (ClassNotFoundException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         }
-        CHATSERIALIZER_A = chatSerializerA;
         FIELD_PAGES = fieldPages;
     }
 
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        Objects.requireNonNull(bookMeta);
-        bookMeta.setDisplayName(meta.getDisplayName());
-        bookMeta.setTitle(meta.getTitle());
-        bookMeta.setAuthor(meta.getAuthor());
-        bookMeta.setLore(meta.getLore());
-        if (isBookGenerationSupported())
-            bookMeta.setGeneration(meta.getGeneration());
+        BookMeta bookMeta = meta.clone();
         setPlaceholders(bookMeta, player);
         if (OLD_PAGES_METHODS) {
             try {
                 List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
-                pages.getClass().getMethod("addAll", Collection.class).invoke(pages, getPages_Before_v1_12_2(rawPages, player));
+                Method methodAdd = pages.getClass().getMethod("add", Object.class);
+                for (String page : rawPages)
+                    methodAdd.invoke(pages, MinecraftComponentSerializer.get().serialize(getPage(page, player)));
             } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         } else {
-            getPages(rawPages, player).forEach(bookMeta.spigot()::addPage);
+            rawPages.forEach(page -> bookMeta.spigot().addPage(BungeeComponentSerializer.get().serialize(getPage(page, player))));
         }
         return bookMeta;
     }
@@ -75,112 +63,62 @@ public class BooksUtils {
     public static List<String> getPages(BookMeta meta) {
         List<String> plainPages = new ArrayList<>();
         List<BaseComponent[]> components = meta.spigot().getPages();
-        components.forEach(component -> plainPages.add(getPage(component)));
+        components.forEach(component -> plainPages.add(MiniMessage.miniMessage().serialize(BungeeComponentSerializer.get().deserialize(component))));
         return plainPages;
     }
 
-    private static List<BaseComponent[]> getPages(List<String> rawPages, Player player) {
-        List<BaseComponent[]> pages = new ArrayList<>();
-        rawPages.forEach(page -> pages.add(getPage(page, player)));
-        return pages;
-    }
-
-    private static List<Object> getPages_Before_v1_12_2(List<String> rawPages, Player player) {
-        List<Object> pages = new ArrayList<>();
-        rawPages.forEach(page -> {
-            try {
-                pages.add(CHATSERIALIZER_A.invoke(null, ComponentSerializer.toString(getPage(page, player))));
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-        return pages;
-    }
-
-    private static String getPage(BaseComponent[] components) {
-        StringBuilder sb = new StringBuilder();
-        for (BaseComponent component : components)
-            sb.append(BaseComponentSerializer.toString(component));
-        return sb.toString();
-    }
-
-    private static TextComponent[] getPage(String page, Player player) {
-        return parsePage(page, player).getComponents().toArray(new TextComponent[0]);
-    }
-
-    private static TextComponentBuilder parsePage(String plainPage, Player player) {
-        plainPage = plainPage.replace("<br>", "\n");
-        TextComponentBuilder compBuilder = new TextComponentBuilder();
-        Matcher matcher = ATTRIBUTE_PATTERN.matcher(plainPage);
-        int lastIndex = 0;
-        StringBuilder curStr = new StringBuilder();
+    public static Component getPage(String page, Player player) {
+        StringBuilder sb = new StringBuilder(PAPIUtil.setPlaceholders(player, page).replace("<br>", "\n"));
+        Matcher matcher = OLD_TRANSFORMATIONS_PATTERN.matcher(sb);
         while (matcher.find()) {
-            if (matcher.start() != 0) {
-                curStr.append(plainPage, lastIndex, matcher.start());
-                TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, replaceEscapedChars(curStr.toString()))));
-                compBuilder.add(current);
-                curStr.delete(0, curStr.length());
+            String occurrence = matcher.group();
+            String replacement = null;
+            if (occurrence.startsWith("<show text:")) {
+                replacement = "<hover:show_text:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<show text:", "") + "\">";
+            } else if (occurrence.startsWith("<tooltip:")) {
+                replacement = "<hover:show_text:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<tooltip:", "") + "\">";
+            } else if (occurrence.startsWith("<run command:")) {
+                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<run command:", "") + "\">";
+            } else if (occurrence.startsWith("<command:")) {
+                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<command:", "") + "\">";
+            } else if (occurrence.startsWith("<cmd:")) {
+                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<cmd:", "") + "\">";
+            } else if (occurrence.startsWith("<suggest command:")) {
+                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest command:", "") + "\">";
+            } else if (occurrence.startsWith("<suggest cmd:")) {
+                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest cmd:", "") + "\">";
+            } else if (occurrence.startsWith("<suggest:")) {
+                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest:", "") + "\">";
+            } else if (occurrence.startsWith("<open url:")) {
+                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<open url:", "") + "\">";
+            } else if (occurrence.startsWith("<url:")) {
+                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<url:", "") + "\">";
+            } else if (occurrence.startsWith("<link:")) {
+                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<link:", "") + "\">";
+            } else if (occurrence.startsWith("<change page:")) {
+                replacement = "<click:change_page:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<change page:", "") + "\">";
             }
-            lastIndex = matcher.end();
-            if (matcher.group().equals("<reset>")) {
-                compBuilder.setNextHoverEvent(null);
-                compBuilder.setNextClickEvent(null);
-            } else {
-                Object event = parseEvent(matcher.group(), player);
-                if (event != null) {
-                    if (event instanceof HoverEvent)
-                        compBuilder.setNextHoverEvent((HoverEvent) event);
-                    else if (event instanceof ClickEvent)
-                        compBuilder.setNextClickEvent((ClickEvent) event);
-                }
-            }
-        }
-        if (lastIndex < plainPage.length()) {
-            curStr.append(plainPage, lastIndex, plainPage.length());
-            TextComponent current = new TextComponent(TextComponent.fromLegacyText(PAPIUtil.setPlaceholders(player, curStr.toString())));
-            compBuilder.add(current);
-        }
 
-        return compBuilder;
-    }
-
-    private static Object parseEvent(String attribute, Player player) {
-        String trimmed = attribute.replaceFirst("<", "").substring(0, attribute.length() - 2);
-        String[] attributes = trimmed.split(":", 2);
-        BookEventActionType type = BookEventActionType.parse(attributes[0]);
-        String value = attributes[1];
-        if (type == null)
-            return null;
-        value = PAPIUtil.setPlaceholders(player, replaceEscapedChars(value));
-        switch (type) {
-            case SHOW_TEXT:
-                return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
-            case SHOW_ITEM:
-            case SHOW_ENTITY:
-            case SUGGEST_COMMAND:
-                return null;
-            case RUN_COMMAND:
-                return new ClickEvent(ClickEvent.Action.RUN_COMMAND, value);
-            case OPEN_URL:
-                return new ClickEvent(ClickEvent.Action.OPEN_URL, value);
-            case CHANGE_PAGE:
-                return new ClickEvent(ClickEvent.Action.CHANGE_PAGE, value);
+            if (replacement != null)
+                sb.replace(matcher.start(), matcher.end(), replacement);
         }
-        return null;
-    }
-
-    private static String replaceEscapedChars(String str) {
-        return str.replace("&lt;", "<").replace("&gt;", ">");
+        return MiniMessage.miniMessage().parse(sb.toString());
     }
 
     private static void setPlaceholders(BookMeta meta, Player player) {
-        meta.setDisplayName(PAPIUtil.setPlaceholders(player, meta.getDisplayName()));
+        meta.setDisplayName(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getDisplayName()))));
         if (meta.getTitle() != null)
-            meta.setTitle(PAPIUtil.setPlaceholders(player, meta.getTitle()));
+            meta.setTitle(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getTitle()))));
         if (meta.getAuthor() != null)
-            meta.setAuthor(PAPIUtil.setPlaceholders(player, meta.getAuthor()));
+            meta.setAuthor(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getAuthor()))));
         if (meta.getLore() != null)
-            meta.setLore(PAPIUtil.setPlaceholders(player, meta.getLore()));
+            meta.setLore(getColoredLore(meta.getLore(), player));
+    }
+
+    private static List<String> getColoredLore(List<String> lore, Player player) {
+        for (int i = 0; i < lore.size(); i++)
+            lore.set(i, BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, lore.get(i)))));
+        return lore;
     }
 
     public static Generation getBookGeneration(String generation) {

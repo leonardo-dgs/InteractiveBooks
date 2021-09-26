@@ -4,8 +4,10 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import net.leonardo_dgs.interactivebooks.util.PlayerUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import static net.leonardo_dgs.interactivebooks.util.PAPIUtil.setPlaceholders;
 
 public class IBook {
 
@@ -154,7 +158,12 @@ public class IBook {
      * @param player the player to which open the book
      */
     public void open(Player player) {
-        PlayerUtil.openBook(this.getItem(player), player);
+        Book book = Book.builder()
+                .title(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getTitle())))
+                .author(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getAuthor())))
+                .pages(getPagesComponents(player))
+                .build();
+        InteractiveBooks.getInstance().adventure().player(player).openBook(book);
     }
 
     /**
@@ -280,6 +289,13 @@ public class IBook {
         if (hashCode == null)
             hashCode = getId().hashCode();
         return this.hashCode;
+    }
+
+    private Component[] getPagesComponents(Player player) {
+        Component[] pagesComponents = new Component[pages.size()];
+        for (int i = 0; i < pagesComponents.length; i++)
+            pagesComponents[i] = BooksUtils.getPage(pages.get(i), player);
+        return pagesComponents;
     }
 
     private static List<String> mergeLines(ConfigurationSection section) {

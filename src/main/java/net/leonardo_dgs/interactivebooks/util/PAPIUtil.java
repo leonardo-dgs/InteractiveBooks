@@ -31,17 +31,6 @@ public final class PAPIUtil {
         }
     }
 
-    public static List<String> setPlaceholders(Player player, List<String> text) {
-        if (isPlaceholderAPISupported()) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        } else {
-            List<String> coloredText = new ArrayList<>();
-            for (String s : text)
-                coloredText.add(ChatColor.translateAlternateColorCodes('&', s));
-            return coloredText;
-        }
-    }
-
     private static boolean isPlaceholderAPISupported() {
         return PAPIPLUGIN != null && PAPIPLUGIN.isEnabled();
     }

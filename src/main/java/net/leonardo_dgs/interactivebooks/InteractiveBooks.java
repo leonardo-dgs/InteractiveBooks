@@ -2,6 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ public final class InteractiveBooks extends JavaPlugin {
 
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
+    private BukkitAudiences adventure;
     private static PaperCommandManager commandManager;
 
     @Override
@@ -26,6 +28,7 @@ public final class InteractiveBooks extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        adventure = BukkitAudiences.create(this);
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
         registerCommands();
@@ -36,6 +39,10 @@ public final class InteractiveBooks extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
         instance = null;
     }
 
@@ -95,6 +102,10 @@ public final class InteractiveBooks extends JavaPlugin {
         if (book.getCommandExecutor() != null)
             commandManager.unregisterCommand(book.getCommandExecutor());
         books.remove(id);
+    }
+
+    public BukkitAudiences adventure() {
+        return adventure;
     }
 
     private void registerCommands() {

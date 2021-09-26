@@ -1,6 +1,6 @@
 # This is an example book to show how to create one
 # Note: The placeholders in this book (like %player_name%) need PlaceholderAPI installed
-# with the proper expansion, see here for more informations: https://www.spigotmc.org/resources/placeholderapi.6245/
+# with the proper expansions, see here for more information: https://www.spigotmc.org/resources/placeholderapi.6245/
 
 # Item's name
 name: ExampleName
@@ -25,23 +25,22 @@ lore:
 # Separate multiple commands with a space
 open_command: 'examplebook'
 
-pages:
-  '1':
-  - '<tooltip:I''m a tooltip>Hover here to see a tooltip<reset>'
-  - '<tooltip:Run the command "/examplecommand"><run command:/examplecommand>Click here to run a command<reset>'
-  - '<link:https://www.spigotmc.org/resources/interactivebooks.45604/>Click here to open a link<reset>'
-  '2':
-  - '&cExample placeholders'
-  - ''
-  - 'Name: &a%player_name%'
-  - 'Level: &6%player_level%'
-  - 'Gamemode: &c%player_gamemode%'
-  - 'Balance: &6%vault_eco_balance%'
-  - 'Online players: &4%server_online%'
-  
 # For the placeholders to work correctly
-# you should download the Player and Vault
-# extensions for PlaceholderAPI:
+# you have to download the Player and Vault
+# expansions for PlaceholderAPI:
 # /papi ecloud download Player
 # /papi ecloud download Vault
 # /papi reload
+pages:
+  '1':
+  - '<hover:show_text:"I''m a tooltip">Hover here to see a tooltip</hover:show_text>'
+  - '<hover:show_text:"Run the command "/examplecommand""><click:run_command:/examplecommand>Click here to run a command<reset>'
+  - '<click:open_url:https://www.spigotmc.org/resources/45604/>Click here to open a link</click>'
+  '2':
+  - '<red>Example placeholders</red>'
+  - ''
+  - 'Name: <green>%player_name%</green>'
+  - 'Level: <gold>%player_level%</gold>'
+  - 'Gamemode: <red>%player_gamemode%</red>'
+  - 'Balance: <gold>%vault_eco_balance%</gold>'
+  - 'Online players: <dark_red>%server_online%</dark_red>'
