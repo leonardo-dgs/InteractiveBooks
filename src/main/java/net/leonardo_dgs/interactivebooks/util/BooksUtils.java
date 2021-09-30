@@ -13,8 +13,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -47,11 +45,9 @@ public class BooksUtils {
         setPlaceholders(bookMeta, player);
         if (OLD_PAGES_METHODS) {
             try {
-                List<?> pages = (List<?>) FIELD_PAGES.get(bookMeta);
-                Method methodAdd = pages.getClass().getMethod("add", Object.class);
-                for (String page : rawPages)
-                    methodAdd.invoke(pages, MinecraftComponentSerializer.get().serialize(getPage(page, player)));
-            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                List<Object> pages = (List<Object>) FIELD_PAGES.get(bookMeta);
+                rawPages.forEach(page -> pages.add(MinecraftComponentSerializer.get().serialize(getPage(page, player))));
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         } else {
