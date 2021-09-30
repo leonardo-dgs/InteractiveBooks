@@ -251,15 +251,13 @@ public class IBook {
         File file = new File(new File(InteractiveBooks.getInstance().getDataFolder(), "books"), getId() + ".yml");
         BookMeta meta = bookMeta;
         try {
-            if (!file.exists())
-                if (file.createNewFile())
-                    throw new IOException();
+            file.createNewFile();
             YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
             bookConfig.set("name", meta.getDisplayName());
             bookConfig.set("title", meta.getTitle());
             bookConfig.set("author", meta.getAuthor());
             if (BooksUtils.isBookGenerationSupported())
-                bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL));
+                bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL).name());
             bookConfig.set("lore", meta.getLore());
             bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
             if (this.getPages().isEmpty()) {
