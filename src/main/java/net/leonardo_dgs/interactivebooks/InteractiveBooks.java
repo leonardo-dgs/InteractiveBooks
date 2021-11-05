@@ -93,7 +93,7 @@ public final class InteractiveBooks extends JavaPlugin {
     }
 
     /**
-     * Unegisters a book by its id.
+     * Unregisters a book by its id.
      *
      * @param id the book id to unregister
      */

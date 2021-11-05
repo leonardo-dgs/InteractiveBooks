@@ -59,10 +59,10 @@ public final class PlayerListener implements Listener {
             return;
         if (!BooksUtils.getItemInMainHand(event.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
-        NBTItem nbti = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
-        if (!nbti.hasKey("InteractiveBooks|Book-Id"))
+        NBTItem nbtItem = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
+        if (!nbtItem.hasKey("InteractiveBooks|Book-Id"))
             return;
-        IBook book = InteractiveBooks.getBook(nbti.getString("InteractiveBooks|Book-Id"));
+        IBook book = InteractiveBooks.getBook(nbtItem.getString("InteractiveBooks|Book-Id"));
         if (book == null)
             return;
         ItemStack bookItem = book.getItem(event.getPlayer());

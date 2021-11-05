@@ -44,10 +44,11 @@ public final class CommandIBooks extends BaseCommand {
             String bookId = iterator.next();
             sb.append("§6");
             sb.append(bookId);
-            if (hasNext = iterator.hasNext())
+            hasNext = iterator.hasNext();
+            if (hasNext)
                 sb.append("§7, ");
         }
-        sender.sendMessage("§eBooks:\n" + sb.toString());
+        sender.sendMessage("§eBooks:\n" + sb);
     }
 
     @Subcommand("open")

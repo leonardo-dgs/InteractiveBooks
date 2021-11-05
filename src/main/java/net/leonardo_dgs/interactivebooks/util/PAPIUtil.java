@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 
 public final class PAPIUtil {
 
-    private static final Plugin PAPIPLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+    private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
 
     public static String setPlaceholders(String text) {
         return setPlaceholders(null, text);
@@ -28,6 +28,6 @@ public final class PAPIUtil {
     }
 
     private static boolean isPlaceholderAPISupported() {
-        return PAPIPLUGIN != null && PAPIPLUGIN.isEnabled();
+        return PAPI_PLUGIN != null && PAPI_PLUGIN.isEnabled();
     }
 }

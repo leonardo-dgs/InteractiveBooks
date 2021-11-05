@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 tasks.compileJava.options.encoding = 'UTF-8'
@@ -27,8 +27,8 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-chat:1.17-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
     implementation 'de.tr7zw:item-nbt-api:2.8.0'
     implementation 'net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT'
     implementation 'net.kyori:adventure-platform-bukkit:4.0.1-SNAPSHOT'
@@ -43,11 +43,14 @@ tasks.shadowJar {
     archiveVersion.set('')
     minimize()
 
-    relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.nbtapi'
-    relocate 'net.kyori.adventure', mainPackage + '.adventure'
-    relocate 'co.aikar.commands', mainPackage + '.acf'
-    relocate 'co.aikar.locales', mainPackage + '.locales'
-    relocate 'de.leonhard.storage', mainPackage + '.simplixstorage'
+    relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.lib.nbtapi'
+    relocate 'net.kyori.adventure', mainPackage + '.lib.adventure'
+    relocate 'net.kyori.examination', mainPackage + '.lib.examination'
+    relocate 'co.aikar.commands', mainPackage + '.lib.acf'
+    relocate 'co.aikar.locales', mainPackage + '.lib.locales'
+    relocate 'de.leonhard.storage', mainPackage + '.lib.simplixstorage'
+    relocate 'org.intellij', mainPackage + '.lib.intellij'
+    relocate 'org.jetbrains', mainPackage + '.lib.jetbrains'
     relocate 'org.bstats', mainPackage + '.bstats'
 }
 
