@@ -20,6 +20,7 @@ repositories {
     maven { url = 'https://repo.codemc.org/repository/maven-public/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -33,6 +34,7 @@ dependencies {
     implementation 'net.kyori:adventure-platform-bukkit:4.0.1-SNAPSHOT'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+    implementation 'com.github.Simplix-Softworks:SimplixStorage:3.2.3'
 }
 
 tasks.shadowJar {
@@ -45,6 +47,7 @@ tasks.shadowJar {
     relocate 'net.kyori.adventure', mainPackage + '.adventure'
     relocate 'co.aikar.commands', mainPackage + '.acf'
     relocate 'co.aikar.locales', mainPackage + '.locales'
+    relocate 'de.leonhard.storage', mainPackage + '.simplixstorage'
     relocate 'org.bstats', mainPackage + '.bstats'
 }
 

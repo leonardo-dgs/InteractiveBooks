@@ -298,13 +298,13 @@ public class IBook {
 
     private static List<String> mergeLines(ConfigurationSection section) {
         List<String> pages = new ArrayList<>();
-        if (section == null)
-            return pages;
-        section.getKeys(false).forEach(key -> {
-            StringBuilder sb = new StringBuilder();
-            section.getStringList(key).forEach(line -> sb.append("\n").append(line));
-            pages.add(sb.toString().replaceFirst("\n", ""));
-        });
+        if (section != null) {
+            section.getKeys(false).forEach(key -> {
+                StringBuilder sb = new StringBuilder();
+                section.getStringList(key).forEach(line -> sb.append("\n").append(line));
+                pages.add(sb.toString().replaceFirst("\n", ""));
+            });
+        }
         return pages;
     }
 }

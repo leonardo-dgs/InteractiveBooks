@@ -32,7 +32,7 @@ public final class InteractiveBooks extends JavaPlugin {
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
         registerCommands();
-        Config.loadAll();
+        ConfigManager.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         new Metrics(this, 5483);
     }
@@ -99,9 +99,11 @@ public final class InteractiveBooks extends JavaPlugin {
      */
     public static void unregisterBook(String id) {
         IBook book = getBook(id);
-        if (book.getCommandExecutor() != null)
-            commandManager.unregisterCommand(book.getCommandExecutor());
-        books.remove(id);
+        if (book != null) {
+            if (book.getCommandExecutor() != null)
+                commandManager.unregisterCommand(book.getCommandExecutor());
+            books.remove(id);
+        }
     }
 
     public BukkitAudiences adventure() {

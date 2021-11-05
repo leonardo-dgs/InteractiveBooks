@@ -151,7 +151,7 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("interactivebooks.command.reload")
     public void onReload(CommandSender sender) {
-        Config.loadAll();
+        ConfigManager.loadAll();
         sender.sendMessage("§aConfig reloaded!");
     }
 

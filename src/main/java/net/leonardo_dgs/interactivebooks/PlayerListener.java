@@ -25,11 +25,11 @@ public final class PlayerListener implements Listener {
         String openBookId;
         List<String> booksToGiveIds;
         if (event.getPlayer().hasPlayedBefore()) {
-            openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_join");
-            booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_join");
+            openBookId = ConfigManager.getConfig().getString("open_book_on_join");
+            booksToGiveIds = ConfigManager.getConfig().getStringList("books_on_join");
         } else {
-            openBookId = InteractiveBooks.getInstance().getConfig().getString("open_book_on_first_join");
-            booksToGiveIds = InteractiveBooks.getInstance().getConfig().getStringList("books_on_first_join");
+            openBookId = ConfigManager.getConfig().getString("open_book_on_first_join");
+            booksToGiveIds = ConfigManager.getConfig().getStringList("books_on_first_join");
         }
         if (openBookId != null && !openBookId.equals("")) {
             IBook book = InteractiveBooks.getBook(openBookId);
@@ -55,7 +55,7 @@ public final class PlayerListener implements Listener {
             return;
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             return;
-        if (!InteractiveBooks.getInstance().getConfig().getBoolean("update_books_on_use"))
+        if (!ConfigManager.getConfig().getBoolean("update_books_on_use"))
             return;
         if (!BooksUtils.getItemInMainHand(event.getPlayer()).getType().equals(Material.WRITTEN_BOOK))
             return;
