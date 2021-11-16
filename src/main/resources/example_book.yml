@@ -26,8 +26,9 @@ lore:
 open_command: 'examplebook'
 
 # For the placeholders to work correctly
-# you have to download the Player and Vault
-# expansions for PlaceholderAPI:
+# you have to download the Vault plugin:
+# https://www.spigotmc.org/resources/vault.34315/
+# and the Player and Vault expansions for PlaceholderAPI:
 # /papi ecloud download Player
 # /papi ecloud download Vault
 # /papi reload
