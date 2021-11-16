@@ -39,7 +39,7 @@ final class ConfigManager {
             try {
                 if (!booksFolder.mkdirs())
                     throw new IOException();
-                Files.copy(Objects.requireNonNull(getInstance().getResource("examplebook.yml")), new File(booksFolder, "examplebook.yml").toPath());
+                Files.copy(Objects.requireNonNull(getInstance().getResource("example_book.yml")), new File(booksFolder, "example_book.yml").toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
