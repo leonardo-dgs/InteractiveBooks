@@ -1,5 +1,7 @@
 package net.leonardo_dgs.interactivebooks;
 
+import de.leonhard.storage.internal.FlatFile;
+import de.leonhard.storage.sections.FlatFileSection;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,6 +44,8 @@ public class IBook {
     @Setter(AccessLevel.PACKAGE)
     private CommandOpenBook commandExecutor;
 
+    private FlatFile bookConfig;
+
     private Integer hashCode;
 
     /**
@@ -54,6 +58,13 @@ public class IBook {
         this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"), bookConfig.getString("generation"),
                 bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
                 (((bookConfig.getString("open_command") == null) || Objects.equals(bookConfig.getString("open_command"), "")) ? null : Objects.requireNonNull(bookConfig.getString("open_command")).split(" ")));
+    }
+
+    IBook(String id, FlatFile bookConfig) {
+        this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"),
+                bookConfig.getString("generation"), bookConfig.getStringList("lore"), mergeLines(bookConfig.getSection("pages")),
+                (bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("")) ? null : bookConfig.getString("open_command").split(" "));
+        this.bookConfig = bookConfig;
     }
 
     /**
@@ -158,12 +169,17 @@ public class IBook {
      * @param player the player to which open the book
      */
     public void open(Player player) {
-        Book book = Book.builder()
-                .title(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getTitle())))
-                .author(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getAuthor())))
-                .pages(getPagesComponents(player))
-                .build();
-        InteractiveBooks.getInstance().adventure().player(player).openBook(book);
+        if (bookConfig.hasChanged()) {
+            bookConfig.forceReload();
+            InteractiveBooks.getBook(id).open(player);
+        } else {
+            Book book = Book.builder()
+                    .title(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getTitle())))
+                    .author(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getAuthor())))
+                    .pages(getPagesComponents(player))
+                    .build();
+            InteractiveBooks.getInstance().adventure().player(player).openBook(book);
+        }
     }
 
     /**
@@ -205,7 +221,12 @@ public class IBook {
      * @return the {@link BookMeta} with placeholders replaced with the specified player data
      */
     public BookMeta getBookMeta(Player player) {
-        return BooksUtils.getBookMeta(bookMeta, this.getPages(), player);
+        if (bookConfig.hasChanged()) {
+            bookConfig.forceReload();
+            return InteractiveBooks.getBook(id).getBookMeta(player);
+        } else {
+            return BooksUtils.getBookMeta(bookMeta, this.getPages(), player);
+        }
     }
 
     /**
@@ -300,6 +321,18 @@ public class IBook {
         List<String> pages = new ArrayList<>();
         if (section != null) {
             section.getKeys(false).forEach(key -> {
+                StringBuilder sb = new StringBuilder();
+                section.getStringList(key).forEach(line -> sb.append("\n").append(line));
+                pages.add(sb.toString().replaceFirst("\n", ""));
+            });
+        }
+        return pages;
+    }
+
+    private static List<String> mergeLines(FlatFileSection section) {
+        List<String> pages = new ArrayList<>();
+        if (section != null) {
+            section.singleLayerKeySet().forEach(key -> {
                 StringBuilder sb = new StringBuilder();
                 section.getStringList(key).forEach(line -> sb.append("\n").append(line));
                 pages.add(sb.toString().replaceFirst("\n", ""));
