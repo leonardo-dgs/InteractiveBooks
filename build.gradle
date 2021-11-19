@@ -7,7 +7,7 @@ tasks.compileJava.options.encoding = 'UTF-8'
 tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 
 group = 'net.leonardo_dgs'
-version = '1.5.6'
+version = '1.6.0'
 description = 'Create cool interactive books!'
 
 def mainPackage = 'net.leonardo_dgs.interactivebooks'
