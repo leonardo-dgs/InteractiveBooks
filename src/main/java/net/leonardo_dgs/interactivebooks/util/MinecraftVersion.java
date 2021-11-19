@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class MinecraftVersion implements Comparable<MinecraftVersion> {
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile(".*\\(.*MC.\\s*([a-zA-z0-9\\-\\.]+)\\s*\\)");
+    private static final Pattern VERSION_PATTERN = Pattern.compile(".*\\(.*MC.\\s*([a-zA-z0-9\\-.]+)\\s*\\)");
     private static final MinecraftVersion RUNNING_VERSION = parseServerVersion(Bukkit.getVersion());
 
     @Getter

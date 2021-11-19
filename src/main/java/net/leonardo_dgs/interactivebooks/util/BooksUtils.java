@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -23,8 +24,9 @@ public class BooksUtils {
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
+    private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
-    private static final boolean OLD_ITEMINHAND_METHOD = ReflectionUtil.getNmsVersion().equals("v1_8_R3");
+    private static final boolean OLD_ITEM_IN_HAND_METHODS = NMS_VERSION.equals("v1_8_R3");
     private static final Field FIELD_PAGES;
     private static final Pattern OLD_TRANSFORMATIONS_PATTERN = Pattern.compile("(<(show text|tooltip|run command|command|cmd|suggest command|suggest cmd|suggest|open url|url|link|change page):[^>]*>)");
 
@@ -32,7 +34,7 @@ public class BooksUtils {
         Field fieldPages = null;
         if (OLD_PAGES_METHODS) {
             try {
-                fieldPages = ReflectionUtil.obcClass("inventory.CraftMetaBook").getDeclaredField("pages");
+                fieldPages = Class.forName("org.bukkit.craftbukkit." + NMS_VERSION + ".inventory.CraftMetaBook").getDeclaredField("pages");
             } catch (ClassNotFoundException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -123,7 +125,7 @@ public class BooksUtils {
 
     @SuppressWarnings("deprecation")
     public static ItemStack getItemInMainHand(Player player) {
-        if (OLD_ITEMINHAND_METHOD)
+        if (OLD_ITEM_IN_HAND_METHODS)
             return player.getInventory().getItemInHand();
         else
             return player.getInventory().getItemInMainHand();
@@ -131,7 +133,7 @@ public class BooksUtils {
 
     @SuppressWarnings("deprecation")
     public static void setItemInMainHand(Player player, ItemStack item) {
-        if (OLD_ITEMINHAND_METHOD)
+        if (OLD_ITEM_IN_HAND_METHODS)
             player.getInventory().setItemInHand(item);
         else
             player.getInventory().setItemInMainHand(item);
