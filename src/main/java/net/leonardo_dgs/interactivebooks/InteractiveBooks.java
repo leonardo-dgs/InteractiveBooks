@@ -29,6 +29,7 @@ public final class InteractiveBooks extends JavaPlugin {
             return;
         }
         adventure = BukkitAudiences.create(this);
+        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
         registerCommands();
