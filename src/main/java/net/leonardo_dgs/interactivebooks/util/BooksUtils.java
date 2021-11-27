@@ -81,6 +81,7 @@ public class BooksUtils {
         }))).build();
     }
 
+    @SuppressWarnings({"unchecked", "UnstableApiUsage"})
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
         BookMeta bookMeta = meta.clone();
         setPlaceholders(bookMeta, player);
