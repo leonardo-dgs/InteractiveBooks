@@ -4,7 +4,13 @@ import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.platform.bukkit.MinecraftComponentSerializer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationFactory;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -16,19 +22,18 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 
 public class BooksUtils {
 
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
+    private static final MiniMessage MINI_MESSAGE;
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
     private static final boolean OLD_ITEM_IN_HAND_METHODS = NMS_VERSION.equals("v1_8_R3");
     private static final Field FIELD_PAGES;
-    private static final Pattern OLD_TRANSFORMATIONS_PATTERN = Pattern.compile("(<(show text|tooltip|run command|command|cmd|suggest command|suggest cmd|suggest|open url|url|link|change page):[^>]*>)");
 
     static {
         Field fieldPages = null;
@@ -40,6 +45,40 @@ public class BooksUtils {
             }
         }
         FIELD_PAGES = fieldPages;
+
+        Predicate<String> names = TransformationType.acceptingNames("tooltip", "show text", "run command", "run_command", "command", "cmd", "open url", "url", "link", "change page");
+        MINI_MESSAGE = MiniMessage.builder().transformations(builder -> builder.add(TransformationType.transformationType(names, (TransformationFactory<Transformation>) (ctx, name, args) -> new Transformation() {
+            @Override
+            public Component apply() {
+                switch (name) {
+                    case "tooltip":
+                    case "show text":
+                        return Component.text().hoverEvent(HoverEvent.showText(ctx.parse(args.get(0).value()))).build();
+                    case "run command":
+                    case "run_command":
+                    case "command":
+                    case "cmd":
+                        return Component.text().clickEvent(ClickEvent.runCommand(args.get(0).value())).build();
+                    case "open url":
+                    case "url":
+                    case "link":
+                        return Component.text().clickEvent(ClickEvent.openUrl(args.get(0).value())).build();
+                    case "change page":
+                        return Component.text().clickEvent(ClickEvent.changePage(args.get(0).value())).build();
+                }
+                return null;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return this == o;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        }))).build();
     }
 
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
@@ -66,41 +105,7 @@ public class BooksUtils {
     }
 
     public static Component getPage(String page, Player player) {
-        StringBuilder sb = new StringBuilder(PAPIUtil.setPlaceholders(player, page).replace("<br>", "\n"));
-        Matcher matcher = OLD_TRANSFORMATIONS_PATTERN.matcher(sb);
-        while (matcher.find()) {
-            String occurrence = matcher.group();
-            String replacement = null;
-            if (occurrence.startsWith("<show text:")) {
-                replacement = "<hover:show_text:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<show text:", "") + "\">";
-            } else if (occurrence.startsWith("<tooltip:")) {
-                replacement = "<hover:show_text:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<tooltip:", "") + "\">";
-            } else if (occurrence.startsWith("<run command:")) {
-                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<run command:", "") + "\">";
-            } else if (occurrence.startsWith("<command:")) {
-                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<command:", "") + "\">";
-            } else if (occurrence.startsWith("<cmd:")) {
-                replacement = "<click:run_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<cmd:", "") + "\">";
-            } else if (occurrence.startsWith("<suggest command:")) {
-                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest command:", "") + "\">";
-            } else if (occurrence.startsWith("<suggest cmd:")) {
-                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest cmd:", "") + "\">";
-            } else if (occurrence.startsWith("<suggest:")) {
-                replacement = "<click:suggest_command:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<suggest:", "") + "\">";
-            } else if (occurrence.startsWith("<open url:")) {
-                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<open url:", "") + "\">";
-            } else if (occurrence.startsWith("<url:")) {
-                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<url:", "") + "\">";
-            } else if (occurrence.startsWith("<link:")) {
-                replacement = "<click:open_url:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<link:", "") + "\">";
-            } else if (occurrence.startsWith("<change page:")) {
-                replacement = "<click:change_page:\"" + occurrence.substring(0, occurrence.length() - 1).replaceFirst("<change page:", "") + "\">";
-            }
-
-            if (replacement != null)
-                sb.replace(matcher.start(), matcher.end(), replacement);
-        }
-        return MiniMessage.miniMessage().parse(sb.toString());
+        return MINI_MESSAGE.deserialize(PAPIUtil.setPlaceholders(player, page), TemplateResolver.resolving("br", "\n"));
     }
 
     private static void setPlaceholders(BookMeta meta, Player player) {
