@@ -23,7 +23,7 @@ public final class PAPIUtil {
                 return ChatColor.translateAlternateColorCodes('&',PlaceholderAPI.setPlaceholders(null, text));
             }
         } else {
-            return ChatColor.translateAlternateColorCodes('&',text);
+            return ChatColor.translateAlternateColorCodes('&', text);
         }
     }
 
