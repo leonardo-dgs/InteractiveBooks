@@ -18,12 +18,12 @@ public final class PAPIUtil {
     public static String setPlaceholders(CommandSender sender, String text) {
         if (isPlaceholderAPISupported()) {
             if (sender instanceof OfflinePlayer) {
-                return PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text);
+                return ChatColor.translateAlternateColorCodes('&',PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text));
             } else {
-                return PlaceholderAPI.setPlaceholders(null, text);
+                return ChatColor.translateAlternateColorCodes('&',PlaceholderAPI.setPlaceholders(null, text));
             }
         } else {
-            return ChatColor.translateAlternateColorCodes('&', text);
+            return ChatColor.translateAlternateColorCodes('&',text);
         }
     }
 
