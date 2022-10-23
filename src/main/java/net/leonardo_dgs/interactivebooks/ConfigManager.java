@@ -1,7 +1,7 @@
 package net.leonardo_dgs.interactivebooks;
 
 import de.leonhard.storage.Config;
-import de.leonhard.storage.LightningBuilder;
+import de.leonhard.storage.SimplixBuilder;
 import de.leonhard.storage.internal.settings.ReloadSettings;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ final class ConfigManager {
     private static Config config;
 
     static void loadAll() {
-        config = LightningBuilder.fromFile(new File(getInstance().getDataFolder().getPath(), "config.yml"))
+        config = SimplixBuilder.fromFile(new File(getInstance().getDataFolder().getPath(), "config.yml"))
                 .setReloadSettings(ReloadSettings.INTELLIGENT)
                 .addInputStreamFromResource("config.yml")
                 .createConfig();
@@ -44,7 +44,7 @@ final class ConfigManager {
         for (File bookFile : Objects.requireNonNull(booksFolder.listFiles())) {
             if (bookFile.getName().endsWith(".yml")) {
                 String bookId = bookFile.getName().substring(0, bookFile.getName().length() - 4);
-                LightningBuilder.fromFile(bookFile)
+                SimplixBuilder.fromFile(bookFile)
                         .setReloadSettings(ReloadSettings.INTELLIGENT)
                         .reloadCallback(flatFile -> {
                             InteractiveBooks.unregisterBook(bookId);

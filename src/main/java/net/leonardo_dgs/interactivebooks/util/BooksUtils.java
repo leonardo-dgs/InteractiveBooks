@@ -7,10 +7,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationFactory;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -21,15 +19,16 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class BooksUtils {
 
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
-    private static final MiniMessage MINI_MESSAGE;
+    private static final MiniMessage MINI_MESSAGE_LEGACY_TAGS;
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
     private static final boolean OLD_ITEM_IN_HAND_METHODS = NMS_VERSION.equals("v1_8_R3");
@@ -46,39 +45,17 @@ public class BooksUtils {
         }
         FIELD_PAGES = fieldPages;
 
-        Predicate<String> names = TransformationType.acceptingNames("tooltip", "show text", "run command", "run_command", "command", "cmd", "open url", "url", "link", "change page");
-        MINI_MESSAGE = MiniMessage.builder().transformations(builder -> builder.add(TransformationType.transformationType(names, (TransformationFactory<Transformation>) (ctx, name, args) -> new Transformation() {
-            @Override
-            public Component apply() {
-                switch (name) {
-                    case "tooltip":
-                    case "show text":
-                        return Component.text().hoverEvent(HoverEvent.showText(ctx.parse(args.get(0).value()))).build();
-                    case "run command":
-                    case "run_command":
-                    case "command":
-                    case "cmd":
-                        return Component.text().clickEvent(ClickEvent.runCommand(args.get(0).value())).build();
-                    case "open url":
-                    case "url":
-                    case "link":
-                        return Component.text().clickEvent(ClickEvent.openUrl(args.get(0).value())).build();
-                    case "change page":
-                        return Component.text().clickEvent(ClickEvent.changePage(args.get(0).value())).build();
+        HashSet<String> runCommandNames = new HashSet<>(Arrays.asList("run_command", "command", "cmd"));
+        HashSet<String> openUrlNames = new HashSet<>(Arrays.asList("url", "link"));
+        MINI_MESSAGE_LEGACY_TAGS = MiniMessage.builder().editTags(adder -> {
+                    adder.resolver(TagResolver.resolver("tooltip", (argumentQueue, context) ->
+                            Tag.styling(HoverEvent.showText(context.deserialize(argumentQueue.pop().value())))));
+                    adder.resolver(TagResolver.resolver(runCommandNames, (argumentQueue, context) ->
+                            Tag.styling(ClickEvent.runCommand(argumentQueue.pop().value()))));
+                    adder.resolver(TagResolver.resolver(openUrlNames, (argumentQueue, context) ->
+                            Tag.styling(ClickEvent.openUrl(argumentQueue.pop().value()))));
                 }
-                return null;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                return this == o;
-            }
-
-            @Override
-            public int hashCode() {
-                return 0;
-            }
-        }))).build();
+        ).build();
     }
 
     @SuppressWarnings({"unchecked", "UnstableApiUsage"})
@@ -106,22 +83,21 @@ public class BooksUtils {
     }
 
     public static Component getPage(String page, Player player) {
-        return MINI_MESSAGE.deserialize(PAPIUtil.setPlaceholders(player, page), TemplateResolver.resolving("br", "\n"));
+        return MINI_MESSAGE_LEGACY_TAGS.deserialize(PAPIUtil.setPlaceholders(player, page));
     }
 
     private static void setPlaceholders(BookMeta meta, Player player) {
-        meta.setDisplayName(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getDisplayName()))));
+        meta.setDisplayName(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().deserialize(PAPIUtil.setPlaceholders(player, meta.getDisplayName()))));
         if (meta.getTitle() != null)
-            meta.setTitle(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getTitle()))));
+            meta.setTitle(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().deserialize(PAPIUtil.setPlaceholders(player, meta.getTitle()))));
         if (meta.getAuthor() != null)
-            meta.setAuthor(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, meta.getAuthor()))));
+            meta.setAuthor(BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().deserialize(PAPIUtil.setPlaceholders(player, meta.getAuthor()))));
         if (meta.getLore() != null)
             meta.setLore(getColoredLore(meta.getLore(), player));
     }
 
     private static List<String> getColoredLore(List<String> lore, Player player) {
-        for (int i = 0; i < lore.size(); i++)
-            lore.set(i, BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().parse(PAPIUtil.setPlaceholders(player, lore.get(i)))));
+        lore.replaceAll(text -> BukkitComponentSerializer.legacy().serialize(MiniMessage.miniMessage().deserialize(PAPIUtil.setPlaceholders(player, text))));
         return lore;
     }
 

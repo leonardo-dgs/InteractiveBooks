@@ -174,8 +174,8 @@ public class IBook {
             InteractiveBooks.getBook(id).open(player);
         } else {
             Book book = Book.builder()
-                    .title(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getTitle())))
-                    .author(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getAuthor())))
+                    .title(MiniMessage.miniMessage().deserialize(setPlaceholders(player, bookMeta.getTitle())))
+                    .author(MiniMessage.miniMessage().deserialize(setPlaceholders(player, bookMeta.getAuthor())))
                     .pages(getPagesComponents(player))
                     .build();
             InteractiveBooks.getInstance().adventure().player(player).openBook(book);
@@ -297,7 +297,7 @@ public class IBook {
 
     @Override
     public boolean equals(Object obj) {
-        if (!getClass().equals(obj.getClass()))
+        if (obj == null || !getClass().equals(obj.getClass()))
             return false;
         IBook other = (IBook) obj;
         return getId().equals(other.getId());
