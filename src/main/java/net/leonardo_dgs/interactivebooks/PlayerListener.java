@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public final class PlayerListener implements Listener {
-
     private static final boolean MC_AFTER_1_14 = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.14"));
 
     @EventHandler

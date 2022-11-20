@@ -14,7 +14,6 @@ import java.util.Objects;
 import static net.leonardo_dgs.interactivebooks.InteractiveBooks.getInstance;
 
 final class ConfigManager {
-
     @Getter
     private static Config config;
 
@@ -53,5 +52,9 @@ final class ConfigManager {
                         .createConfig();
             }
         }
+    }
+
+    private ConfigManager() {
+
     }
 }

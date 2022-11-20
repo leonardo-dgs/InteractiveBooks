@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 @CommandAlias("%openbook")
 @CommandPermission("%interactivebooks.open")
 public final class CommandOpenBook extends BaseCommand {
-
     private final IBook book;
 
     public CommandOpenBook(IBook book) {
@@ -23,5 +22,4 @@ public final class CommandOpenBook extends BaseCommand {
     public void onCommand(Player player) {
         book.open(player);
     }
-
 }

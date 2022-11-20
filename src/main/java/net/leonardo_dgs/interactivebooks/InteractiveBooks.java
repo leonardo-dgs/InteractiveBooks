@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public final class InteractiveBooks extends JavaPlugin {
-
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
     private BukkitAudiences adventure;

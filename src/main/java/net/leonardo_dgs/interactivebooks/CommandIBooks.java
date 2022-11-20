@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Subcommand;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import net.leonardo_dgs.interactivebooks.util.PAPIUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import java.util.Iterator;
 @CommandPermission("interactivebooks.command")
 @Description("Manage books")
 public final class CommandIBooks extends BaseCommand {
-
     @HelpCommand
     public void onHelp(CommandSender sender) {
         sender.sendMessage(
@@ -64,8 +62,9 @@ public final class CommandIBooks extends BaseCommand {
             return;
         }
         Player playerToOpen = args.length == 1 ? (Player) sender : Bukkit.getPlayer(args[1]);
-        String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, args[0]);
-        if (InteractiveBooks.getBook(bookIdToOpen) == null) {
+        String bookIdToOpen = BooksUtils.setPlaceholders(args[0], playerToOpen);
+        IBook book = InteractiveBooks.getBook(bookIdToOpen);
+        if (book == null) {
             sender.sendMessage("§cThat book doesn't exists.");
             return;
         }
@@ -73,9 +72,9 @@ public final class CommandIBooks extends BaseCommand {
             sender.sendMessage("§cThat player isn't connected.");
             return;
         }
-        InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
+        book.open(playerToOpen);
         if (!playerToOpen.equals(sender))
-            sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", args[1]));
+            sender.sendMessage(String.format("§aBook §6%s §aopened to §6%s§a.", bookIdToOpen, playerToOpen.getName()));
     }
 
     @Subcommand("get")
@@ -86,7 +85,7 @@ public final class CommandIBooks extends BaseCommand {
             player.sendMessage("§cUsage: §7/ibooks get <book-id>");
             return;
         }
-        String bookIdToGet = PAPIUtil.setPlaceholders(player, args[0]);
+        String bookIdToGet = BooksUtils.setPlaceholders(args[0], player);
         if (InteractiveBooks.getBook(bookIdToGet) == null) {
             player.sendMessage("§cThat book doesn't exists.");
             return;
@@ -104,8 +103,9 @@ public final class CommandIBooks extends BaseCommand {
             return;
         }
         Player targetPlayer = Bukkit.getPlayer(args[1]);
-        String targetBookId = PAPIUtil.setPlaceholders(targetPlayer, args[0]);
-        if (InteractiveBooks.getBook(targetBookId) == null) {
+        String targetBookId = BooksUtils.setPlaceholders(args[0], targetPlayer);
+        IBook book = InteractiveBooks.getBook(targetBookId);
+        if (book == null) {
             sender.sendMessage("§cThat book doesn't exists.");
             return;
         }
@@ -113,7 +113,8 @@ public final class CommandIBooks extends BaseCommand {
             sender.sendMessage("§cThat player isn't connected.");
             return;
         }
-        targetPlayer.getInventory().addItem(InteractiveBooks.getBook(targetBookId).getItem(targetPlayer));
+
+        targetPlayer.getInventory().addItem(book.getItem(targetPlayer));
         sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", targetBookId).replace("%player%", args[1]));
         targetPlayer.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", targetBookId));
     }
@@ -138,9 +139,17 @@ public final class CommandIBooks extends BaseCommand {
         String bookGeneration = "ORIGINAL";
         if (args.length > 4)
             bookGeneration = args[4].toUpperCase();
-        if (BooksUtils.isBookGenerationSupported() && !bookGeneration.equals("ORIGINAL") && !bookGeneration.equals("COPY_OF_ORIGINAL") && !bookGeneration.equals("COPY_OF_COPY") && !bookGeneration.equals("TATTERED")) {
-            sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
-            return;
+        if (BooksUtils.isBookGenerationSupported()) {
+            switch (bookGeneration) {
+                case "ORIGINAL":
+                case "COPY_OF_ORIGINAL":
+                case "COPY_OF_COPY":
+                case "TATTERED":
+                    break;
+                default:
+                    sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
+                    return;
+            }
         }
 
         IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
@@ -155,5 +164,4 @@ public final class CommandIBooks extends BaseCommand {
         ConfigManager.loadAll();
         sender.sendMessage("§aConfig reloaded!");
     }
-
 }

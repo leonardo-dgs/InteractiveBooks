@@ -36,7 +36,7 @@ pages:
   '1':
   - '<hover:show_text:"I''m a tooltip">Hover here to see a tooltip</hover:show_text>'
   - '<hover:show_text:"Run the command "/examplecommand""><click:run_command:/examplecommand>Click here to run a command<reset>'
-  - '<click:open_url:https://www.spigotmc.org/resources/45604/>Click here to open a link</click>'
+  - '<click:open_url:"https://www.spigotmc.org/resources/45604/">Click here to open a link</click>'
   '2':
   - '<red>Example placeholders</red>'
   - ''

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,10 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static net.leonardo_dgs.interactivebooks.util.PAPIUtil.setPlaceholders;
-
 public class IBook {
-
     private static final String bookIdKey = "InteractiveBooks|Book-Id";
 
     private final String id;
@@ -160,7 +156,7 @@ public class IBook {
      * @return the book id.
      */
     public String getId() {
-        return this.id;
+        return id;
     }
 
     /**
@@ -174,8 +170,8 @@ public class IBook {
             InteractiveBooks.getBook(id).open(player);
         } else {
             Book book = Book.builder()
-                    .title(MiniMessage.miniMessage().deserialize(setPlaceholders(player, bookMeta.getTitle())))
-                    .author(MiniMessage.miniMessage().deserialize(setPlaceholders(player, bookMeta.getAuthor())))
+                    .title(BooksUtils.deserialize(bookMeta.getTitle(), player))
+                    .author(BooksUtils.deserialize(bookMeta.getAuthor(), player))
                     .pages(getPagesComponents(player))
                     .build();
             InteractiveBooks.getInstance().adventure().player(player).openBook(book);
@@ -188,7 +184,7 @@ public class IBook {
      * @return the book item
      */
     public ItemStack getItem() {
-        return this.getItem(null);
+        return getItem(null);
     }
 
     /**
@@ -201,7 +197,7 @@ public class IBook {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         book.setItemMeta(this.getBookMeta(player));
         NBTItem nbti = new NBTItem(book);
-        nbti.setString(bookIdKey, this.getId());
+        nbti.setString(bookIdKey, getId());
         return nbti.getItem();
     }
 
@@ -225,7 +221,7 @@ public class IBook {
             bookConfig.forceReload();
             return InteractiveBooks.getBook(id).getBookMeta(player);
         } else {
-            return BooksUtils.getBookMeta(bookMeta, this.getPages(), player);
+            return BooksUtils.getBookMeta(bookMeta, getPages(), player);
         }
     }
 
@@ -262,7 +258,7 @@ public class IBook {
      * @return a {@link Set} containing the commands that can be used to open this book
      */
     public Set<String> getOpenCommands() {
-        return this.openCommands;
+        return openCommands;
     }
 
     /**
@@ -281,13 +277,13 @@ public class IBook {
                 bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL).name());
             bookConfig.set("lore", meta.getLore());
             bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
-            if (this.getPages().isEmpty()) {
+            if (getPages().isEmpty()) {
                 List<String> tempPages = new ArrayList<>();
                 tempPages.add("");
                 bookConfig.set("pages.1", tempPages);
             }
-            for (int i = 0; i < this.getPages().size(); i++)
-                bookConfig.set("pages." + (i + 1), this.getPages().get(i).split("\n"));
+            for (int i = 0; i < getPages().size(); i++)
+                bookConfig.set("pages." + (i + 1), getPages().get(i).split("\n"));
 
             bookConfig.save(file);
         } catch (IOException e) {
@@ -307,13 +303,13 @@ public class IBook {
     public int hashCode() {
         if (hashCode == null)
             hashCode = getId().hashCode();
-        return this.hashCode;
+        return hashCode;
     }
 
     private Component[] getPagesComponents(Player player) {
         Component[] pagesComponents = new Component[pages.size()];
         for (int i = 0; i < pagesComponents.length; i++)
-            pagesComponents[i] = BooksUtils.getPage(pages.get(i), player);
+            pagesComponents[i] = BooksUtils.deserialize(pages.get(i), player);
         return pagesComponents;
     }
 
