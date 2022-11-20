@@ -136,21 +136,11 @@ public final class CommandIBooks extends BaseCommand {
         String bookName = args[1];
         String bookTitle = args[2];
         String bookAuthor = args[3];
-        String bookGeneration = "ORIGINAL";
+        String bookGeneration = null;
         if (args.length > 4)
-            bookGeneration = args[4].toUpperCase();
-        if (BooksUtils.isBookGenerationSupported()) {
-            switch (bookGeneration) {
-                case "ORIGINAL":
-                case "COPY_OF_ORIGINAL":
-                case "COPY_OF_COPY":
-                case "TATTERED":
-                    break;
-                default:
-                    sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
-                    return;
-            }
-        }
+            bookGeneration = args[4];
+        if (BooksUtils.isBookGenerationSupported() && BooksUtils.getBookGeneration(bookGeneration) == null)
+            sender.sendMessage("§cThe argument supplied as book generation is not valid, possible values: ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED");
 
         IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
         createdBook.save();

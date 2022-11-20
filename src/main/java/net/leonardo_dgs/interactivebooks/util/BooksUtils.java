@@ -5,10 +5,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.platform.bukkit.MinecraftComponentSerializer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -89,6 +87,8 @@ public final class BooksUtils {
     }
 
     public static Component deserialize(String text, Player player) {
+        if (text == null)
+            return Component.text("");
         char[] chars = text.toCharArray();
         List<String> replacements = Arrays.asList("<black>", "<dark_blue>", "<dark_green>", "<dark_aqua>", "<dark_red>", "<dark_purple>", "<gold>", "<gray>", "<dark_gray>", "<blue>", "<green>", "<aqua>", "<red>", "<light_purple>", "<yellow>", "<white>", "<obf>", "<b>", "<st>", "<u>", "<i>", "<r>");
 
@@ -131,7 +131,21 @@ public final class BooksUtils {
     }
 
     public static Generation getBookGeneration(String generation) {
-        return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
+        if (generation == null)
+            return null;
+        generation = generation.toUpperCase();
+        switch (generation) {
+            case "ORIGINAL":
+                return Generation.ORIGINAL;
+            case "COPY_OF_ORIGINAL":
+                return Generation.COPY_OF_ORIGINAL;
+            case "COPY_OF_COPY":
+                return Generation.COPY_OF_COPY;
+            case "TATTERED":
+                return Generation.TATTERED;
+            default:
+                return null;
+        }
     }
 
     @SuppressWarnings("deprecation")

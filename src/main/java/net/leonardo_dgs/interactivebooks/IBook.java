@@ -128,7 +128,7 @@ public class IBook {
      */
     public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null && BooksUtils.isBookGenerationSupported())
+        if (BooksUtils.isBookGenerationSupported())
             bookMeta.setGeneration(BooksUtils.getBookGeneration(generation));
     }
 
@@ -146,8 +146,7 @@ public class IBook {
      */
     public IBook(String id, String displayName, String title, String author, Generation generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null)
-            this.bookMeta.setGeneration(generation);
+        bookMeta.setGeneration(generation);
     }
 
     /**
