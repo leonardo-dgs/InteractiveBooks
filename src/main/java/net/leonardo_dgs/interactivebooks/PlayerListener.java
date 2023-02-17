@@ -59,7 +59,7 @@ public final class PlayerListener implements Listener {
             return;
 
         NBTItem nbtItem = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
-        if (!nbtItem.hasKey("InteractiveBooks|Book-Id"))
+        if (!nbtItem.hasTag("InteractiveBooks|Book-Id"))
             return;
 
         IBook book = InteractiveBooks.getBook(nbtItem.getString("InteractiveBooks|Book-Id"));
