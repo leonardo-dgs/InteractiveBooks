@@ -90,7 +90,7 @@ public final class BooksUtils {
         if (text == null)
             return Component.text("");
         char[] chars = text.toCharArray();
-        List<String> replacements = Arrays.asList("<black>", "<dark_blue>", "<dark_green>", "<dark_aqua>", "<dark_red>", "<dark_purple>", "<gold>", "<gray>", "<dark_gray>", "<blue>", "<green>", "<aqua>", "<red>", "<light_purple>", "<yellow>", "<white>", "<obf>", "<b>", "<st>", "<u>", "<i>", "<r>");
+        List<String> replacements = Arrays.asList("<black>", "<dark_blue>", "<dark_green>", "<dark_aqua>", "<dark_red>", "<dark_purple>", "<gold>", "<gray>", "<dark_gray>", "<blue>", "<green>", "<aqua>", "<red>", "<light_purple>", "<yellow>", "<white>", "<obf>", "<b>", "<st>", "<u>", "<i>", "<reset>");
 
         StringBuilder sb = new StringBuilder(chars.length);
         for (int i = 0; i < chars.length; i++) {
