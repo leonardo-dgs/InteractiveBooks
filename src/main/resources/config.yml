@@ -1,6 +1,6 @@
 # The default language of the plugin
 default_language: en_us
-# Set if the language of the plugin should be
+# Set if the language of the plugin should be specific for each player, based of the language set in the client
 per_player_language: true
 # Should be books updated every time they are opened?
 update_books_on_use: true
