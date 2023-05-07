@@ -24,11 +24,11 @@ public final class PlayerListener implements Listener {
         String openBookId;
         List<String> booksToGiveIds;
         if (event.getPlayer().hasPlayedBefore()) {
-            openBookId = ConfigManager.getConfig().getString("open_book_on_join");
-            booksToGiveIds = ConfigManager.getConfig().getStringList("books_on_join");
+            openBookId = InteractiveBooks.getSettings().getOpenBookOnJoin();
+            booksToGiveIds = InteractiveBooks.getSettings().getBooksOnJoin();
         } else {
-            openBookId = ConfigManager.getConfig().getString("open_book_on_first_join");
-            booksToGiveIds = ConfigManager.getConfig().getStringList("books_on_first_join");
+            openBookId = InteractiveBooks.getSettings().getOpenBookOnFirstJoin();
+            booksToGiveIds = InteractiveBooks.getSettings().getBooksOnFirstJoin();
         }
         if (openBookId != null && !openBookId.equals("")) {
             IBook book = InteractiveBooks.getBook(openBookId);
@@ -55,7 +55,7 @@ public final class PlayerListener implements Listener {
             return;
         if (BooksUtils.getItemInMainHand(event.getPlayer()).getType() != Material.WRITTEN_BOOK)
             return;
-        if (!ConfigManager.getConfig().getBoolean("update_books_on_use"))
+        if (!InteractiveBooks.getSettings().getUpdateBooksOnUse())
             return;
 
         NBTItem nbtItem = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));

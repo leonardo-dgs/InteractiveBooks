@@ -23,7 +23,7 @@ lore:
 # Command to open this book
 # You can remove this by setting it to ''
 # Separate multiple commands with a space
-open_command: 'examplebook'
+open_command: 'example_book'
 
 # For the placeholders to work correctly
 # you have to download the Vault plugin:

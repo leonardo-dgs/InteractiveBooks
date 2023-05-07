@@ -1,0 +1,32 @@
+prefix: '<gray>[<gold><b>IB</b><gray>]'
+book_does_not_exists: '<prefix> <red>That book doesn''t exists.'
+player_not_connected: '<prefix> <red>That player isn''t connected.'
+help:
+  header: '<prefix> <green>Running InteractiveBooks v<version>'
+  list: '<dark_aqua>> <aqua>/ibooks list'
+  open: '<dark_aqua>> <aqua>/ibooks open <aqua><book-id> [player]'
+  get: '<dark_aqua>> <aqua>/ibooks get <aqua><book-id>'
+  give: '<dark_aqua>> <aqua>/ibooks give <aqua><book-id> <player>'
+  create: '<dark_aqua>> <aqua>/ibooks create <aqua><book-id> <name> <title> <author> [generation]'
+  reload: '<dark_aqua>> <aqua>/ibooks reload'
+book_list:
+  header: '<prefix> <green>Book list:<br>'
+  book: '<aqua><book>'
+  separator: '<gray>, '
+book_open:
+  usage: '<prefix> <green>Usage: <aqua>/ibooks open <book-id> [player]'
+  player_not_specified: '<prefix> <red>If you execute this command by the console, you need to specify the player''s name.'
+  success: '<prefix> <green>Book <aqua><book> <green>opened to <aqua><player><green>.'
+book_get:
+  usage: '<prefix> <green>Usage: <aqua>/ibooks get <book-id>'
+  success: '<prefix> <green>You have received the book <aqua><book_id><green>.'
+book_give:
+  usage: '<prefix> <green>Usage: <aqua>/ibooks give <book-id> <player>'
+  success: '<prefix> <green>Book <aqua><book_id> <green>given to <aqua><player><green>.'
+  received: '<prefix> <green>You have received the book <aqua><book_id><green>.'
+book_create:
+  usage: '<prefix> <green>Usage: <aqua>/ibooks create <book-id> <name> <title> <author> [generation]'
+  already_exists: '<prefix> <red>A book with that id already exists'
+  invalid_generation: '<prefix> <red>The argument supplied as book generation is not valid, possible values: <aqua>ORIGINAL, COPY_OF_ORIGINAL, COPY_OF_COPY, TATTERED<red>.'
+  success: '<prefix> <green>Book successfully created.'
+reload_success: '<prefix> <green>Config reloaded!'

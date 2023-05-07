@@ -86,7 +86,7 @@ public final class BooksUtils {
         return plainPages;
     }
 
-    public static Component deserialize(String text, Player player) {
+    public static Component deserialize(String text, Player player, TagResolver... tagResolvers) {
         if (text == null)
             return Component.text("");
         char[] chars = text.toCharArray();
@@ -107,7 +107,7 @@ public final class BooksUtils {
                 sb.append(chars[i]);
             }
         }
-        return MINI_MESSAGE.deserialize(setPlaceholders(sb.toString(), player));
+        return MINI_MESSAGE.deserialize(setPlaceholders(sb.toString(), player), tagResolvers);
     }
 
     public static String setPlaceholders(String text, CommandSender sender) {
