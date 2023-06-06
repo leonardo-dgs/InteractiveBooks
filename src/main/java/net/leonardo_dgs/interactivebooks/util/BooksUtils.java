@@ -100,6 +100,8 @@ public final class BooksUtils {
                     sb.append("<#").append(text, i + 2, i + 8).append('>');
                     i += 7;
                 } else {
+                    if (index <= 15 || index == 22)
+                        sb.append("<reset>");
                     sb.append(replacements.get(index));
                     i++;
                 }
