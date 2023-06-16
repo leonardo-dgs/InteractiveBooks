@@ -34,7 +34,7 @@ public final class CommandIBooks extends BaseCommand {
 
     @HelpCommand
     public void onHelp(CommandSender sender) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         String version = InteractiveBooks.getInstance().getDescription().getVersion();
         Component message = translations.getHelpHeader(locale, Placeholder.unparsed("version", version)).appendNewline();
         message = message.append(translations.getHelpList(locale)).appendNewline();
@@ -49,7 +49,7 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("list")
     @CommandPermission("interactivebooks.command.list")
     public void onList(CommandSender sender) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         Component message = translations.getBookListHeader(locale);
         Iterator<String> iterator = InteractiveBooks.getBooks().keySet().iterator();
         boolean hasNext = iterator.hasNext();
@@ -67,7 +67,7 @@ public final class CommandIBooks extends BaseCommand {
     @CommandPermission("interactivebooks.command.open")
     @CommandCompletion("@ibooks @players @nothing")
     public void onOpen(CommandSender sender, String[] args) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length == 0) {
             adventure.sender(sender).sendMessage(translations.getBookOpenUsage(locale));
             return;
@@ -97,24 +97,24 @@ public final class CommandIBooks extends BaseCommand {
     @CommandCompletion("@ibooks @nothing")
     public void onGet(Player player, String[] args) {
         if (args.length == 0) {
-            adventure.sender(player).sendMessage(translations.getBookGetUsage(player.getLocale()));
+            adventure.sender(player).sendMessage(translations.getBookGetUsage(BooksUtils.getLocale(player)));
             return;
         }
         String bookIdToGet = BooksUtils.setPlaceholders(args[0], player);
         IBook book = InteractiveBooks.getBook(bookIdToGet);
         if (book == null) {
-            adventure.sender(player).sendMessage(translations.getBookDoesNotExists(player.getLocale()));
+            adventure.sender(player).sendMessage(translations.getBookDoesNotExists(BooksUtils.getLocale(player)));
             return;
         }
         player.getInventory().addItem(book.getItem(player));
-        adventure.sender(player).sendMessage(translations.getBookGetSuccess(player.getLocale(), Placeholder.unparsed("book_id", bookIdToGet)));
+        adventure.sender(player).sendMessage(translations.getBookGetSuccess(BooksUtils.getLocale(player), Placeholder.unparsed("book_id", bookIdToGet)));
     }
 
     @Subcommand("give")
     @CommandPermission("interactivebooks.command.give")
     @CommandCompletion("@ibooks @players @nothing")
     public void onGive(CommandSender sender, String[] args) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length < 2) {
             adventure.sender(sender).sendMessage(translations.getBookGiveUsage(locale));
             return;
@@ -133,14 +133,14 @@ public final class CommandIBooks extends BaseCommand {
 
         targetPlayer.getInventory().addItem(book.getItem(targetPlayer));
         adventure.sender(sender).sendMessage(translations.getBookGiveSuccess(locale, Placeholder.unparsed("book_id", targetBookId), Placeholder.unparsed("player", args[1])));
-        adventure.sender(targetPlayer).sendMessage(translations.getBookReceived(targetPlayer.getLocale(), Placeholder.unparsed("book_id", targetBookId)));
+        adventure.sender(targetPlayer).sendMessage(translations.getBookReceived(BooksUtils.getLocale(targetPlayer), Placeholder.unparsed("book_id", targetBookId)));
     }
 
     @Subcommand("create")
     @CommandPermission("interactivebooks.command.create")
     @CommandCompletion("@nothing @nothing @nothing @players @book_generations @nothing")
     public void onCreate(CommandSender sender, String[] args) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length < 4) {
             adventure.sender(sender).sendMessage(translations.getBookCreateUsage(locale));
             return;
@@ -171,7 +171,7 @@ public final class CommandIBooks extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("interactivebooks.command.reload")
     public void onReload(CommandSender sender) {
-        String locale = sender instanceof Player ? ((Player) sender).getLocale() : settings.getDefaultLanguage();
+        String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         settings.reload();
         adventure.sender(sender).sendMessage(translations.getReloadSuccess(locale));
     }

@@ -34,6 +34,7 @@ public final class BooksUtils {
     private static final MiniMessage MINI_MESSAGE;
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static final boolean PLAYER_GETLOCALE_SUPPORTED = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.12"));
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
     private static final boolean OLD_ITEM_IN_HAND_METHODS = NMS_VERSION.equals("v1_8_R3");
     private static final Field FIELD_PAGES;
@@ -164,6 +165,13 @@ public final class BooksUtils {
             player.getInventory().setItemInHand(item);
         else
             player.getInventory().setItemInMainHand(item);
+    }
+
+    public static String getLocale(Player player) {
+        if (PLAYER_GETLOCALE_SUPPORTED)
+            return player.getLocale();
+        else
+            return null;
     }
 
     private BooksUtils() {
