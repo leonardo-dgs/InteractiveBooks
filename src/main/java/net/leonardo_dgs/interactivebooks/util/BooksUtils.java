@@ -102,7 +102,7 @@ public final class BooksUtils {
                     i += 7;
                 } else {
                     if (index <= 15 || index == 22)
-                        sb.append("<reset>");
+                        sb.append("<!obf><!b><!st><!u><!i>");
                     sb.append(replacements.get(index));
                     i++;
                 }
