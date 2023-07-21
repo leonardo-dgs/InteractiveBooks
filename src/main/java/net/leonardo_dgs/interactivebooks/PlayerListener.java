@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -53,12 +54,15 @@ public final class PlayerListener implements Listener {
             return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        if (BooksUtils.getItemInMainHand(event.getPlayer()).getType() != Material.WRITTEN_BOOK)
-            return;
         if (!InteractiveBooks.getSettings().getUpdateBooksOnUse())
             return;
 
-        NBTItem nbtItem = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
+        EquipmentSlot hand = BooksUtils.isOffHandSupported() ? event.getHand() : EquipmentSlot.HAND;
+        ItemStack itemInHand = BooksUtils.getItemInHand(event.getPlayer(), hand);
+        if (itemInHand.getType() != Material.WRITTEN_BOOK)
+            return;
+
+        NBTItem nbtItem = new NBTItem(itemInHand);
         if (!nbtItem.hasTag("InteractiveBooks|Book-Id"))
             return;
 
@@ -67,7 +71,7 @@ public final class PlayerListener implements Listener {
             return;
 
         ItemStack bookItem = book.getItem(event.getPlayer());
-        bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
-        BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
+        bookItem.setAmount(itemInHand.getAmount());
+        BooksUtils.setItemInHand(event.getPlayer(), bookItem, hand);
     }
 }

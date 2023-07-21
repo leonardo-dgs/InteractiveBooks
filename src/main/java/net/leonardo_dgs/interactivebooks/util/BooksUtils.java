@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
@@ -28,15 +29,16 @@ import java.util.HashSet;
 import java.util.List;
 
 public final class BooksUtils {
-    @Getter
-    private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
-
     private static final MiniMessage MINI_MESSAGE;
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+
+    @Getter
+    private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
+    @Getter
+    private static final boolean isOffHandSupported = !NMS_VERSION.equals("v1_8_R3");
     private static final boolean PLAYER_GETLOCALE_SUPPORTED = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.12"));
     private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
-    private static final boolean OLD_ITEM_IN_HAND_METHODS = NMS_VERSION.equals("v1_8_R3");
     private static final Field FIELD_PAGES;
 
     static {
@@ -152,19 +154,23 @@ public final class BooksUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack getItemInMainHand(Player player) {
-        if (OLD_ITEM_IN_HAND_METHODS)
+    public static ItemStack getItemInHand(Player player, EquipmentSlot hand) {
+        if (!isOffHandSupported)
             return player.getInventory().getItemInHand();
-        else
+        else if (hand == EquipmentSlot.HAND)
             return player.getInventory().getItemInMainHand();
+        else
+            return player.getInventory().getItemInOffHand();
     }
 
     @SuppressWarnings("deprecation")
-    public static void setItemInMainHand(Player player, ItemStack item) {
-        if (OLD_ITEM_IN_HAND_METHODS)
+    public static void setItemInHand(Player player, ItemStack item, EquipmentSlot hand) {
+        if (!isOffHandSupported)
             player.getInventory().setItemInHand(item);
-        else
+        else if (hand == EquipmentSlot.HAND)
             player.getInventory().setItemInMainHand(item);
+        else
+            player.getInventory().setItemInOffHand(item);
     }
 
     public static String getLocale(Player player) {
