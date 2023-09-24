@@ -2,6 +2,7 @@ name: InteractiveBooks
 main: net.leonardo_dgs.interactivebooks.InteractiveBooks
 version: ${version}
 api-version: 1.13
+folia-supported: true
 description: ${description}
 author: ${author}
 website: ${website}
