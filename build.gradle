@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -66,4 +67,35 @@ tasks.jar.enabled = false
 
 artifacts {
     archives shadowJar
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            publication ->
+                project.shadow.component(publication)
+                groupId = project.group
+                artifactId = project.name
+                version = project.version
+        }
+    }
+
+    repositories {
+        maven {
+            def snapshotUrl = "https://repo.codemc.io/repository/maven-snapshots/"
+            def releaseUrl = "https://repo.codemc.io/repository/maven-releases/"
+
+            url = project.version.endsWith("SNAPSHOT") ? snapshotUrl : releaseUrl
+
+            def mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME") ? System.getenv("GRADLE_PROJECT_MAVEN_USERNAME") : null
+            def mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD") ? System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD") : null
+
+            if (mavenUsername != null && mavenPassword != null) {
+                credentials {
+                    username = mavenUsername
+                    password = mavenPassword
+                }
+            }
+        }
+    }
 }
