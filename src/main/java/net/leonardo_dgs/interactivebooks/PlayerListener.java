@@ -2,7 +2,6 @@ package net.leonardo_dgs.interactivebooks;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
-import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -16,9 +15,22 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class PlayerListener implements Listener {
-    private static final boolean MC_AFTER_1_14 = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.14"));
+    private static final boolean MC_VERSION_AFTER_1_14;
+
+    static {
+        Pattern versionPattern = Pattern.compile("^([0-9]+\\.[0-9]+)");
+        Matcher matcher = versionPattern.matcher(Bukkit.getBukkitVersion());
+        if (matcher.find()) {
+            String[] version = matcher.group().split("\\.");
+            MC_VERSION_AFTER_1_14 = Integer.parseInt(version[1]) >= 14;
+        } else {
+            MC_VERSION_AFTER_1_14 = false;
+        }
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -34,7 +46,7 @@ public final class PlayerListener implements Listener {
         if (openBookId != null && !openBookId.equals("")) {
             IBook book = InteractiveBooks.getBook(openBookId);
             if (book != null) {
-                if (MC_AFTER_1_14)
+                if (MC_VERSION_AFTER_1_14)
                     book.open(event.getPlayer());
                 else
                     Bukkit.getScheduler().runTask(InteractiveBooks.getInstance(), () -> book.open(event.getPlayer()));

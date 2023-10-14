@@ -29,29 +29,31 @@ import java.util.HashSet;
 import java.util.List;
 
 public final class BooksUtils {
+    @Getter
+    private static final boolean isPluginSupported;
+    @Getter
+    private static final boolean isBookGenerationSupported = methodExists("org.bukkit.inventory.meta.BookMeta", "getGeneration");
+    @Getter
+    private static final boolean isOffHandSupported = methodExists("org.bukkit.inventory.PlayerInventory", "getItemInOffHand");
+    private static final boolean isPlayerGetLocaleSupported = methodExists("org.bukkit.entity.Player", "getLocale");
+    private static final boolean isBookAddPageSupported = methodExists("org.bukkit.inventory.meta.BookMeta$Spigot", "addPage", BaseComponent[][].class);
+
     private static final MiniMessage MINI_MESSAGE;
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
-    private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-
-    @Getter
-    private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
-    @Getter
-    private static final boolean isOffHandSupported = !NMS_VERSION.equals("v1_8_R3");
-    private static final boolean PLAYER_GETLOCALE_SUPPORTED = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.12"));
-    private static final boolean OLD_PAGES_METHODS = MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.12.2"));
-    private static final Field FIELD_PAGES;
+    private static final Field PAGES_FIELD;
 
     static {
-        Field fieldPages = null;
-        if (OLD_PAGES_METHODS) {
+        Field pagesField = null;
+        if (!isBookAddPageSupported) {
             try {
-                fieldPages = Class.forName("org.bukkit.craftbukkit." + NMS_VERSION + ".inventory.CraftMetaBook").getDeclaredField("pages");
-            } catch (ClassNotFoundException | NoSuchFieldException e) {
-                e.printStackTrace();
+                String nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+                pagesField = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".inventory.CraftMetaBook").getDeclaredField("pages");
+            } catch (ClassNotFoundException | NoSuchFieldException ignored) {
+
             }
         }
-        FIELD_PAGES = fieldPages;
-
+        PAGES_FIELD = pagesField;
+        isPluginSupported = isBookAddPageSupported || PAGES_FIELD != null;
         HashSet<String> runCommandNames = new HashSet<>(Arrays.asList("run_command", "command", "cmd"));
         HashSet<String> openUrlNames = new HashSet<>(Arrays.asList("url", "link"));
         MINI_MESSAGE = MiniMessage.builder().editTags(adder -> {
@@ -65,13 +67,22 @@ public final class BooksUtils {
         ).build();
     }
 
+    private static boolean methodExists(String className, String methodName, Class<?>... parameterTypes) {
+        try {
+            Class.forName(className).getMethod(methodName, parameterTypes);
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            return false;
+        }
+    }
+
     @SuppressWarnings({"unchecked", "UnstableApiUsage"})
     public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
         BookMeta bookMeta = meta.clone();
         setPlaceholders(bookMeta, player);
-        if (OLD_PAGES_METHODS) {
+        if (!isBookAddPageSupported) {
             try {
-                List<Object> pages = (List<Object>) FIELD_PAGES.get(bookMeta);
+                List<Object> pages = (List<Object>) PAGES_FIELD.get(bookMeta);
                 rawPages.forEach(page -> pages.add(MinecraftComponentSerializer.get().serialize(deserialize(page, player))));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -174,7 +185,7 @@ public final class BooksUtils {
     }
 
     public static String getLocale(Player player) {
-        if (PLAYER_GETLOCALE_SUPPORTED)
+        if (isPlayerGetLocaleSupported)
             return player.getLocale();
         else
             return null;

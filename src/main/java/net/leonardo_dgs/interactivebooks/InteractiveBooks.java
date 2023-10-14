@@ -3,7 +3,7 @@ package net.leonardo_dgs.interactivebooks;
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
+import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,8 +25,8 @@ public final class InteractiveBooks extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        if (MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8"))) {
-            getLogger().log(Level.WARNING, "This Minecraft version is not supported, please use 1.8.8 or newer");
+        if (!BooksUtils.isPluginSupported()) {
+            getLogger().log(Level.WARNING, "You are using an unsupported server software version, please use Spigot (or forks) 1.8.8 or newer");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
