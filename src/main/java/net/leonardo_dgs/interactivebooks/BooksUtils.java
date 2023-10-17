@@ -1,4 +1,4 @@
-package net.leonardo_dgs.interactivebooks.util;
+package net.leonardo_dgs.interactivebooks;
 
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public final class BooksUtils {
+final class BooksUtils {
     @Getter
     private static final boolean isPluginSupported;
     @Getter
@@ -77,7 +77,7 @@ public final class BooksUtils {
     }
 
     @SuppressWarnings({"unchecked", "UnstableApiUsage"})
-    public static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
+    static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
         BookMeta bookMeta = meta.clone();
         setPlaceholders(bookMeta, player);
         if (!isBookAddPageSupported) {
@@ -93,14 +93,14 @@ public final class BooksUtils {
         return bookMeta;
     }
 
-    public static List<String> getPages(BookMeta meta) {
+    static List<String> getPages(BookMeta meta) {
         List<String> plainPages = new ArrayList<>();
         List<BaseComponent[]> components = meta.spigot().getPages();
         components.forEach(component -> plainPages.add(MiniMessage.miniMessage().serialize(BungeeComponentSerializer.get().deserialize(component))));
         return plainPages;
     }
 
-    public static Component deserialize(String text, Player player, TagResolver... tagResolvers) {
+    static Component deserialize(String text, Player player, TagResolver... tagResolvers) {
         if (text == null)
             return Component.text("");
         char[] chars = text.toCharArray();
@@ -126,7 +126,7 @@ public final class BooksUtils {
         return MINI_MESSAGE.deserialize(setPlaceholders(sb.toString(), player), tagResolvers);
     }
 
-    public static String setPlaceholders(String text, CommandSender sender) {
+    static String setPlaceholders(String text, CommandSender sender) {
         if (PAPI_PLUGIN != null && PAPI_PLUGIN.isEnabled())
             return PlaceholderAPI.setPlaceholders(sender instanceof OfflinePlayer ? (OfflinePlayer) sender : null, text);
         else
@@ -146,7 +146,7 @@ public final class BooksUtils {
         }
     }
 
-    public static Generation getBookGeneration(String generation) {
+    static Generation getBookGeneration(String generation) {
         if (generation == null)
             return null;
         generation = generation.toUpperCase();
@@ -165,7 +165,7 @@ public final class BooksUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack getItemInHand(Player player, EquipmentSlot hand) {
+    static ItemStack getItemInHand(Player player, EquipmentSlot hand) {
         if (!isOffHandSupported)
             return player.getInventory().getItemInHand();
         else if (hand == EquipmentSlot.HAND)
@@ -175,7 +175,7 @@ public final class BooksUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static void setItemInHand(Player player, ItemStack item, EquipmentSlot hand) {
+    static void setItemInHand(Player player, ItemStack item, EquipmentSlot hand) {
         if (!isOffHandSupported)
             player.getInventory().setItemInHand(item);
         else if (hand == EquipmentSlot.HAND)
@@ -184,7 +184,7 @@ public final class BooksUtils {
             player.getInventory().setItemInOffHand(item);
     }
 
-    public static String getLocale(Player player) {
+    static String getLocale(Player player) {
         if (isPlayerGetLocaleSupported)
             return player.getLocale();
         else

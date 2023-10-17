@@ -9,17 +9,17 @@ import org.bukkit.entity.Player;
 
 @CommandAlias("%openbook")
 @CommandPermission("%interactivebooks.open")
-public final class CommandOpenBook extends BaseCommand {
+final class CommandOpenBook extends BaseCommand {
     private final IBook book;
 
-    public CommandOpenBook(IBook book) {
+    CommandOpenBook(IBook book) {
         super();
         this.book = book;
     }
 
     @Default
     @CatchUnknown
-    public void onCommand(Player player) {
+    void onCommand(Player player) {
         book.open(player);
     }
 }

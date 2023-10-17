@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
-import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -59,7 +58,7 @@ public class IBook {
     IBook(String id, FlatFile bookConfig) {
         this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"),
                 bookConfig.getString("generation"), bookConfig.getStringList("lore"), mergeLines(bookConfig.getSection("pages")),
-                (bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("")) ? null : bookConfig.getString("open_command").split(" "));
+                (bookConfig.getString("open_command") == null || bookConfig.getString("open_command").isEmpty()) ? null : bookConfig.getString("open_command").split(" "));
         this.bookConfig = bookConfig;
     }
 
@@ -195,9 +194,9 @@ public class IBook {
     public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         book.setItemMeta(this.getBookMeta(player));
-        NBTItem nbti = new NBTItem(book);
-        nbti.setString(bookIdKey, getId());
-        return nbti.getItem();
+        NBTItem nbtItem = new NBTItem(book);
+        nbtItem.setString(bookIdKey, getId());
+        return nbtItem.getItem();
     }
 
     /**

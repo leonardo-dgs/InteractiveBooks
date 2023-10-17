@@ -3,7 +3,6 @@ package net.leonardo_dgs.interactivebooks;
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,8 +17,6 @@ public final class InteractiveBooks extends JavaPlugin {
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
     private BukkitAudiences adventure;
-    private static SettingsManager settings;
-    private static TranslationsManager translations;
     private static PaperCommandManager commandManager;
 
     @Override
@@ -32,13 +29,13 @@ public final class InteractiveBooks extends JavaPlugin {
         }
         adventure = BukkitAudiences.create(this);
         initCommandManager();
-        settings = new SettingsManager(new File(getDataFolder(), "config.yml"), "config.yml");
-        translations = new TranslationsManager(new File(getDataFolder(), "translations"), settings);
+        SettingsManager settings = new SettingsManager(new File(getDataFolder(), "config.yml"), "config.yml");
+        TranslationsManager translations = new TranslationsManager(new File(getDataFolder(), "translations"), settings);
         commandManager.registerCommand(new CommandIBooks(adventure, settings, translations));
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(settings), this);
         new Metrics(this, 5483);
     }
 
@@ -111,16 +108,8 @@ public final class InteractiveBooks extends JavaPlugin {
         }
     }
 
-    public BukkitAudiences adventure() {
+    BukkitAudiences adventure() {
         return adventure;
-    }
-
-    static SettingsManager getSettings() {
-        return settings;
-    }
-
-    static TranslationsManager getTranslations() {
-        return translations;
     }
 
     private void initCommandManager() {
