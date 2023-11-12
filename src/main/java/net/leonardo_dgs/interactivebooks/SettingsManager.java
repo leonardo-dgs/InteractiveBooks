@@ -5,6 +5,7 @@ import de.leonhard.storage.SimplixBuilder;
 import de.leonhard.storage.internal.settings.ReloadSettings;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -73,10 +74,24 @@ final class SettingsManager {
     }
 
     List<String> getBooksOnJoin() {
-        return config.getStringList("books_on_join");
+        Object raw = config.get("books_on_join");
+        if (raw instanceof String) {
+            ArrayList<String> list = new ArrayList<>(1);
+            list.add((String) raw);
+            return list;
+        } else {
+            return config.getStringList("books_on_join");
+        }
     }
 
     List<String> getBooksOnFirstJoin() {
-        return config.getStringList("books_on_first_join");
+        Object raw = config.get("books_on_first_join");
+        if (raw instanceof String) {
+            ArrayList<String> list = new ArrayList<>(1);
+            list.add((String) raw);
+            return list;
+        } else {
+            return config.getStringList("books_on_first_join");
+        }
     }
 }
