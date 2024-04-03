@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Subcommand;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -42,7 +43,7 @@ final class CommandIBooks extends BaseCommand {
         message = message.append(translations.getHelpGive(locale)).appendNewline();
         message = message.append(translations.getHelpCreate(locale)).appendNewline();
         message = message.append(translations.getHelpReload(locale));
-        adventure.sender(sender).sendMessage(message);
+        sendMessage(adventure.sender(sender), message);
     }
 
     @Subcommand("list")
@@ -59,7 +60,7 @@ final class CommandIBooks extends BaseCommand {
             if (hasNext)
                 message = message.append(translations.getBookListSeparator(locale));
         }
-        adventure.sender(sender).sendMessage(message);
+        sendMessage(adventure.sender(sender), message);
     }
 
     @Subcommand("open")
@@ -68,11 +69,11 @@ final class CommandIBooks extends BaseCommand {
     void onOpen(CommandSender sender, String[] args) {
         String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length == 0) {
-            adventure.sender(sender).sendMessage(translations.getBookOpenUsage(locale));
+            sendMessage(adventure.sender(sender), translations.getBookOpenUsage(locale));
             return;
         }
         if (args.length == 1 && !(sender instanceof Player)) {
-            adventure.sender(sender).sendMessage(translations.getBookOpenPlayerNotSpecified(locale));
+            sendMessage(adventure.sender(sender), translations.getBookOpenPlayerNotSpecified(locale));
             return;
         }
         Player playerToOpen = args.length == 1 ? (Player) sender : Bukkit.getPlayer(args[1]);
@@ -83,7 +84,7 @@ final class CommandIBooks extends BaseCommand {
 
         book.open(playerToOpen);
         if (!playerToOpen.equals(sender))
-            adventure.sender(sender).sendMessage(translations.getBookOpenSuccess(locale, Placeholder.unparsed("book", bookIdToOpen), Placeholder.unparsed("player", playerToOpen.getName())));
+            sendMessage(adventure.sender(sender), translations.getBookOpenSuccess(locale, Placeholder.unparsed("book", bookIdToOpen), Placeholder.unparsed("player", playerToOpen.getName())));
     }
 
     @Subcommand("get")
@@ -91,17 +92,17 @@ final class CommandIBooks extends BaseCommand {
     @CommandCompletion("@ibooks @nothing")
     void onGet(Player player, String[] args) {
         if (args.length == 0) {
-            adventure.sender(player).sendMessage(translations.getBookGetUsage(BooksUtils.getLocale(player)));
+            sendMessage(adventure.sender(player), translations.getBookGetUsage(BooksUtils.getLocale(player)));
             return;
         }
         String bookIdToGet = BooksUtils.setPlaceholders(args[0], player);
         IBook book = InteractiveBooks.getBook(bookIdToGet);
         if (book == null) {
-            adventure.sender(player).sendMessage(translations.getBookDoesNotExists(BooksUtils.getLocale(player)));
+            sendMessage(adventure.sender(player), translations.getBookDoesNotExists(BooksUtils.getLocale(player)));
             return;
         }
         player.getInventory().addItem(book.getItem(player));
-        adventure.sender(player).sendMessage(translations.getBookGetSuccess(BooksUtils.getLocale(player), Placeholder.unparsed("book_id", bookIdToGet)));
+        sendMessage(adventure.sender(player), translations.getBookGetSuccess(BooksUtils.getLocale(player), Placeholder.unparsed("book_id", bookIdToGet)));
     }
 
     @Subcommand("give")
@@ -110,7 +111,7 @@ final class CommandIBooks extends BaseCommand {
     void onGive(CommandSender sender, String[] args) {
         String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length < 2) {
-            adventure.sender(sender).sendMessage(translations.getBookGiveUsage(locale));
+            sendMessage(adventure.sender(sender), translations.getBookGiveUsage(locale));
             return;
         }
         Player targetPlayer = Bukkit.getPlayer(args[1]);
@@ -120,8 +121,8 @@ final class CommandIBooks extends BaseCommand {
             return;
 
         targetPlayer.getInventory().addItem(book.getItem(targetPlayer));
-        adventure.sender(sender).sendMessage(translations.getBookGiveSuccess(locale, Placeholder.unparsed("book_id", targetBookId), Placeholder.unparsed("player", args[1])));
-        adventure.sender(targetPlayer).sendMessage(translations.getBookReceived(BooksUtils.getLocale(targetPlayer), Placeholder.unparsed("book_id", targetBookId)));
+        sendMessage(adventure.sender(sender), translations.getBookGiveSuccess(locale, Placeholder.unparsed("book_id", targetBookId), Placeholder.unparsed("player", args[1])));
+        sendMessage(adventure.sender(targetPlayer), translations.getBookReceived(BooksUtils.getLocale(targetPlayer), Placeholder.unparsed("book_id", targetBookId)));
     }
 
     @Subcommand("create")
@@ -130,11 +131,11 @@ final class CommandIBooks extends BaseCommand {
     void onCreate(CommandSender sender, String[] args) {
         String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         if (args.length < 4) {
-            adventure.sender(sender).sendMessage(translations.getBookCreateUsage(locale));
+            sendMessage(adventure.sender(sender), translations.getBookCreateUsage(locale));
             return;
         }
         if (InteractiveBooks.getBook(args[0]) != null) {
-            adventure.sender(sender).sendMessage(translations.getBookAlreadyExists(locale));
+            sendMessage(adventure.sender(sender), translations.getBookAlreadyExists(locale));
             return;
         }
 
@@ -146,14 +147,14 @@ final class CommandIBooks extends BaseCommand {
         if (args.length > 4)
             bookGeneration = args[4];
         if (BooksUtils.isBookGenerationSupported() && BooksUtils.getBookGeneration(bookGeneration) == null) {
-            adventure.sender(sender).sendMessage(translations.getBookCreateInvalidGeneration(locale));
+            sendMessage(adventure.sender(sender), translations.getBookCreateInvalidGeneration(locale));
             return;
         }
 
         IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
         createdBook.save();
         InteractiveBooks.registerBook(createdBook);
-        adventure.sender(sender).sendMessage(translations.getBookCreateSuccess(locale));
+        sendMessage(adventure.sender(sender), translations.getBookCreateSuccess(locale));
     }
 
     @Subcommand("reload")
@@ -161,19 +162,24 @@ final class CommandIBooks extends BaseCommand {
     void onReload(CommandSender sender) {
         String locale = sender instanceof Player ? (BooksUtils.getLocale((Player) sender)) : settings.getDefaultLanguage();
         settings.reload();
-        adventure.sender(sender).sendMessage(translations.getReloadSuccess(locale));
+        sendMessage(adventure.sender(sender), translations.getReloadSuccess(locale));
     }
 
     private IBook getBook(CommandSender sender, String bookId, Player player, String locale) {
         IBook book = InteractiveBooks.getBook(bookId);
         if (book == null) {
-            adventure.sender(sender).sendMessage(translations.getBookDoesNotExists(locale));
+            sendMessage(adventure.sender(sender), translations.getBookDoesNotExists(locale));
             return null;
         }
         if (player == null) {
-            adventure.sender(sender).sendMessage(translations.getPlayerNotConnected(locale));
+            sendMessage(adventure.sender(sender), translations.getPlayerNotConnected(locale));
             return null;
         }
         return book;
+    }
+
+    private void sendMessage(Audience audience, Component message) {
+        if (message != null)
+            audience.sendMessage(message);
     }
 }

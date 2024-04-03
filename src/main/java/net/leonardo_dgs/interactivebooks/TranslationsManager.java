@@ -33,6 +33,9 @@ final class TranslationsManager {
     }
 
     Component getMessage(String key, String langCode, TagResolver.Single... substitutions) {
+        String rawMessage = getString(key, langCode);
+        if (rawMessage.isEmpty())
+            return null;
         if (langCode == null || !settings.getPerPlayerLanguage())
             langCode = settings.getDefaultLanguage();
 
@@ -42,7 +45,7 @@ final class TranslationsManager {
             subsWithPrefix.add(prefixPlaceholder);
         }
         subsWithPrefix.addAll(Arrays.asList(substitutions));
-        return MiniMessage.miniMessage().deserialize(getString(key, langCode), subsWithPrefix.toArray(new TagResolver.Single[0]));
+        return MiniMessage.miniMessage().deserialize(rawMessage, subsWithPrefix.toArray(new TagResolver.Single[0]));
     }
 
     Component getHelpHeader(String langCode, TagResolver.Single... substitutions) {
