@@ -11,6 +11,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -39,6 +40,7 @@ final class BooksUtils {
     private static final boolean isBookAddPageSupported = methodExists("org.bukkit.inventory.meta.BookMeta$Spigot", "addPage", BaseComponent[][].class);
 
     private static final MiniMessage MINI_MESSAGE;
+    private static final LegacyComponentSerializer legacySerializer = BukkitComponentSerializer.legacy();
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
     private static final Field PAGES_FIELD;
 
@@ -134,14 +136,14 @@ final class BooksUtils {
     }
 
     private static void setPlaceholders(BookMeta meta, Player player) {
-        meta.setDisplayName(BukkitComponentSerializer.legacy().serialize(deserialize(meta.getDisplayName(), player)));
+        meta.setDisplayName(legacySerializer.serialize(deserialize(meta.getDisplayName(), player)));
         if (meta.getTitle() != null)
-            meta.setTitle(BukkitComponentSerializer.legacy().serialize(deserialize(meta.getTitle(), player)));
+            meta.setTitle(legacySerializer.serialize(deserialize(meta.getTitle(), player)));
         if (meta.getAuthor() != null)
-            meta.setAuthor(BukkitComponentSerializer.legacy().serialize(deserialize(meta.getAuthor(), player)));
+            meta.setAuthor(legacySerializer.serialize(deserialize(meta.getAuthor(), player)));
         if (meta.getLore() != null) {
             List<String> lore = meta.getLore();
-            lore.replaceAll(text -> BukkitComponentSerializer.legacy().serialize(deserialize(text, player)));
+            lore.replaceAll(text -> legacySerializer.serialize(deserialize(text, player)));
             meta.setLore(lore);
         }
     }
