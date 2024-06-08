@@ -8,7 +8,7 @@ tasks.compileJava.options.encoding = 'UTF-8'
 tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 
 group = 'net.leonardo_dgs'
-version = '1.7.4'
+version = '1.7.5-SNAPSHOT'
 description = 'Create cool interactive books!'
 
 def mainPackage = 'net.leonardo_dgs.interactivebooks'
@@ -46,6 +46,7 @@ tasks.shadowJar {
     relocate 'de.tr7zw.changeme.nbtapi', mainPackage + '.lib.nbtapi'
     relocate 'net.kyori.adventure', mainPackage + '.lib.adventure'
     relocate 'net.kyori.examination', mainPackage + '.lib.examination'
+    relocate 'net.kyori.option', mainPackage + '.lib.option'
     relocate 'co.aikar.commands', mainPackage + '.lib.acf'
     relocate 'co.aikar.locales', mainPackage + '.lib.locales'
     relocate 'de.leonhard.storage', mainPackage + '.lib.simplixstorage'
