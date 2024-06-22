@@ -32,11 +32,11 @@ final class BooksUtils {
     @Getter
     private static final boolean isPluginSupported;
     @Getter
-    private static final boolean isBookGenerationSupported = methodExists("org.bukkit.inventory.meta.BookMeta", "getGeneration");
+    private static final boolean isBookGenerationSupported = classExists("org.bukkit.inventory.meta.BookMeta.Generation");
     @Getter
     private static final boolean isOffHandSupported = methodExists("org.bukkit.inventory.PlayerInventory", "getItemInOffHand");
     private static final boolean isPlayerGetLocaleSupported = methodExists("org.bukkit.entity.Player", "getLocale");
-    private static final boolean isBookAddPageSupported = methodExists("org.bukkit.inventory.meta.BookMeta$Spigot", "addPage", BaseComponent[][].class);
+    private static final boolean isBookMetaSpigotSupported = classExists("org.bukkit.inventory.meta.BookMeta$Spigot");
 
     private static final MiniMessage MINI_MESSAGE;
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
@@ -44,7 +44,7 @@ final class BooksUtils {
 
     static {
         Field pagesField = null;
-        if (!isBookAddPageSupported) {
+        if (!isBookMetaSpigotSupported) {
             try {
                 String nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
                 pagesField = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".inventory.CraftMetaBook").getDeclaredField("pages");
@@ -53,7 +53,7 @@ final class BooksUtils {
             }
         }
         PAGES_FIELD = pagesField;
-        isPluginSupported = isBookAddPageSupported || PAGES_FIELD != null;
+        isPluginSupported = isBookMetaSpigotSupported || PAGES_FIELD != null;
         HashSet<String> runCommandNames = new HashSet<>(Arrays.asList("run_command", "command", "cmd"));
         HashSet<String> openUrlNames = new HashSet<>(Arrays.asList("url", "link"));
         MINI_MESSAGE = MiniMessage.builder().editTags(adder -> {
@@ -67,6 +67,15 @@ final class BooksUtils {
         ).build();
     }
 
+    private static boolean classExists(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     private static boolean methodExists(String className, String methodName, Class<?>... parameterTypes) {
         try {
             Class.forName(className).getMethod(methodName, parameterTypes);
@@ -77,26 +86,36 @@ final class BooksUtils {
     }
 
     @SuppressWarnings({"unchecked", "UnstableApiUsage"})
-    static BookMeta getBookMeta(BookMeta meta, List<String> rawPages, Player player) {
+    static BookMeta getBookMeta(BookMeta meta, List<String> plainPages, Player player) {
         BookMeta bookMeta = meta.clone();
         setPlaceholders(bookMeta, player);
-        if (!isBookAddPageSupported) {
+        if (isBookMetaSpigotSupported) {
+            plainPages.forEach(page -> bookMeta.spigot().addPage(BungeeComponentSerializer.get().serialize(deserialize(page, player))));
+        } else {
             try {
                 List<Object> pages = (List<Object>) PAGES_FIELD.get(bookMeta);
-                rawPages.forEach(page -> pages.add(MinecraftComponentSerializer.get().serialize(deserialize(page, player))));
+                plainPages.forEach(page -> pages.add(MinecraftComponentSerializer.get().serialize(deserialize(page, player))));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-        } else {
-            rawPages.forEach(page -> bookMeta.spigot().addPage(BungeeComponentSerializer.get().serialize(deserialize(page, player))));
         }
         return bookMeta;
     }
 
+    @SuppressWarnings({"unchecked", "UnstableApiUsage"})
     static List<String> getPages(BookMeta meta) {
         List<String> plainPages = new ArrayList<>();
-        List<BaseComponent[]> components = meta.spigot().getPages();
-        components.forEach(component -> plainPages.add(MiniMessage.miniMessage().serialize(BungeeComponentSerializer.get().deserialize(component))));
+        if (isBookMetaSpigotSupported) {
+            List<BaseComponent[]> pages = meta.spigot().getPages();
+            pages.forEach(page -> plainPages.add(MiniMessage.miniMessage().serialize(BungeeComponentSerializer.get().deserialize(page))));
+        } else {
+            try {
+                List<Object> pages = (List<Object>) PAGES_FIELD.get(meta);
+                pages.forEach(page -> plainPages.add(MiniMessage.miniMessage().serialize(MinecraftComponentSerializer.get().deserialize(page))));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         return plainPages;
     }
 
