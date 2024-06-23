@@ -2,6 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.PaperCommandManager;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -34,7 +35,7 @@ public final class InteractiveBooks extends JavaPlugin {
         commandManager.registerCommand(new CommandIBooks(adventure, settings, translations));
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
-        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
+        NBT.preloadApi();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(settings), this);
         new Metrics(this, 5483);
     }

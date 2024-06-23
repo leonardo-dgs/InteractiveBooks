@@ -1,6 +1,6 @@
 package net.leonardo_dgs.interactivebooks;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -78,11 +78,11 @@ final class PlayerListener implements Listener {
         if (itemInHand.getType() != Material.WRITTEN_BOOK)
             return;
 
-        NBTItem nbtItem = new NBTItem(itemInHand);
-        if (!nbtItem.hasTag("InteractiveBooks|Book-Id"))
+        String bookId = NBT.get(itemInHand, nbt -> (String) nbt.getOrNull("InteractiveBooks|Book-Id", String.class));
+        if (bookId == null)
             return;
 
-        IBook book = InteractiveBooks.getBook(nbtItem.getString("InteractiveBooks|Book-Id"));
+        IBook book = InteractiveBooks.getBook(bookId);
         if (book == null)
             return;
 

@@ -2,7 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class IBook {
-    private static final String bookIdKey = "InteractiveBooks|Book-Id";
-
     private final String id;
     private BookMeta bookMeta;
     private List<String> pages;
@@ -163,10 +161,10 @@ public class IBook {
      * @param player the player to which open the book
      */
     public void open(Player player) {
-        if (bookConfig.hasChanged()) {
-            bookConfig.forceReload();
-            InteractiveBooks.getBook(id).open(player);
+        if (BooksUtils.isPlayerOpenBookSupported()) {
+            player.openBook(getItem(player));
         } else {
+            BookMeta bookMeta = getBookMeta(player);
             Book book = Book.builder()
                     .title(BooksUtils.deserialize(bookMeta.getTitle(), player))
                     .author(BooksUtils.deserialize(bookMeta.getAuthor(), player))
@@ -194,9 +192,10 @@ public class IBook {
     public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         book.setItemMeta(this.getBookMeta(player));
-        NBTItem nbtItem = new NBTItem(book);
-        nbtItem.setString(bookIdKey, getId());
-        return nbtItem.getItem();
+        NBT.modify(book, nbt -> {
+            nbt.setString("InteractiveBooks|Book-Id", getId());
+        });
+        return book;
     }
 
     /**

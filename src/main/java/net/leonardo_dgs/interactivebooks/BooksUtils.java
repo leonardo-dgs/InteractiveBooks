@@ -35,6 +35,8 @@ final class BooksUtils {
     private static final boolean isBookGenerationSupported = classExists("org.bukkit.inventory.meta.BookMeta.Generation");
     @Getter
     private static final boolean isOffHandSupported = methodExists("org.bukkit.inventory.PlayerInventory", "getItemInOffHand");
+    @Getter
+    private static final boolean isPlayerOpenBookSupported = methodExists("org.bukkit.entity.Player", "openBook", ItemStack.class);
     private static final boolean isPlayerGetLocaleSupported = methodExists("org.bukkit.entity.Player", "getLocale");
     private static final boolean isBookMetaSpigotSupported = classExists("org.bukkit.inventory.meta.BookMeta$Spigot");
 
