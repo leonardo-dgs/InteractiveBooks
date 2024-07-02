@@ -25,8 +25,11 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 final class BooksUtils {
     @Getter
@@ -56,6 +59,46 @@ final class BooksUtils {
         }
         PAGES_FIELD = pagesField;
         isPluginSupported = isBookMetaSpigotSupported || PAGES_FIELD != null;
+
+        HashMap<String, String> tokens = new HashMap<>();
+        tokens.put("0", "<black>");
+        tokens.put("1", "<dark_blue>");
+        tokens.put("2", "<dark_green>");
+        tokens.put("3", "<dark_aqua>");
+        tokens.put("4", "<dark_red>");
+        tokens.put("5", "<dark_purple>");
+        tokens.put("6", "<gold>");
+        tokens.put("7", "<gray>");
+        tokens.put("8", "<dark_gray>");
+        tokens.put("9", "<blue>");
+        tokens.put("a", "<green>");
+        tokens.put("A", "<green>");
+        tokens.put("b", "<aqua>");
+        tokens.put("B", "<aqua>");
+        tokens.put("c", "<red>");
+        tokens.put("C", "<red>");
+        tokens.put("d", "<light_purple>");
+        tokens.put("D", "<light_purple>");
+        tokens.put("e", "<yellow>");
+        tokens.put("E", "<yellow>");
+        tokens.put("f", "<white>");
+        tokens.put("F", "<white>");
+        tokens.put("k", "<obf>");
+        tokens.put("K", "<obf>");
+        tokens.put("l", "<b>");
+        tokens.put("L", "<b>");
+        tokens.put("m", "<st>");
+        tokens.put("M", "<st>");
+        tokens.put("n", "<u>");
+        tokens.put("N", "<u>");
+        tokens.put("o", "<i>");
+        tokens.put("O", "<i>");
+        tokens.put("r", "<reset>");
+        tokens.put("R", "<reset>");
+        tokens.put("[xX](([&§][0-9a-fA-F]){6})", "");
+        String patternString = "[&§](" + String.join("|", tokens.keySet()) + ")";
+        Pattern pattern = Pattern.compile(patternString);
+
         HashSet<String> runCommandNames = new HashSet<>(Arrays.asList("run_command", "command", "cmd"));
         HashSet<String> openUrlNames = new HashSet<>(Arrays.asList("url", "link"));
         MINI_MESSAGE = MiniMessage.builder().editTags(adder -> {
@@ -66,7 +109,15 @@ final class BooksUtils {
                     adder.resolver(TagResolver.resolver(openUrlNames, (argumentQueue, context) ->
                             Tag.styling(ClickEvent.openUrl(argumentQueue.pop().value()))));
                 }
-        ).build();
+        ).preProcessor(s -> {
+            Matcher matcher = pattern.matcher(s);
+            StringBuffer sb = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(sb, matcher.group(2) == null ? tokens.get(matcher.group(1)) : "<#" + matcher.group(2).replaceAll("[&§]", "") + ">");
+            }
+            matcher.appendTail(sb);
+            return sb.toString();
+        }).build();
     }
 
     private static boolean classExists(String className) {
@@ -124,27 +175,7 @@ final class BooksUtils {
     static Component deserialize(String text, Player player, TagResolver... tagResolvers) {
         if (text == null)
             return Component.text("");
-        char[] chars = text.toCharArray();
-        List<String> replacements = Arrays.asList("<black>", "<dark_blue>", "<dark_green>", "<dark_aqua>", "<dark_red>", "<dark_purple>", "<gold>", "<gray>", "<dark_gray>", "<blue>", "<green>", "<aqua>", "<red>", "<light_purple>", "<yellow>", "<white>", "<obf>", "<b>", "<st>", "<u>", "<i>", "<reset>");
-
-        StringBuilder sb = new StringBuilder(chars.length);
-        for (int i = 0; i < chars.length; i++) {
-            int index;
-            if ((chars[i] == '&' || chars[i] == '§') && (index = "0123456789abcdefklmnorx".indexOf(chars[i + 1])) > -1) {
-                if (chars[i + 1] == 'x') {
-                    sb.append("<#").append(text, i + 2, i + 8).append('>');
-                    i += 7;
-                } else {
-                    if (index <= 15 || index == 22)
-                        sb.append("<!obf><!b><!st><!u><!i>");
-                    sb.append(replacements.get(index));
-                    i++;
-                }
-            } else {
-                sb.append(chars[i]);
-            }
-        }
-        return MINI_MESSAGE.deserialize(setPlaceholders(sb.toString(), player), tagResolvers);
+        return MINI_MESSAGE.deserialize(setPlaceholders(text, player), tagResolvers);
     }
 
     static String setPlaceholders(String text, CommandSender sender) {
