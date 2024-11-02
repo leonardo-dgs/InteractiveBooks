@@ -8,7 +8,7 @@ tasks.compileJava.options.encoding = 'UTF-8'
 tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 
 group = 'net.leonardo_dgs'
-version = '1.7.7'
+version = '1.7.8-SNAPSHOT'
 description = 'Create cool interactive books!'
 
 def mainPackage = 'net.leonardo_dgs.interactivebooks'
@@ -29,7 +29,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
-    implementation 'de.tr7zw:item-nbt-api:2.13.2'
+    implementation 'de.tr7zw:item-nbt-api:2.14.0'
     implementation 'net.kyori:adventure-text-minimessage:4.17.0'
     implementation 'net.kyori:adventure-platform-bukkit:4.3.4'
     implementation 'org.bstats:bstats-bukkit:3.0.2'
