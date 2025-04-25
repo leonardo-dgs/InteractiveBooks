@@ -1,14 +1,14 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.1'
 }
 
 tasks.compileJava.options.encoding = 'UTF-8'
 tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
 
 group = 'net.leonardo_dgs'
-version = '1.7.9'
+version = '1.7.10-SNAPSHOT'
 description = 'Create cool interactive books!'
 
 def mainPackage = 'net.leonardo_dgs.interactivebooks'
@@ -16,21 +16,21 @@ def mainPackage = 'net.leonardo_dgs.interactivebooks'
 repositories {
     mavenCentral()
 
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url 'https://repo.codemc.org/repository/maven-public/' }
-    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
-    maven { url 'https://jitpack.io/' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url = 'https://jitpack.io/' }
 }
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.20.3-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-chat:1.21-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-chat:1.21-R0.2-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'org.projectlombok:lombok:1.18.36'
-    annotationProcessor 'org.projectlombok:lombok:1.18.36'
-    implementation 'de.tr7zw:item-nbt-api:2.14.1'
-    implementation 'net.kyori:adventure-text-minimessage:4.17.0'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    implementation 'de.tr7zw:item-nbt-api:2.15.0'
+    implementation 'net.kyori:adventure-text-minimessage:4.20.0'
     implementation 'net.kyori:adventure-platform-bukkit:4.3.4'
     implementation 'org.bstats:bstats-bukkit:3.0.2'
     implementation 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
@@ -59,7 +59,7 @@ processResources {
     expand(
             version: project.version,
             description: project.description,
-            author: 'Leonardo_DGS',
+            author: 'leonardo_dgs',
             website: 'https://www.spigotmc.org/resources/45604/'
     )
 }
