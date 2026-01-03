@@ -11,14 +11,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -262,30 +260,27 @@ public class IBook {
      * Saves this book to his config file.
      */
     public void save() {
-        File file = new File(new File(InteractiveBooks.getInstance().getDataFolder(), "books"), getId() + ".yml");
-        BookMeta meta = bookMeta;
-        try {
-            file.createNewFile();
-            YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
-            bookConfig.set("name", meta.getDisplayName());
-            bookConfig.set("title", meta.getTitle());
-            bookConfig.set("author", meta.getAuthor());
-            if (BooksUtils.isBookGenerationSupported())
-                bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL).name());
-            bookConfig.set("lore", meta.getLore());
-            bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
-            if (getPages().isEmpty()) {
-                List<String> tempPages = new ArrayList<>();
-                tempPages.add("");
-                bookConfig.set("pages.1", tempPages);
-            }
-            for (int i = 0; i < getPages().size(); i++)
-                bookConfig.set("pages." + (i + 1), getPages().get(i).split("\n"));
-
-            bookConfig.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (bookConfig == null) {
+            File file = new File(new File(InteractiveBooks.getInstance().getDataFolder(), "books"), getId() + ".yml");
+            bookConfig = SettingsManager.loadBookConfig(file, getId()).createConfig();
         }
+
+        bookConfig.set("name", bookMeta.getDisplayName());
+        bookConfig.set("title", bookMeta.getTitle());
+        bookConfig.set("author", bookMeta.getAuthor());
+        if (BooksUtils.isBookGenerationSupported())
+            bookConfig.set("generation", Optional.ofNullable(bookMeta.getGeneration()).orElse(Generation.ORIGINAL).name());
+        bookConfig.set("lore", bookMeta.getLore());
+        bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
+        if (getPages().isEmpty()) {
+            List<String> tempPages = new ArrayList<>();
+            tempPages.add("");
+            bookConfig.set("pages.1", tempPages);
+        }
+        for (int i = 0; i < getPages().size(); i++)
+            bookConfig.set("pages." + (i + 1), getPages().get(i).split("\n"));
+
+        bookConfig.forceReload();
     }
 
     @Override

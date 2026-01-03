@@ -153,7 +153,6 @@ final class CommandIBooks extends BaseCommand {
 
         IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, bookGeneration, new ArrayList<>(), new ArrayList<>());
         createdBook.save();
-        InteractiveBooks.registerBook(createdBook);
         sendMessage(adventure.sender(sender), translations.getBookCreateSuccess(locale));
     }
 

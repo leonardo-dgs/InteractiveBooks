@@ -44,7 +44,7 @@ final class SettingsManager {
         }
     }
 
-    private SimplixBuilder loadBookConfig(File file, String bookId) {
+    static SimplixBuilder loadBookConfig(File file, String bookId) {
         return SimplixBuilder.fromFile(file)
                 .setReloadSettings(ReloadSettings.INTELLIGENT)
                 .reloadCallback(config -> {
