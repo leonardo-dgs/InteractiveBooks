@@ -35,7 +35,7 @@ final class BooksUtils {
     @Getter
     private static final boolean isPluginSupported;
     @Getter
-    private static final boolean isBookGenerationSupported = classExists("org.bukkit.inventory.meta.BookMeta.Generation");
+    private static final boolean isBookGenerationSupported = classExists("org.bukkit.inventory.meta.BookMeta$Generation");
     @Getter
     private static final boolean isOffHandSupported = methodExists("org.bukkit.inventory.PlayerInventory", "getItemInOffHand");
     @Getter
